@@ -1,0 +1,13 @@
+{
+    "status": {
+        "error": "FF3838",
+        "warning": "FFB302",
+        "success": "07BC0C",
+        "info" : "3498DB"
+    },
+    "links": {
+        "github": "https://github.com/khoakhongwibuuu/Codeforces-fork",
+        "codeforces_api": "http://codeforces.com/api/contest.list",
+        "codeforces_contest": "https://codeforces.com/contests"
+    }
+}

@@ -1,0 +1,60 @@
+const fs = require('fs');
+// Basic
+const client = global.client;
+const Config = global.Config;
+const Lang = global.Lang;
+const Utils = global.Utils;
+const Base_Lang = global.Base_Lang;
+
+const dirname = global.dirname;
+
+const main_module = (msg) => {
+    fetch('https://opentdb.com/api.php?amount=1')
+        .then(response => response.json())
+        .then(Datablock => {
+            let index = 0;
+            console.log(Datablock.results[index]);
+            if (Datablock.results[index].type === "multiple") {
+                require(__dirname + '/multiple.js').execute(msg, Datablock, index);
+            } else {
+                require(__dirname + '/boolean.js').execute(msg, Datablock, index);
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            msg.channel.send({
+                embed: {
+                    color: parseInt(Base_Lang.status.warning, 16),
+                    description: error.cause.code
+                }
+            });
+        });
+}
+
+// driver module
+const execute = (msg, para) => {
+    if (msg.channel.type === 'text') {
+        if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
+        if (para.length === 0) main_module(msg);
+        else if (['score', 'rank', 'rule'].includes(para[0].toLowerCase())) {
+            let modulePath = __dirname + `/modules/${para[0].toLowerCase()}.js`
+            require(modulePath).execute(msg, para);
+        } else {
+            msg.channel.send({
+                embed: {
+                    color: parseInt(Base_Lang.status.warning, 16),
+                    description: `:warning: ${Lang.error.parameter}`
+                }
+            });
+        }
+    } else {
+        msg.channel.send({
+            embed: {
+                color: parseInt(Base_Lang.status.error, 16),
+                description: `${Lang.commands.setchannel.err}`,
+            }
+        });
+    }
+}
+
+module.exports.execute = execute;

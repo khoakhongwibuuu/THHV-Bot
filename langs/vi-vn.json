@@ -1,0 +1,98 @@
+{
+    "author": "khoa.khong.wibuu",
+    "version": "0.1.0",
+    "language": "Tiếng Việt",
+    "commands": {
+        "commands": {
+            "exec": "Các lệnh được hỗ trợ."
+        },
+        "help": {
+            "help": "Hiển thị tin nhắn này.",
+            "title": " thông báo cho bạn về các cuộc thi lập trình thuật toán.",
+            "desc": [
+                "Sau khi đặt kênh thông báo, bot sẽ thông báo cho bạn",
+                "tiếng trước giờ thi."
+            ],
+            "field": [
+                {
+                    "name": "Làm cách nào để đặt kênh thông báo?",
+                    "value": [
+                        "* Một `quản trị viên` hoặc `điều phối viên` sử dụng lệnh ",
+                        " tại kênh mong muốn.",
+                        "* Lưu ý rằng bot phải có quyền gửi tin nhắn đến kênh đó.",
+                        "* Nếu bạn không nhận được xác nhận từ bot, nó có thể không có quyền."
+                    ]
+                }
+            ]
+        },
+        "setchannel": {
+            "desc": "Đặt kênh thông báo. Lệnh này yêu cầu quyền `quản trị viên` hoặc `điều phối viên`.",
+            "exec": "Kênh thông báo đã được đặt thành công.",
+            "err": "Tin nhắn trực tiếp không được hỗ trợ."
+        },
+        "ping": {
+            "desc": "Ping the bot.",
+            "exec": "Pong!"
+        },
+        "github": {
+            "desc": "Hiển thị mã nguồn của dự án này trên GitHub.",
+            "exec": "Đây là dự án không công khai. Bạn phải được mời để truy cập liên kết này."
+        },
+        "platform": {
+            "desc": "Hiển thị các nền tảng được hỗ trợ.",
+            "exec": {
+                "title": "Các nền tảng thi đấu hiện được hỗ trợ:"
+            }
+        },
+        "color": {
+            "desc": "Hiển thị màu ngẫu nhiên bằng mã Hex."
+        },
+        "time": {
+            "desc": "Xem giờ máy chủ và giờ đồng bộ",
+            "exec": {
+                "server": "Giờ máy chủ",
+                "sync": "Giờ đồng bộ"
+            }
+        },
+        "language": {
+            "desc": "Hiển thị ngôn ngữ của bot."
+        },
+        "shutdown": {
+            "exec": "Bot đã ngừng hoạt động!"
+        },
+        "reload": {
+            "exec": {
+                "all": "Các cài đặt và ngôn ngữ hiển thị đã được tải lại.",
+                "config": "Các cài đặt đã được tải lại.",
+                "lang": "Ngôn ngữ hiển thị đã được tải lại."
+            }
+        },
+        "setcfg": {
+            "exec": "Đã lưu các thay đổi."
+        }
+    },
+    "denied": {
+        "admin": "Chỉ quản trị viên mới có thể dùng lệnh này!",
+        "moderator": "Chỉ quản trị viên và người điều hành mới có thể dùng lệnh này!",
+        "owner": "Bạn không có quyền sử dụng lệnh này!"
+    },
+    "error": {
+        "unknown": "Lệnh không xác định!",
+        "parameter": "Tham số không hợp lệ! Không thể xử lý!",
+        "locked" : "Tính năng tạm thời bị khóa!",
+        "indev" : "Tính năng đang được phát triển."
+    },
+    "api": {
+        "codeforces": {
+            "on": "Codeforces API đã hoạt động lại.",
+            "off": "Không thể kết nối với Codeforces API."
+        },
+        "notification": {
+            "on": "Tính năng thông báo kì thi đã được bật.",
+            "off": "Tính năng thông báo kì thi đã bị tắt."
+        }
+    },
+    "and": "và",
+    "notify_desc": "Cuộc thi bắt đầu ",
+    "notify_foot": "Bắt đầu vào lúc "
+}

@@ -1,0 +1,8 @@
+services:
+  chv-bot:
+    container_name: codeforce-thhv-bot
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./logs:/usr/src/bot/logs
+      - ./config:/usr/src/bot/config

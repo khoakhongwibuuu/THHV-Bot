@@ -1,0 +1,98 @@
+{
+    "author": "khoa.khong.wibuu",
+    "version": "0.1.0",
+    "language": "English (US)",
+    "commands": {
+        "commands": {
+            "exec": "Suppored commands."
+        },
+        "help": {
+            "help": "Show this message.",
+            "title": " notifies you about upcoming algorithmic programming contests.",
+            "desc": [
+                "After the notification channel is set, the bot will notify you",
+                "hours before an upcoming contest."
+            ],
+            "field": [
+                {
+                    "name": "How to set the notification channel?",
+                    "value": [
+                        "* An `admin` or a `moderator` must use the ",
+                        " command at the desired channel.",
+                        "* Note that the bot must have permission to send messages to that channel.",
+                        "* If you don't get a confirmation from the bot, it might be missing permission."
+                    ]
+                }
+            ]
+        },
+        "setchannel": {
+            "desc": "Set the notification channel. This command requires an `admin` or a `moderator` to execute.",
+            "exec": "Notification channel is successfully set.",
+            "err": "DMs are not supported."
+        },
+        "ping": {
+            "desc": "Ping the bot.",
+            "exec": "Pong!"
+        },
+        "github": {
+            "desc": "Show this project's repository on GitHub.",
+            "exec": "This is a private repository. You must be invited to access this link."
+        },
+        "platform": {
+            "desc": "Show supported platforms.",
+            "exec": {
+                "title": "Currently supported contest platforms:"
+            }
+        },
+        "color": {
+            "desc": "Show a random color using Hex."
+        },
+        "time": {
+            "desc": "View server time and synchronized time.",
+            "exec": {
+                "server": "Server time",
+                "sync": "Synchronized time"
+            }
+        },
+        "language": {
+            "desc": "Display bot language."
+        },
+        "shutdown": {
+            "exec": "The bot has stopped working!"
+        },
+        "reload": {
+            "exec": {
+                "all": "All configurations and display language have been reloaded.",
+                "config": "Bot configurations have been reloaded.",
+                "lang": "Bot display language has been reloaded."
+            }
+        },
+        "setcfg": {
+            "exec": "Changes saved."
+        }
+    },
+    "denied": {
+        "admin": "Only admins can execute this command!",
+        "moderator": "Only admins and moderators can execute this command!",
+        "owner": "You have no permission to run this command!"
+    },
+    "error": {
+        "unknown": "Unknown command!",
+        "parameter": "Invalid parameter! Cannot handle!",
+        "locked": "Temporarily locked feature!",
+        "indev": "Feature under development."
+    },
+    "api": {
+        "codeforces": {
+            "on": "Codeforces API works again.",
+            "off": "Codeforces API isn't accessible."
+        },
+        "notification": {
+            "on": "The notification feature has been automatically turned on.",
+            "off": "The notification feature has been automatically turned off."
+        }
+    },
+    "and": "and",
+    "notify_desc": "Contest starts ",
+    "notify_foot": "Starts at: "
+}

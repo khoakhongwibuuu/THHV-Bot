@@ -1,0 +1,19 @@
+{
+  "name": "hv-bot",
+  "version": "0.2.1",
+  "description": "Backend API used by discord bots. You have to create the bot yourself.",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bot.js"
+  },
+  "author": "khoa.khong.wibuuu",
+  "license": "MIT",
+  "dependencies": {
+    "ascii-table": "latest",
+    "cli-table": "latest",
+    "discord.js": "git+https://github.com/discordjs/discord.js.git#5268320",
+    "node-fetch": "^2.6.1",
+    "tableify": "latest"
+  }
+}
