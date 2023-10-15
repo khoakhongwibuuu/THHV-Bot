@@ -1,0 +1,13 @@
+{
+    "owner": [
+        "671624293674909717"
+    ],
+    "log_usage": false,
+    "notify_hours": [
+        6,
+        24
+    ],
+    "prefix": "--",
+    "language": "en-us",
+    "timezone": 7
+}

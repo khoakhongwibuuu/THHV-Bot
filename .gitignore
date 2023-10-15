@@ -1,11 +1,9 @@
-**/configs/*
 **/node_modules/*
 **/logs/*
 **/test/*
 **/backup/*
 **/**.DS_Store
 !**configs/empty.json
-configs/*
 node_modules/*
 logs/*
 *.exe
