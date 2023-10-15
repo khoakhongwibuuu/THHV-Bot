@@ -54,7 +54,7 @@ if (!fs.existsSync(__dirname + '/configs/playerdata.json')) {
 // Updating old config files
 require(__dirname + '/api/editor').update();
 
-// Load security token 
+// Load security token
 const { token } = JSON.parse(fs.readFileSync(__dirname + '/configs/auth.json', 'utf8'));
 global.token = token;
 
