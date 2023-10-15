@@ -8,7 +8,7 @@
 <h3 align="center">THHV Bot</h3>
 
   <p align="center">
-    This is the backend API used by THHV discord server.
+    This is the backend software used by THHV discord server.
   </p>
 </div>
 
