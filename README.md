@@ -46,7 +46,7 @@ This project does not support contributing.
 
 <!-- CONTACT -->
 ## Contact
-Developer Info - [@khoakhongwibuuu](https://twitter.com/khoakhongwibuuu)
+Developer Info - [@khoakhongwibuuu](https://github.com/khoakhongwibuuu) and [@Noboroto](https://github.com/Noboroto)
 
 ## Reference
 Codeforces Contest Notifying feature - [AlgoContestBot](https://github.com/cjtoribio/AlgoContestBot)
