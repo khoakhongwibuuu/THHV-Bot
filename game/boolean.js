@@ -25,7 +25,7 @@ const execute = (msg, Datablock, index) => {
     const correctKey = Datablock.results[index].correct_answer;
 
     // Generate content
-    let Content = () => "True or False ? \nTrue : 🇦 | False 🇧"
+    let Content = () => "True or False ? \nTrue : 🇦 \n False : 🇧"
 
     // Deliver
     msg.channel.send(
