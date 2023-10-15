@@ -56,11 +56,11 @@ const doNotify = (res) => {
 		})
 	});
 }
-let errorTolerance = 2;
+let errorTolerance = 5;
 let HasDisconnected = false;
 
 const clock = () => {
-	console.log(`\n${Utils.timestampToDate(new Date().getTime(), 'full', 0)}`);
+	console.log(`\n${Utils.timestampToDate(new Date().getTime(), 'short', 0)}`);
 	console.log(`${HasDisconnected ? "Rec" : "C"}onnecting to codeforces.com`);
 	nf('http://codeforces.com/api/contest.list')
 		.then(data => data.json())
@@ -70,7 +70,8 @@ const clock = () => {
 				list = res.result.filter(obj => obj.phase === 'BEFORE');
 				if (errorTolerance <= 0) {
 					// console.log("API works again");
-					Utils.deliverMsg(Lang.api.codeforces.on + " :white_check_mark: \n" + Lang.api.notification.on, "info", server.log_channel);
+					if (server.log_channel !== "")
+						Utils.deliverMsg(Lang.api.codeforces.on + " :white_check_mark: \n" + Lang.api.notification.on, "info", server.log_channel);
 				}
 				errorTolerance = 5;
 				doNotify('codeforces.com');
@@ -79,7 +80,8 @@ const clock = () => {
 				errorTolerance--;
 				if (errorTolerance === 0) {
 					// console.log("API not working");
-					Utils.deliverMsg(Lang.api.codeforces.off + " :x: \n" + Lang.api.notification.off, "warning", server.log_channel);
+					if (server.log_channel !== "")
+						Utils.deliverMsg(Lang.api.codeforces.off + " :x: \n" + Lang.api.notification.off, "warning", server.log_channel);
 				}
 			}
 		})
@@ -88,7 +90,8 @@ const clock = () => {
 			console.log(`Destination host unreachable. Trying again in 1 minute. ${Math.max(errorTolerance, 0)} attempt${errorTolerance > 1 ? "s" : ""} remaining before alarming.`);
 			if (errorTolerance === 0) {
 				// console.log("API not working");
-				Utils.deliverMsg(Lang.api.codeforces.off + " :x: \n" + Lang.api.notification.off, "warning", server.log_channel);
+				if (server.log_channel !== "")
+					Utils.deliverMsg(Lang.api.codeforces.off + " :x: \n" + Lang.api.notification.off, "warning", server.log_channel);
 			}
 		});
 	if (!HasDisconnected) HasDisconnected = true;

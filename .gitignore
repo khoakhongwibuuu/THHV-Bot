@@ -3,7 +3,7 @@
 **/test/*
 **/backup/*
 **/**.DS_Store
+**/configs/*
 !**configs/empty.json
 node_modules/*
-logs/*
 *.exe
