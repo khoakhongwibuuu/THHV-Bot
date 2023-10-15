@@ -12,6 +12,7 @@
   "dependencies": {
     "ascii-table": "latest",
     "cli-table": "latest",
+    "crypto.js": "^3.1.1",
     "discord.js": "git+https://github.com/discordjs/discord.js.git#5268320",
     "node-fetch": "^2.6.1",
     "tableify": "latest"

@@ -97,7 +97,7 @@ const clock = () => {
 	if (!HasDisconnected) HasDisconnected = true;
 	setTimeout(() => {
 		setTimeout(clock, 1000 * (60 - new Date().getSeconds()));
-	}, 1000);
+	}, 5000);
 }
 
 const fetch = () => {
