@@ -8,6 +8,16 @@ const Base_Lang = global.Base_Lang;
 
 const dirname = global.dirname;
 
+const NotifyInvalid = (msg) => {
+    msg.author.send({
+        embed: {
+            color: parseInt(Base_Lang.status.warning, 16),
+            description: `:warning: ${Lang.error.parameter}`
+        }
+    });
+}
+
+
 const main_module = (msg) => {
     fetch('https://opentdb.com/api.php?amount=1')
         .then(response => response.json())
@@ -32,20 +42,16 @@ const main_module = (msg) => {
 }
 
 // driver module
-const execute = (msg, para) => {
+const execute = (msg, para, cmd) => {
     if (msg.channel.type === 'text') {
         if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
-        if (para.length === 0) main_module(msg);
-        else if (['score', 'rank', 'rule'].includes(para[0].toLowerCase())) {
-            let modulePath = __dirname + `/modules/${para[0].toLowerCase()}.js`
+        if (cmd === "play") {
+            if (para.length === 0) main_module(msg);
+            else NotifyInvalid(msg);
+        }
+        else {
+            let modulePath = __dirname + `/modules/${cmd}.js`
             require(modulePath).execute(msg, para);
-        } else {
-            msg.channel.send({
-                embed: {
-                    color: parseInt(Base_Lang.status.warning, 16),
-                    description: `:warning: ${Lang.error.parameter}`
-                }
-            });
         }
     } else {
         msg.channel.send({

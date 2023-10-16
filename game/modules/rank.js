@@ -28,7 +28,7 @@ const execute = (msg, para) => {
         }
     });
     return;
-    if (para.length === 1) {
+    if (para.length === 0) {
         const PlayerArr = Object.entries(playerdata);
         console.log(PlayerArr.length);
         // TODO: find a table library to handle Player Data e[0] = id ; e[1] : score

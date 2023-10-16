@@ -13,10 +13,10 @@ const gamesetting = JSON.parse(fs.readFileSync(dirname + '/game/setting/game.jso
 
 // driver module
 const execute = (msg, para) => {
-    if (para.length === 1) {
+    if (para.length === 0) {
         msg.channel.send(`**How to play ?**`
             + `\n`
-            + `> Players will take turns using \`${Config.prefix}get\` command to receive a random question.\n`
+            + `> Players will take turns using \`${Config.prefix}play\` command to receive a random question.\n`
             + `\n`
             + `> There will be \`2\` types of questions: \`Multiple choice\` and \`True or False\`\n`
             + `> The time limit for responding to a question is \`${gamesetting.ETA}\` seconds.\n`
@@ -26,8 +26,8 @@ const execute = (msg, para) => {
             + `\n`
             + `> If the person requiring the question doesn't respond,  their score will be reduced by \`${Math.abs(gamesetting.down)}\` points.\n`
             + `\n`
-            + `> Players can view their score by using \`${Config.prefix}get score\` command.\n`
-            + `> They can also view another player score by using \`${Config.prefix}get score <user_ID>\`.`,
+            + `> Players can view their score by using \`${Config.prefix}score\` command.\n`
+            + `> They can also view another player score by using \`${Config.prefix}score <user_ID>\`.`,
         )
     } else {
         // Invalid parameter to handle

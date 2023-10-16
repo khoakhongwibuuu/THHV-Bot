@@ -12,7 +12,7 @@ const dirname = global.dirname;
 const GameLib = require(dirname + '/game/lib/standardLib.js');
 
 const execute = (msg, para) => {
-    if (para.length === 1) {
+    if (para.length === 0) {
         // when a user retrieve their data from the database
         // get that user data
         let tempscore = GameLib.getUserdata(msg.author.id.toString());
@@ -33,10 +33,10 @@ const execute = (msg, para) => {
                 }
             });
         }
-    } else if (para.length === 2) {
+    } else if (para.length === 1) {
         // when a user retrieve another player data from the database
         // get that user data
-        let id = Utils.objectToID(para[1]);
+        let id = Utils.objectToID(para[0]);
         let tempscore = GameLib.getUserdata(id);
         if (tempscore !== "Unknown") {
             // case: that player data is found in the database and the input is valid (only accept @mention or UserID)

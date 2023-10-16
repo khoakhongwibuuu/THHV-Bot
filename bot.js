@@ -92,7 +92,7 @@ global.PublicCommands = PublicCommands;
 const PrivateCommands = ["shutdown", "api", "reload", "pwd", "setcfg", "patch"];
 global.PrivateCommands = PrivateCommands;
 
-const GameCommands = ["play"];
+const GameCommands = ["play", "score", "rank", "rule"];
 global.GameCommands = GameCommands;
 
 const AutomationCommands = [
@@ -130,13 +130,13 @@ client.on('message', msg => {
             let parameter = Utils.istream(commandPart);
             let cmd = (commandPart.length !== 0 ? Utils.consume(parameter).toLowerCase() : '');
             if (PublicCommands.includes(cmd)) {
-                require(__dirname + `/public/${cmd.toLowerCase()}.js`).execute(msg, parameter);
+                require(__dirname + `/public/${cmd}.js`).execute(msg, parameter);
             }
             else if (GameCommands.includes(cmd)) {
-                require(__dirname + `/game/main.js`).execute(msg, parameter);
+                require(__dirname + `/game/main.js`).execute(msg, parameter,cmd);
             }
             else if (PrivateCommands.includes(cmd)) {
-                require(__dirname + `/private/${cmd.toLowerCase()}.js`).execute(msg, parameter);
+                require(__dirname + `/private/${cmd}.js`).execute(msg, parameter);
                 if (Config.owner.includes(msg.author.id) && msg.channel.type === 'text')
                     msg.delete();
             } else {
