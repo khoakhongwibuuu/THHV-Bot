@@ -17,7 +17,6 @@ const NotifyInvalid = (msg) => {
     });
 }
 
-
 const main_module = (msg) => {
     fetch('https://opentdb.com/api.php?amount=1')
         .then(response => response.json())
