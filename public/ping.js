@@ -11,7 +11,7 @@ const execute = (msg, para) => {
     let current_timestamp = new Date().getTime();
     msg.channel.send(`${Lang.commands.ping.exec}`)
         .then(sentMessgae => {
-            sentMessgae.edit(`${Lang.commands.ping.exec} \`${current_timestamp - msg.createdTimestamp}ms\``)
+            sentMessgae.edit(`${Lang.commands.ping.exec} \`${Math.abs(current_timestamp - msg.createdTimestamp)}ms\``)
         });
 }
 
