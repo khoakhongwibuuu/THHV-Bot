@@ -25,12 +25,12 @@ const handle = (msg, correctKey, member_response, sessionID) => {
     }
 
     // CORRECT USERS and INCORRECT USERS as message content
-    let draftA = ((correctUser.length > 0) ? `\nMember${correctUser.length > 1 ? "s" : ""} answered correctly :white_check_mark:: ||${Utils.args_logging(correctUser, false)}||` : "");
-    let draftB = ((incorrectUser.length > 0) ? `\nMember${incorrectUser.length > 1 ? "s" : ""} answered incorrectly :x:: ||${Utils.args_logging(incorrectUser, false)}||` : "");
+    let draftA = ((correctUser.length > 0) ? `\nMember${correctUser.length > 1 ? "s" : ""} answered correctly :white_check_mark:: ${Utils.args_logging(correctUser, false)}` : "");
+    let draftB = ((incorrectUser.length > 0) ? `\nMember${incorrectUser.length > 1 ? "s" : ""} answered incorrectly :x:: ${Utils.args_logging(incorrectUser, false)}` : "");
     let draftC = (!correctUser.includes(`<@${msg.author.id}>`) && !incorrectUser.includes(`<@${msg.author.id}>`) ? `\n<@${msg.author.id}> did not answer the question. Minus \`${Math.abs(gamesetting.down)}\` points.` : "")
 
     // Notify when the time is up
-    msg.channel.send(`**Session ${sessionID}**: :alarm_clock:  Time's up!` + `\nCorrect answer is ||\`${correctKey}\`||` + draftA + draftB + draftC);
+    msg.channel.send(`**Session ${sessionID}**: :alarm_clock:  Time's up!` + `\nCorrect answer is \`${correctKey}\`` + draftA + draftB + draftC);
 
     // Save player data
     correctUser.forEach(e => {
