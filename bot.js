@@ -84,6 +84,7 @@ const Utils = require(__dirname + '/api/utils.js');
 global.Utils = Utils;
 
 let BotStartTime = null;
+let BotStartTime_rendered = null;
 global.BotStartTime = BotStartTime;
 
 const PublicCommands = ["commands", "help", "setchannel", "ping", "github", "platform", "color", "time", "language"];
@@ -109,6 +110,7 @@ global.AutomationCommands = AutomationCommands;
 
 client.on('ready', () => {
     BotStartTime = new Date();
+    BotStartTime_rendered = Utils.timestampToDate(BotStartTime, 'short', 0);
     console.log(`Bot starts at: ${Utils.timestampToDate(BotStartTime, 'full', 0)}`);
     console.log(`Logging as ${client.user.tag}`);
     require(__dirname + '/api/codeforces.js').fetch();
@@ -120,7 +122,6 @@ client.on('message', msg => {
             require(__dirname + "/public/help.js").execute(msg, "");
         }
         else if (msg.channel.id == server.suggest_channel) {
-            console.log("eccc");
             if (Utils.prefixChecker(AutomationCommands, msg.content)) {
                 require(__dirname + '/auto/react.js').execute(msg);
             }
@@ -133,7 +134,7 @@ client.on('message', msg => {
                 require(__dirname + `/public/${cmd}.js`).execute(msg, parameter);
             }
             else if (GameCommands.includes(cmd)) {
-                require(__dirname + `/game/main.js`).execute(msg, parameter,cmd);
+                require(__dirname + `/game/main.js`).execute(msg, parameter, cmd);
             }
             else if (PrivateCommands.includes(cmd)) {
                 require(__dirname + `/private/${cmd}.js`).execute(msg, parameter);
@@ -141,6 +142,12 @@ client.on('message', msg => {
                     msg.delete();
             } else {
                 require(__dirname + '/api/return.js').execute(msg, parameter);
+            }
+            if (Config.log_usage) {
+                if (msg.channel.type == "text")
+                    Utils.log(`${Utils.timestampToDate(msg.createdTimestamp, 'short', 0)} ${msg.author.username} > ${msg.channel.guild.name} / ${msg.channel.name}: ${msg.content}`, BotStartTime_rendered);
+                else if (msg.channel.type == "dm")
+                    Utils.log(`${Utils.timestampToDate(msg.createdTimestamp, 'short', 0)} ${msg.author.username} > DM : ${msg.content}`, BotStartTime_rendered);
             }
         }
     }

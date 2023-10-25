@@ -1,7 +1,9 @@
+const fs = require('fs');
 // Basic
 const Config = global.Config;
 const Lang = global.Lang;
 const Base_Lang = global.Base_Lang;
+const dirname = global.dirname;
 
 const istream = (str) => {
 	return str.replace(/\s+/g, ' ').trim().split(' ');
@@ -93,6 +95,13 @@ const objectToID = (obj) => {
 	else return obj;
 }
 
+const log = (content, filename) => {
+	const path = dirname + '/logs/' + filename + '.log'
+	fs.appendFile(path, content + '\n', (err) => {
+		if (err) throw err;
+	});
+}
+
 module.exports.istream = istream;
 module.exports.consume = consume;
 module.exports.timestampToDate = timestampToDate;
@@ -104,3 +113,4 @@ module.exports.clockBasedRandom = clockBasedRandom;
 module.exports.deliverMsg = deliverMsg;
 module.exports.prefixChecker = prefixChecker;
 module.exports.objectToID = objectToID;
+module.exports.log = log;
