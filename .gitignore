@@ -3,7 +3,8 @@
 **/test/*
 **/backup/*
 **/**.DS_Store
-**/configs/*
+**/configs/playerdata.json
+**/configs/persist.json
 !**configs/empty.json
 node_modules/*
 *.exe
