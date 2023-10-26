@@ -3,6 +3,7 @@
 **/test/*
 **/backup/*
 **/**.DS_Store
+**/configs/auth.json
 **/configs/playerdata.json
 **/configs/persist.json
 !**configs/empty.json
