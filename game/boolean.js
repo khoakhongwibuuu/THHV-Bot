@@ -17,21 +17,21 @@ const validkey = ['🇦', '🇧'];
 const ETA = gamesetting.ETA;
 
 const execute = (msg, Datablock, index) => {
-    console.log("type: boolean");
+
     // Random ID
     const sessionID = Utils.clockBasedRandom(0, 4095) + 1;
 
     // Generate Answer Key
-    const correctKey = Datablock.results[index].correct_answer;
+    const correctKey = GameLib.decoder(Datablock.results[index].correct_answer);
 
     // Generate content
-    let Content = () => "True or False ? \nTrue : 🇦 \n False : 🇧"
+    let Content = () => "True or False ? \n🇦 True \n🇧 False"
 
     // Deliver
     msg.channel.send(
         `:alarm_clock: You have \`${ETA}\` seconds for this question.`
-        + `\nTopic: \`${Datablock.results[index].category}\``
-        + `\nDifficulty: \`${Datablock.results[index].difficulty}\``,
+        + `\nTopic: \`${GameLib.decoder(Datablock.results[index].category)}\``
+        + `\nDifficulty: \`${GameLib.decoder(Datablock.results[index].difficulty)}\``,
         {
             embed: {
                 color: parseInt(Base_Lang.status.info, 16),

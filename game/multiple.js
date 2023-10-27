@@ -13,17 +13,17 @@ const gamesetting = JSON.parse(fs.readFileSync(__dirname + '/setting/game.json',
 const GameLib = require(__dirname + '/lib/standardLib.js');
 
 // Variables
-const compiledkey = ['A', 'B', 'C', 'D'];
 const validkey = ['🇦', '🇧', '🇨', '🇩'];
 const ETA = gamesetting.ETA;
 
 const execute = (msg, Datablock, index) => {
-    console.log("type: multiple");
+
     // Random ID
     const sessionID = Utils.clockBasedRandom(0, 4095) + 1;
 
     // Generate Answer Key
-    const correctKey = compiledkey[Utils.clockBasedRandom(0, 3)];
+    let correctKeyIdx = Utils.clockBasedRandom(0, 3);
+    const correctKey = validkey[correctKeyIdx];
 
     // Load incorrect answers
     let incorrectAnswer = Datablock.results[index].incorrect_answers;
@@ -33,8 +33,8 @@ const execute = (msg, Datablock, index) => {
     // Generate content
     let Content = () => {
         let ret = ""
-        compiledkey.forEach((OptionalKey, idx) => {
-            ret += (`${OptionalKey}. `
+        validkey.forEach((OptionalKey, idx) => {
+            ret += (`${OptionalKey} `
                 + `${OptionalKey === correctKey ? GameLib.decoder(Datablock.results[index].correct_answer) : GameLib.decoder(incorrectAnswer[incorrectIdx++])}`
                 + `${idx == 3 ? "" : "\n"}`);
         });
@@ -43,8 +43,8 @@ const execute = (msg, Datablock, index) => {
     // Deliver
     msg.channel.send(
         `:alarm_clock: You have \`${ETA}\` seconds for this question.`
-        + `\nTopic: \`${Datablock.results[index].category}\``
-        + `\nDifficulty: \`${Datablock.results[index].difficulty}\``,
+        + `\nTopic: \`${GameLib.decoder(Datablock.results[index].category)}\``
+        + `\nDifficulty: \`${GameLib.decoder(Datablock.results[index].difficulty)}\``,
         {
             embed: {
                 color: parseInt(Base_Lang.status.info, 16),
@@ -72,7 +72,7 @@ const execute = (msg, Datablock, index) => {
                 }
             });
             collector.on('end', collected => {
-                require(__dirname +'/judge.js').handle(msg, correctKey, member_response, sessionID);
+                require(__dirname + '/judge.js').handle(msg, ['A', 'B', 'C', 'D'][correctKeyIdx], member_response, sessionID);
             });
         });
 }

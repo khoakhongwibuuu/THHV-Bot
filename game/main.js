@@ -18,12 +18,11 @@ const NotifyInvalid = (msg) => {
 }
 
 const main_module = (msg) => {
-    fetch('https://opentdb.com/api.php?amount=1')
+    fetch('https://opentdb.com/api.php?amount=1&encode=base64')
         .then(response => response.json())
         .then(Datablock => {
             let index = 0;
-            console.log(Datablock.results[index]);
-            if (Datablock.results[index].type === "multiple") {
+            if (atob(Datablock.results[index].type.toString()) === "multiple") {
                 require(__dirname + '/multiple.js').execute(msg, Datablock, index);
             } else {
                 require(__dirname + '/boolean.js').execute(msg, Datablock, index);

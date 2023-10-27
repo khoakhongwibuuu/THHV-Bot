@@ -87,7 +87,7 @@ const clock = () => {
 		})
 		.catch(err => {
 			errorTolerance--;
-			console.log(`Destination host unreachable. Trying again in 1 minute. ${Math.max(errorTolerance, 0)} attempt${errorTolerance > 1 ? "s" : ""} remaining before alarming.`);
+			console.log(`Cannot connect to codeforces.com. Trying again in 1 minute. ${Math.max(errorTolerance, 0)} attempt${errorTolerance > 1 ? "s" : ""} remaining before alarming.`);
 			if (errorTolerance === 0) {
 				// console.log("API not working");
 				if (server.log_channel !== "")
@@ -97,7 +97,7 @@ const clock = () => {
 	if (!HasDisconnected) HasDisconnected = true;
 	setTimeout(() => {
 		setTimeout(clock, 1000 * (60 - new Date().getSeconds()));
-	}, 5000);
+	}, 10000);
 }
 
 const fetch = () => {

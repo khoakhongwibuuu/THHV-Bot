@@ -25,32 +25,7 @@ const savegamedata = () => {
 };
 
 const decoder = (str) => {
-    let entities = {
-        'amp': '&',
-        'apos': '\'',
-        'lt': '<',
-        'gt': '>',
-        'quot': '"',
-        'Eacute': 'é',
-        'Sigma': 'σ',
-        'Pi': 'π',
-        'Nu': 'ν',
-        'Omicron': 'ο',
-        'rsquo': '»'
-        // add more if needed
-    };
-
-    return str.replace(/&([^;]+);/g, function (match, entity) {
-        if (entity in entities) {
-            return entities[entity];
-        } else if (/^#x[\da-fA-F]+$/.test(entity)) {
-            return String.fromCharCode(parseInt(entity.slice(2), 16));
-        } else if (/^#\d+$/.test(entity)) {
-            return String.fromCharCode(Number(entity.slice(1)));
-        } else {
-            return match;
-        }
-    });
+    return atob(str);
 }
 
 const shuffle = (array) => {
