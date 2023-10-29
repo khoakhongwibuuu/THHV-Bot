@@ -9,10 +9,8 @@ const Base_Lang = global.Base_Lang;
 // Load game configuration
 const gamesetting = JSON.parse(fs.readFileSync(__dirname + '/setting/game.json', 'utf8'));
 
-// Load game libraries
-const GameLib = require(__dirname + '/lib/standardLib.js');
-
 const handle = (msg, correctKey, member_response, sessionID) => {
+    const GameLib = require(__dirname + '/lib/standardLib.js');
     // List all CORRECT USERS and INCORRECT USERS
     let correctUser = [];
     let incorrectUser = [];

@@ -97,7 +97,7 @@ global.PublicCommands = PublicCommands;
 const PrivateCommands = ["shutdown", "api", "reload", "pwd", "setcfg"];
 global.PrivateCommands = PrivateCommands;
 
-const GameCommands = ["play", "score", "graph", "rule"];
+const GameCommands = ["play", "score", "graph", "rule", "reset"];
 global.GameCommands = GameCommands;
 
 const AutomationCommands = [

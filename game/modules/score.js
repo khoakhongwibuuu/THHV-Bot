@@ -8,10 +8,8 @@ const Base_Lang = global.Base_Lang;
 
 const dirname = global.dirname;
 
-// Load game libraries
-const GameLib = require(dirname + '/game/lib/standardLib.js');
-
 const execute = (msg, para) => {
+    const GameLib = require(dirname + '/game/lib/standardLib.js');
     if (para.length === 0) {
         // when a user retrieve their data from the database
         // get that user data
