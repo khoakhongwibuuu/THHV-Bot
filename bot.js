@@ -13,6 +13,10 @@ if (!fs.existsSync(__dirname + '/configs')) {
     fs.mkdirSync(__dirname + '/configs', { recursive: true });
 }
 
+if (!fs.existsSync(__dirname + '/logs')) {
+    fs.mkdirSync(__dirname + '/logs', { recursive: true });
+}
+
 // Creating default configuration files
 if (!fs.existsSync(__dirname + '/configs/config.json')) {
     fs.writeFileSync(__dirname + '/configs/config.json', JSON.stringify({
@@ -93,7 +97,7 @@ global.PublicCommands = PublicCommands;
 const PrivateCommands = ["shutdown", "api", "reload", "pwd", "setcfg"];
 global.PrivateCommands = PrivateCommands;
 
-const GameCommands = ["play", "score", "rank", "rule"];
+const GameCommands = ["play", "score", "graph", "rule"];
 global.GameCommands = GameCommands;
 
 const AutomationCommands = [
@@ -117,6 +121,7 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
+    // console.log(msg.content);
     if (!msg.author.bot) {
         if (msg.mentions.has(client.user)) {
             require(__dirname + "/public/help.js").execute(msg, "");
@@ -132,8 +137,10 @@ client.on('message', msg => {
             let cmd = (commandPart.length !== 0 ? Utils.consume(parameter).toLowerCase() : '');
             if (PublicCommands.includes(cmd)) {
                 require(__dirname + `/public/${cmd}.js`).execute(msg, parameter);
+                msg.react('✅');
             }
             else if (GameCommands.includes(cmd)) {
+                msg.react('⌛');
                 require(__dirname + `/game/main.js`).execute(msg, parameter, cmd);
             }
             else if (PrivateCommands.includes(cmd)) {
@@ -141,6 +148,7 @@ client.on('message', msg => {
                 if (Config.owner.includes(msg.author.id) && msg.channel.type === 'text')
                     msg.delete();
             } else {
+                msg.react('❌');
                 require(__dirname + '/api/return.js').execute(msg, parameter);
             }
             if (Config.log_usage) {

@@ -16,12 +16,12 @@ if (!fs.existsSync(playerDatapath)) {
 }
 const playerdata = JSON.parse(fs.readFileSync(playerDatapath, 'utf8'));
 const savegamedata = () => {
-    let sortedArray = Object.entries(playerdata).sort((a, b) => b[1] - a[1]);
-    let sortedData = {};
-    for (let i = 0; i < sortedArray.length; i++) {
-        sortedData[sortedArray[i][0]] = sortedArray[i][1];
-    }
-    fs.writeFileSync(playerDatapath, JSON.stringify(sortedData, null, 2));
+    // let sortedArray = Object.entries(playerdata).sort((a, b) => b[1] - a[1]);
+    // let sortedData = {};
+    // for (let i = 0; i < sortedArray.length; i++) {
+    //     sortedData[sortedArray[i][0]] = sortedArray[i][1];
+    // }
+    fs.writeFileSync(playerDatapath, JSON.stringify(playerdata, null, 2));
 };
 
 const decoder = (str) => {
@@ -53,13 +53,15 @@ const keyCompiler = (key, mode) => {
 
 const saveResult = (id, penalty) => {
     if (!playerdata.hasOwnProperty(id))
-        playerdata[id] = penalty;
+        playerdata[id] = [penalty];
+    else if (!playerdata[id].length > 0)
+        playerdata[id].push(penalty);
     else
-        playerdata[id] += penalty;
+        playerdata[id].push(playerdata[id][playerdata[id].length - 1] + penalty);
 }
 
 const getUserdata = (userID) => {
-    return (playerdata.hasOwnProperty(userID)) ? playerdata[userID] : "Unknown";
+    return (playerdata.hasOwnProperty(userID)) && playerdata[userID].length > 0 ? playerdata[userID][playerdata[userID].length - 1] : "Unknown";
 }
 
 const isNum = (n) => {
