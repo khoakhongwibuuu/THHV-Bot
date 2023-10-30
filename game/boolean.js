@@ -9,14 +9,13 @@ const Base_Lang = global.Base_Lang;
 // Load game configuration
 const gamesetting = JSON.parse(fs.readFileSync(__dirname + '/setting/game.json', 'utf8'));
 
-// Load game libraries
-const GameLib = require(__dirname + '/lib/standardLib.js');
-
-// Variables
-const validkey = ['🇦', '🇧'];
-const ETA = gamesetting.ETA;
-
 const execute = (msg, Datablock, index) => {
+    // Load game libraries
+    const GameLib = require(__dirname + '/lib/standardLib.js');
+
+    // Variables
+    const validkey = ['🇦', '🇧'];
+    const ETA = gamesetting.ETA;
 
     // Random ID
     const sessionID = Utils.clockBasedRandom(0, 4095) + 1;

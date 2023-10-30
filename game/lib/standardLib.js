@@ -5,15 +5,14 @@ const Config = global.Config;
 const Lang = global.Lang;
 const Utils = global.Utils;
 const Base_Lang = global.Base_Lang;
-
 const dirname = global.dirname;
 
-// Load player data
 const playerDatapath = dirname + '/configs/playerdata.json';
 
 if (!fs.existsSync(playerDatapath)) {
     fs.writeFileSync(playerDatapath, JSON.stringify({}, null, 4));
 }
+
 const playerdata = JSON.parse(fs.readFileSync(playerDatapath, 'utf8'));
 const savegamedata = () => {
     // let sortedArray = Object.entries(playerdata).sort((a, b) => b[1] - a[1]);

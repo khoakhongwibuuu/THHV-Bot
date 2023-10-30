@@ -5,7 +5,6 @@ const Config = global.Config;
 const Lang = global.Lang;
 const Utils = global.Utils;
 const Base_Lang = global.Base_Lang;
-
 const dirname = global.dirname;
 
 const NotifyInvalid = (msg) => {
