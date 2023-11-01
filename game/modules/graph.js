@@ -8,9 +8,6 @@ const Utils = global.Utils;
 const Base_Lang = global.Base_Lang;
 const dirname = global.dirname;
 
-// load additional library
-const { createCanvas } = require('canvas');
-const Chartjs = require('chart.js/auto');
 const GameLib = require(dirname + '/game/lib/standardLib.js');
 
 const analytics = (arr) => {
@@ -30,14 +27,13 @@ const analytics = (arr) => {
             length = 1;
         }
     }
+
     let streak = Math.max(length, maxLength);
     if (arr[0] > 0) {
         correct++;
-    } else {
-        streak--;
     }
 
-    obj["streak"] = streak;
+    obj["streak"] = streak - 1;
     obj["correct"] = correct;
     obj["max"] = Math.max(...arr);
 
@@ -61,58 +57,32 @@ const analytics = (arr) => {
     return obj;
 }
 
-const buildLabels = (data) => {
-    ret = []
-    data.forEach((e, i) => {
-        ret.push(i + 1)
-    });
-    return ret
-}
-
 const execute = (msg, para) => {
-    if (para.length === 0) {
-        // load player data
+    if (para.length < 2) {
+        // console.log(para)
+        const userID = (para.length === 0) ? msg.author.id : Utils.objectToID(para[0].toString());
         const playerDatapath = dirname + '/configs/playerdata.json';
         const playerdata = JSON.parse(fs.readFileSync(playerDatapath, 'utf8'));
-        if (playerdata.hasOwnProperty(msg.author.id) && playerdata[msg.author.id].length > 0) {
-            // Create canvas
-            const canvas = createCanvas(1440, 720);
-            const ctx = canvas.getContext('2d');
-            // Create the line chart
-            new Chartjs(ctx, {
+        if (playerdata.hasOwnProperty(userID) && playerdata[userID].length > 0) {
+            const chartConfigString = encodeURIComponent(JSON.stringify({
                 type: 'line',
                 data: {
-                    labels: buildLabels(playerdata[msg.author.id]),
+                    labels: playerdata[userID].map((value, index) => `${index + 1}`),
                     datasets: [{
-                        label: `Score of ${client.users.get(msg.author.id).username}`,
-                        data: playerdata[msg.author.id]
+                        label: `Score of ${client.users.get(userID).username}`,
+                        data: playerdata[userID],
+                        fill: false,
+                        borderColor: 'rgb(255, 105, 105)',
+                        tension: 0.1
                     }]
-                },
-                options: {
-                    plugins: {
-                        customCanvasBackgroundColor: {
-                            color: 'rgb(255, 255, 255)',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
                 }
-            });
-
-            // Save the chart as a PNG image
-            const fs = require('fs');
-            const out = fs.createWriteStream(dirname + `/temp/${msg.author.id}.png`);
-            const stream = canvas.createPNGStream();
-            stream.pipe(out);
-
-            // Send embed to user
-            out.on('finish', () => {
-                const analyticsResult = analytics(playerdata[msg.author.id])
-                const embed = new Discord.MessageEmbed()
-                    .setTitle(`Score of ${client.users.get(msg.author.id).username}`)
+            }));
+            const width = 1440;
+            const height = 720;
+            const analyticsResult = analytics(playerdata[userID]);
+            msg.channel.send({
+                embeds: [new Discord.MessageEmbed()
+                    .setTitle(`Score of ${client.users.get(userID).username}`)
                     .setColor(parseInt(Base_Lang.status.info, 16))
                     .setDescription(`Current: \`${analyticsResult.current}\`\n`
                         + `Highest Score: \`${analyticsResult.max}\`\n`
@@ -120,20 +90,17 @@ const execute = (msg, para) => {
                         + `Correct Answers: \`${analyticsResult.correct}\`\n\n`
                         + `Mean: \`${analyticsResult.mean}\`\n`
                         + `Median: \`${analyticsResult.median}\`\n`)
-                    .setImage(`attachment://${msg.author.id}.png`);
-                msg.channel.send({
-                    embeds: [embed],
-                    files: [{
-                        attachment: dirname + `/temp/${msg.author.id}.png`,
-                        name: `${msg.author.id}.png`
-                    }]
-                });
+                    .setImage(`attachment://${userID}.png`)],
+                files: [{
+                    attachment: `https://quickchart.io/chart?w=${width}&h=${height}&c=${chartConfigString}`,
+                    name: `${userID}.png`
+                }]
             });
         } else {
             msg.channel.send({
                 embed: {
                     color: parseInt(Base_Lang.status.warning, 16),
-                    description: "Your data is not found in the database."
+                    description: `${(userID === msg.author.id) ? "Your " : `<@${userID}>`} data is not found in the database.`
                 }
             });
         }

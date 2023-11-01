@@ -117,7 +117,7 @@ client.on('ready', () => {
     BotStartTime_rendered = Utils.timestampToDate(BotStartTime, 'short', 0);
     console.log(`Bot starts at: ${Utils.timestampToDate(BotStartTime, 'full', 0)}`);
     console.log(`Logging as ${client.user.tag}`);
-    require(__dirname + '/api/codeforces.js').fetch();
+    // require(__dirname + '/api/codeforces.js').fetch();
 });
 
 client.on('message', msg => {
