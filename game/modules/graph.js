@@ -11,7 +11,7 @@ const dirname = global.dirname;
 const execute = (msg, para) => {
     if (para.length < 2) {
         const GameLib = require(dirname + '/game/lib/standardLib.js');
-        const userID = (para.length === 0) ? msg.author.id : Utils.analyticsResultectToID(para[0]);
+        const userID = (para.length === 0) ? msg.author.id : Utils.objectToID(para[0]);
         let loadedData = GameLib.readScore(userID);
         if (loadedData !== "Unknown") {
             const chartConfigString = encodeURIComponent(JSON.stringify({
