@@ -31,17 +31,11 @@ const handle = (msg, correctKey, member_response, sessionID) => {
     msg.channel.send(`**Session ${sessionID}**: :alarm_clock:  Time's up!` + `\nCorrect answer is \`${correctKey}\`` + draftA + draftB + draftC);
 
     // Save player data
-    correctUser.forEach(e => {
-        GameLib.saveResult(Utils.objectToID(e), gamesetting.up);
-    });
-    incorrectUser.forEach(e => {
-        GameLib.saveResult(Utils.objectToID(e), gamesetting.down);
-    });
+    correctUser.forEach(e => GameLib.saveScore(Utils.objectToID(e), gamesetting.up));
+    incorrectUser.forEach(e => GameLib.saveScore(Utils.objectToID(e), gamesetting.down));
     if (!correctUser.includes(`<@${msg.author.id}>`) && !incorrectUser.includes(`<@${msg.author.id}>`)) {
-        GameLib.saveResult(Utils.objectToID(msg.author.id), gamesetting.down);
+        GameLib.saveScore(Utils.objectToID(msg.author.id), gamesetting.down);
     }
-
-    GameLib.savegamedata();
 }
 
 module.exports.handle = handle;

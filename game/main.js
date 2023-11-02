@@ -7,6 +7,17 @@ const Utils = global.Utils;
 const Base_Lang = global.Base_Lang;
 const dirname = global.dirname;
 
+const allowedList = [9,
+    17,
+    18,
+    19,
+    22,
+    23,
+    24,
+    26,
+    27
+]
+
 const NotifyInvalid = (msg) => {
     msg.author.send({
         embed: {
@@ -17,7 +28,7 @@ const NotifyInvalid = (msg) => {
 }
 
 const main_module = (msg) => {
-    fetch('https://opentdb.com/api.php?amount=1&encode=base64')
+    fetch(`https://opentdb.com/api.php?amount=1&encode=base64&category=${allowedList[Math.floor(allowedList.length * Math.random())]}`)
         .then(response => response.json())
         .then(Datablock => {
             let index = 0;

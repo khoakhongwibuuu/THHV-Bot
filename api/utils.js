@@ -102,6 +102,10 @@ const log = (content, filename) => {
 	});
 }
 
+const isNum = (n) => {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 module.exports.istream = istream;
 module.exports.consume = consume;
 module.exports.timestampToDate = timestampToDate;
@@ -114,3 +118,4 @@ module.exports.deliverMsg = deliverMsg;
 module.exports.prefixChecker = prefixChecker;
 module.exports.objectToID = objectToID;
 module.exports.log = log;
+module.exports.isNum = isNum;

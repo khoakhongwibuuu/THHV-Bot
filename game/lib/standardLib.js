@@ -12,16 +12,36 @@ const playerDatapath = dirname + '/configs/playerdata.json';
 if (!fs.existsSync(playerDatapath)) {
     fs.writeFileSync(playerDatapath, JSON.stringify({}, null, 4));
 }
+const saveScore = (userID, penalty) => {
+    userID = userID.toString();
+    const playerdata = JSON.parse(fs.readFileSync(playerDatapath, 'utf8'));
+    if (!playerdata.hasOwnProperty(userID))
+        playerdata[userID] = [0, penalty];
+    else if (!playerdata[userID].length > 0)
+        playerdata[userID].push(0, penalty);
+    else
+        playerdata[userID].push(playerdata[userID][playerdata[userID].length - 1] + penalty);
+    fs.writeFileSync(playerDatapath, JSON.stringify(playerdata, null, 4));
+}
 
-const playerdata = JSON.parse(fs.readFileSync(playerDatapath, 'utf8'));
-const savegamedata = () => {
-    // let sortedArray = Object.entries(playerdata).sort((a, b) => b[1] - a[1]);
-    // let sortedData = {};
-    // for (let i = 0; i < sortedArray.length; i++) {
-    //     sortedData[sortedArray[i][0]] = sortedArray[i][1];
-    // }
-    fs.writeFileSync(playerDatapath, JSON.stringify(playerdata, null, 2));
-};
+const readScore = (userID) => {
+    userID = userID.toString();
+    const playerdata = JSON.parse(fs.readFileSync(playerDatapath, 'utf8'));
+    return (playerdata.hasOwnProperty(userID)) && playerdata[userID].length > 0 ? playerdata[userID] : "Unknown";
+}
+
+const resetScore = (userID) => {
+    userID = userID.toString();
+    const playerdata = JSON.parse(fs.readFileSync(playerDatapath, 'utf8'));
+    delete playerdata[userID];
+    fs.writeFileSync(playerDatapath, JSON.stringify(playerdata, null, 4));
+}
+
+const allDataDelete = () => {
+    const playerdata = JSON.parse(fs.readFileSync(playerDatapath, 'utf8'));
+    Object.keys(playerdata).forEach(key => delete playerdata[key]);
+    fs.writeFileSync(playerDatapath, JSON.stringify(playerdata, null, 4));
+}
 
 const decoder = (str) => {
     return atob(str);
@@ -50,27 +70,10 @@ const keyCompiler = (key, mode) => {
     if (key === '🇩') return "D"
 }
 
-const saveResult = (id, penalty) => {
-    if (!playerdata.hasOwnProperty(id))
-        playerdata[id] = [penalty];
-    else if (!playerdata[id].length > 0)
-        playerdata[id].push(penalty);
-    else
-        playerdata[id].push(playerdata[id][playerdata[id].length - 1] + penalty);
-}
-
-const getUserdata = (userID) => {
-    return (playerdata.hasOwnProperty(userID)) && playerdata[userID].length > 0 ? playerdata[userID][playerdata[userID].length - 1] : "Unknown";
-}
-
-const isNum = (n) => {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
+module.exports.saveScore = saveScore;
+module.exports.readScore = readScore;
+module.exports.resetScore = resetScore;
+module.exports.allDataDelete = allDataDelete;
 module.exports.decoder = decoder;
 module.exports.shuffle = shuffle;
 module.exports.keyCompiler = keyCompiler;
-module.exports.saveResult = saveResult;
-module.exports.savegamedata = savegamedata;
-module.exports.getUserdata = getUserdata;
-module.exports.isNum = isNum;
