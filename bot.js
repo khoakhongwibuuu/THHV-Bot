@@ -40,7 +40,8 @@ if (!fs.existsSync(__dirname + '/configs/server.json')) {
     fs.writeFileSync(__dirname + '/configs/server.json', JSON.stringify({
         notify_role: "",
         log_channel: "",
-        suggest_channel: ""
+        suggest_channel: "",
+        multiple_choice_grandmaster: ""
     }, null, 4));
 }
 

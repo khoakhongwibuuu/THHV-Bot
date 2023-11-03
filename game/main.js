@@ -7,15 +7,16 @@ const Utils = global.Utils;
 const Base_Lang = global.Base_Lang;
 const dirname = global.dirname;
 
-const allowedList = [9,
-    17,
-    18,
-    19,
-    22,
-    23,
-    24,
-    26,
-    27
+const allowedList = [
+    9, 9,       // General Knowledge
+    17, 17, 17, // Nature Science
+    18, 18, 18, // Computer Science
+    19, 19, 19, // Math
+    22,         // Geography
+    23,         // History
+    27,         // Animals
+    30, 30,     // Gadgets
+    31, 31      // Anime
 ]
 
 const NotifyInvalid = (msg) => {

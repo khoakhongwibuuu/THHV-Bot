@@ -23,7 +23,7 @@ const execute = (msg, para) => {
             msg.channel.send({
                 embed: {
                     color: parseInt(Base_Lang.status.warning, 16),
-                    description: (Utils.isNum(userID)) ? `${(userID === msg.author.id) ? "Your " : `<@${userID}>`} data is not found in the database.` : "Please use User ID or Mentions instead."
+                    description: (Utils.isNum(userID)) ? `${(userID === msg.author.id) ? "Your" : `<@${userID}>'s`} data is not found in the database.` : "Please use User ID or Mentions instead."
                 }
             });
         }

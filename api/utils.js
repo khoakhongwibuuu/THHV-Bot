@@ -4,6 +4,7 @@ const Config = global.Config;
 const Lang = global.Lang;
 const Base_Lang = global.Base_Lang;
 const dirname = global.dirname;
+const server = global.server;
 
 const istream = (str) => {
 	return str.replace(/\s+/g, ' ').trim().split(' ');
@@ -65,15 +66,14 @@ const clockBasedRandom = (l, h) => {
 }
 
 const deliverMsg = (MsgContent, status, channelID) => {
-	client.guilds.array().forEach(guild => {
-		let channel = guild.channels.get(channelID);
-		if (!channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
-		channel.send({
-			embed: {
-				description: MsgContent,
-				color: parseInt(Base_Lang.status[status], 16)
-			}
-		});
+	const guild = client.guilds.get(server.host);
+	let channel = guild.channels.get(channelID);
+	if (!channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
+	channel.send({
+		embed: {
+			description: MsgContent,
+			color: parseInt(Base_Lang.status[status], 16)
+		}
 	});
 }
 
@@ -103,7 +103,7 @@ const log = (content, filename) => {
 }
 
 const isNum = (n) => {
-    return !isNaN(parseFloat(n)) && isFinite(n);
+	return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 module.exports.istream = istream;
