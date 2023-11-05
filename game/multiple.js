@@ -15,7 +15,7 @@ const execute = (msg, Datablock, index) => {
 
     // Variables
     const validkey = ['🇦', '🇧', '🇨', '🇩'];
-    const ETA = gamesetting.ETA;
+    const ETA = gamesetting.ETA + gamesetting.mode[GameLib.decoder(Datablock.results[index].difficulty)];
 
     // Random ID
     const sessionID = Utils.clockBasedRandom(0, 4095) + 1;

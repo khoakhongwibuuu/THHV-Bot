@@ -1,5 +1,10 @@
 {
-    "ETA" : 10,
-    "up" : 2,
-    "down" : -3
+    "ETA": 10,
+    "up": 2,
+    "down": -3,
+    "mode": {
+        "easy": 0,
+        "medium": 5,
+        "hard": 10
+    }
 }

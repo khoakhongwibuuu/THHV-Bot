@@ -122,7 +122,6 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
-    // console.log(msg.content);
     if (!msg.author.bot) {
         if (msg.mentions.has(client.user)) {
             require(__dirname + "/public/help.js").execute(msg, "");

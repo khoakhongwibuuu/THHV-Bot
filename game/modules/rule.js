@@ -18,7 +18,7 @@ const execute = (msg, para) => {
             + `> Players will take turns using \`${Config.prefix}play\` command to receive a random question.\n`
             + `\n`
             + `> There will be \`2\` types of questions: \`Multiple choice\` and \`True or False\`\n`
-            + `> The time limit for responding to a question is \`${gamesetting.ETA}\` seconds.\n`
+            + `> The time limit may vary according to the question's level of difficulty. You always have ${gamesetting.ETA} seconds or more to respond.\n`
             + `\n`
             + `> Only \`ONE\` response per player is permitted.\n`
             + `> Think carefully before responding because a correct response will bring \`${Math.abs(gamesetting.up)}\` points, but an incorrect response will result in a loss of \`${Math.abs(gamesetting.down)}\` points.\n`
