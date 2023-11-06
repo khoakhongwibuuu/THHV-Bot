@@ -4,7 +4,7 @@ services:
     build: .
     volumes:
       - ./logs:/usr/src/bot/logs
-      - ./config:/usr/src/bot/config
+      - ./configs:/usr/src/bot/configs
     deploy:
       restart_policy:
         condition: on-failure
