@@ -10,7 +10,7 @@ const dirname = global.dirname;
 const playerDatapath = dirname + '/configs/playerdata.json';
 
 if (!fs.existsSync(playerDatapath)) {
-    fs.writeFileSync(playerDatapath, JSON.stringify({}, null, 4));
+    fs.writeFileSync(playerDatapath, JSON.stringify({}));
 }
 const saveScore = (userID, penalty) => {
     userID = userID.toString();
@@ -21,7 +21,7 @@ const saveScore = (userID, penalty) => {
         playerdata[userID].push(0, penalty);
     else
         playerdata[userID].push(playerdata[userID][playerdata[userID].length - 1] + penalty);
-    fs.writeFileSync(playerDatapath, JSON.stringify(playerdata, null, 4));
+    fs.writeFileSync(playerDatapath, JSON.stringify(playerdata));
 }
 
 const readScore = (userID) => {
@@ -30,17 +30,21 @@ const readScore = (userID) => {
     return (playerdata.hasOwnProperty(userID)) && playerdata[userID].length > 0 ? playerdata[userID] : "Unknown";
 }
 
+const rawdata = () => {
+    return fs.readFileSync(playerDatapath, 'utf8');
+}
+
 const resetScore = (userID) => {
     userID = userID.toString();
     const playerdata = JSON.parse(fs.readFileSync(playerDatapath, 'utf8'));
     delete playerdata[userID];
-    fs.writeFileSync(playerDatapath, JSON.stringify(playerdata, null, 4));
+    fs.writeFileSync(playerDatapath, JSON.stringify(playerdata));
 }
 
 const allDataDelete = () => {
     const playerdata = JSON.parse(fs.readFileSync(playerDatapath, 'utf8'));
     Object.keys(playerdata).forEach(key => delete playerdata[key]);
-    fs.writeFileSync(playerDatapath, JSON.stringify(playerdata, null, 4));
+    fs.writeFileSync(playerDatapath, JSON.stringify(playerdata));
 }
 
 const decoder = (str) => {
@@ -72,6 +76,7 @@ const keyCompiler = (key, mode) => {
 
 module.exports.saveScore = saveScore;
 module.exports.readScore = readScore;
+module.exports.rawdata = rawdata;
 module.exports.resetScore = resetScore;
 module.exports.allDataDelete = allDataDelete;
 module.exports.decoder = decoder;

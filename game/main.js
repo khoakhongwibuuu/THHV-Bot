@@ -57,8 +57,7 @@ const execute = (msg, para, cmd) => {
         if (cmd === "play") {
             if (para.length === 0) main_module(msg);
             else NotifyInvalid(msg);
-        }
-        else {
+        } else {
             let modulePath = __dirname + `/modules/${cmd}.js`
             require(modulePath).execute(msg, para);
         }

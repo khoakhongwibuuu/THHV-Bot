@@ -85,7 +85,8 @@
     "api": {
         "codeforces": {
             "on": "Codeforces API works again.",
-            "off": "Codeforces API isn't accessible."
+            "off": "Codeforces API isn't accessible.",
+            "busy" : "Codeforces server is busy."
         },
         "notification": {
             "on": "The notification feature has been automatically turned on.",

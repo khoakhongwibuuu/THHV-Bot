@@ -79,13 +79,14 @@
     "error": {
         "unknown": "Lệnh không xác định!",
         "parameter": "Tham số không hợp lệ! Không thể xử lý!",
-        "locked" : "Tính năng tạm thời bị khóa!",
-        "indev" : "Tính năng đang được phát triển."
+        "locked": "Tính năng tạm thời bị khóa!",
+        "indev": "Tính năng đang được phát triển."
     },
     "api": {
         "codeforces": {
             "on": "Codeforces API đã hoạt động lại.",
-            "off": "Không thể kết nối với Codeforces API."
+            "off": "Không thể kết nối với Codeforces API.",
+            "busy": "Máy chủ Codeforces đang bận."
         },
         "notification": {
             "on": "Tính năng thông báo kì thi đã được bật.",

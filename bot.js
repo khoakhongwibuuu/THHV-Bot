@@ -33,7 +33,7 @@ if (!fs.existsSync(__dirname + '/configs/persist.json')) {
     fs.writeFileSync(__dirname + '/configs/persist.json', JSON.stringify({
         ready: {},
         channel: {}
-    }, null, 4));
+    }));
 }
 
 if (!fs.existsSync(__dirname + '/configs/server.json')) {
@@ -53,11 +53,11 @@ if (!fs.existsSync(__dirname + '/configs/auth.json')) {
 
 if (!fs.existsSync(__dirname + '/configs/playerdata.json')) {
     fs.writeFileSync(__dirname + '/configs/playerdata.json', JSON.stringify({
-    }, null, 4));
+    }));
 }
 
 // Updating old config files
-require(__dirname + '/api/editor').update();
+require(__dirname + '/api/editor.js').update();
 
 // Load security token
 const { token } = JSON.parse(fs.readFileSync(__dirname + '/configs/auth.json', 'utf8'));
@@ -73,7 +73,7 @@ global.server = server;
 const Persist = JSON.parse(fs.readFileSync(__dirname + '/configs/persist.json', 'utf8'));
 global.Persist = Persist;
 
-const savePersist = () => { fs.writeFileSync(__dirname + '/configs/persist.json', JSON.stringify(Persist, null, 4)); }
+const savePersist = () => { fs.writeFileSync(__dirname + '/configs/persist.json', JSON.stringify(Persist)); }
 global.savePersist = savePersist;
 
 // Load Basic language
@@ -98,20 +98,11 @@ global.PublicCommands = PublicCommands;
 const PrivateCommands = ["shutdown", "api", "reload", "pwd", "setcfg"];
 global.PrivateCommands = PrivateCommands;
 
-const GameCommands = ["play", "score", "graph", "rule", "reset"];
+const GameCommands = ["play", "score", "graph", "rule", "reset", "export"];
 global.GameCommands = GameCommands;
 
-const AutomationCommands = [
-    "suggest", "vote",
-    "<:AC:700345520081600512> / <:WA:700345520039657613>",
-    "<:AC:700345520081600512>/ <:WA:700345520039657613>",
-    "<:AC:700345520081600512> /<:WA:700345520039657613>",
-    "<:AC:700345520081600512>/<:WA:700345520039657613>",
-    "<:AC:700345520081600512> <:WA:700345520039657613>",
-    "<:AC:700345520081600512><:WA:700345520039657613>"
-];
-
-global.AutomationCommands = AutomationCommands;
+const Automation = JSON.parse(fs.readFileSync(__dirname + '/configs/auto.json', 'utf8'));
+global.Automation = Automation;
 
 client.on('ready', () => {
     BotStartTime = new Date();
@@ -126,8 +117,8 @@ client.on('message', msg => {
         if (msg.mentions.has(client.user)) {
             require(__dirname + "/public/help.js").execute(msg, "");
         }
-        else if (msg.channel.id == server.suggest_channel) {
-            if (Utils.prefixChecker(AutomationCommands, msg.content)) {
+        else if (msg.channel.id === server.suggest_channel) {
+            if (Utils.prefixChecker(Automation.commands, msg.content)) {
                 require(__dirname + '/auto/react.js').execute(msg);
             }
         } else {

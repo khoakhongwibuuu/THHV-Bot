@@ -40,7 +40,7 @@ const notify = (res, id, name, url, startTime, type) => {
 				}
 			}
 		})
-		.then(sendMsg => sendMsg.react('700345520081600512'));
+			.then(sendMsg => sendMsg.react('700345520081600512'));
 		Persist[res][guild.id][type].push(id);
 		savePersist();
 	});
@@ -58,51 +58,35 @@ const doNotify = (res) => {
 	});
 }
 let errorTolerance = 5;
-let HasDisconnected = false;
 
 const clock = () => {
-	console.log(`\n${Utils.timestampToDate(new Date().getTime(), 'short', 0)}`);
-	console.log(`${HasDisconnected ? "Rec" : "C"}onnecting to codeforces.com`);
 	nf('http://codeforces.com/api/contest.list')
 		.then(data => data.json())
 		.then(res => {
 			if (res.status === 'OK') {
-				console.log("Connected successfully! This connection will expire after 1 minute.");
 				list = res.result.filter(obj => obj.phase === 'BEFORE');
-				if (errorTolerance <= 0) {
-					// console.log("API works again");
+				if (errorTolerance <= 0)
 					if (server.log_channel !== "")
 						Utils.deliverMsg(Lang.api.codeforces.on + " :white_check_mark: \n" + Lang.api.notification.on, "info", server.log_channel);
-				}
 				errorTolerance = 5;
 				doNotify('codeforces.com');
 			} else {
-				console.log(`Server is busy. Trying again in 1 minute. ${Math.max(errorTolerance, 0)} attempt${errorTolerance > 1 ? "s" : ""} remaining before alarming.`);
 				errorTolerance--;
-				if (errorTolerance === 0) {
-					// console.log("API not working");
+				if (errorTolerance === 0)
 					if (server.log_channel !== "")
-						Utils.deliverMsg(Lang.api.codeforces.off + " :x: \n" + Lang.api.notification.off, "warning", server.log_channel);
-				}
+						Utils.deliverMsg(Lang.api.codeforces.busy + " :x: \n" + Lang.api.notification.off, "warning", server.log_channel);
 			}
 		})
 		.catch(err => {
 			errorTolerance--;
-			console.log(`Cannot connect to codeforces.com. Trying again in 1 minute. ${Math.max(errorTolerance, 0)} attempt${errorTolerance > 1 ? "s" : ""} remaining before alarming.`);
-			if (errorTolerance === 0) {
-				// console.log("API not working");
+			if (errorTolerance === 0)
 				if (server.log_channel !== "")
 					Utils.deliverMsg(Lang.api.codeforces.off + " :x: \n" + Lang.api.notification.off, "warning", server.log_channel);
-			}
 		});
-	if (!HasDisconnected) HasDisconnected = true;
-	setTimeout(() => {
-		setTimeout(clock, 1000 * (60 - new Date().getSeconds()));
-	}, 10000);
+	setTimeout(clock, 1000 * (300 - new Date().getSeconds()));
 }
 
 const fetch = () => {
-	console.log(`\nPlease wait. The clock will start after ${60 - new Date().getSeconds()}s.`);
 	setTimeout(clock, 1000 * (60 - new Date().getSeconds()));
 }
 
