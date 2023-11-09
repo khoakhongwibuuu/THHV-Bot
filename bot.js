@@ -95,7 +95,7 @@ global.BotStartTime = BotStartTime;
 const PublicCommands = ["commands", "help", "setchannel", "ping", "github", "platform", "color", "time", "language"];
 global.PublicCommands = PublicCommands;
 
-const PrivateCommands = ["shutdown", "api", "reload", "pwd", "setcfg"];
+const PrivateCommands = ["shutdown", "api", "reload", "pwd", "setcfg", "cache", "debug"];
 global.PrivateCommands = PrivateCommands;
 
 const GameCommands = ["play", "score", "graph", "rule", "reset", "export"];

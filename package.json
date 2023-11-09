@@ -10,13 +10,13 @@
   "author": "khoa.khong.wibuuu",
   "license": "MIT",
   "dependencies": {
-    "ascii-table": "latest",
+    "archiver": "^6.0.1",
     "child_process": "^1.0.2",
     "cli-table": "^0.3.11",
     "crypto.js": "^3.1.1",
     "discord.js": "git+https://github.com/discordjs/discord.js.git#5268320",
     "file-saver": "^2.0.5",
     "node-fetch": "^2.6.1",
-    "tableify": "latest"
+    "path": "^0.12.7"
   }
 }
