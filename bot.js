@@ -88,9 +88,10 @@ global.Lang = Lang;
 const Utils = require(__dirname + '/api/utils.js');
 global.Utils = Utils;
 
-let BotStartTime = null;
-let BotStartTime_rendered = null;
+let BotStartTime = new Date();
+let BotStartTime_rendered = Utils.timestampToDate(BotStartTime, 'short', 0);
 global.BotStartTime = BotStartTime;
+global.BotStartTime_rendered = BotStartTime_rendered;
 
 const PublicCommands = ["commands", "help", "setchannel", "ping", "github", "platform", "color", "time", "language"];
 global.PublicCommands = PublicCommands;
@@ -105,8 +106,6 @@ const Automation = JSON.parse(fs.readFileSync(__dirname + '/configs/auto.json', 
 global.Automation = Automation;
 
 client.on('ready', () => {
-    BotStartTime = new Date();
-    BotStartTime_rendered = Utils.timestampToDate(BotStartTime, 'short', 0);
     console.log(`Bot starts at: ${Utils.timestampToDate(BotStartTime, 'full', 0)}`);
     console.log(`Logging as ${client.user.tag}`);
     require(__dirname + '/api/codeforces.js').fetch();

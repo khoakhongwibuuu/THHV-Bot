@@ -8,6 +8,7 @@ const Lang = global.Lang;
 const Utils = global.Utils;
 const Base_Lang = global.Base_Lang;
 const dirname = global.dirname;
+const BotStartTime_rendered = global.BotStartTime_rendered;
 
 const archiver = require('archiver');
 const path = require('path');
@@ -29,15 +30,17 @@ const execute = (msg, para) => {
         archive.on('error', (err) => {
             throw err;
         });
-
         archive.pipe(output);
-        archive.glob('*.log', { cwd: path.join(dirname, 'logs') });
+        if (para[0] === "all") {
+            archive.glob('*.log', { cwd: path.join(dirname, 'logs') });
+        } else {
+            archive.glob(`${BotStartTime_rendered}.log`, { cwd: path.join(dirname, 'logs') });
+        }
         archive.finalize();
-
         output.on('close', () => {
             msg.author.send({
-                files: [new Discord.MessageAttachment(dirname + `/temp/${archName}.debug.cache`, `${archName}`)]
-            });
+                files: [new Discord.MessageAttachment(dirname + `/temp/${archName}.debug.cache`, `${archName}-all`)]
+            }).then(sentmsg => setTimeout(() => sentmsg.delete(), 5000))
         });
     } else {
         msg.channel.send({
