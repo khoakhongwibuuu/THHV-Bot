@@ -47,7 +47,7 @@ const execute = (msg, para) => {
         msg.channel.send({
             embed: {
                 color: parseInt(Base_Lang.status.error, 16),
-                description: `: no_entry: ${Lang.denied.owner}`,
+                description: `:no_entry: ${Lang.denied.owner}`,
             }
         });
     }

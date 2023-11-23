@@ -31,7 +31,7 @@
             "err": "Tin nhắn trực tiếp không được hỗ trợ."
         },
         "ping": {
-            "desc": "Ping the bot.",
+            "desc": "Kiểm tra độ trễ khi kết nối đến các API.",
             "exec": "Pong!"
         },
         "github": {

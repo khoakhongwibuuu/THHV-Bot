@@ -42,6 +42,8 @@ const NotifySuccess = (msg) => {
 }
 
 const execute = (msg, para) => {
+    // Bugs found but I dont want to fix, so I disabled this module instead :D
+    return;
     if (msg.channel.type === 'text')
         if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
     if (Config.owner.includes(msg.author.id)) {

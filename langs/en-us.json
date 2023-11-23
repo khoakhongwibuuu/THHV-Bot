@@ -31,7 +31,7 @@
             "err": "DMs are not supported."
         },
         "ping": {
-            "desc": "Ping the bot.",
+            "desc": "Check latency when connecting to APIs.",
             "exec": "Pong!"
         },
         "github": {

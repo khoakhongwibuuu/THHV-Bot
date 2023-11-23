@@ -19,15 +19,6 @@ const allowedList = [
     31, 31      // Anime
 ]
 
-const NotifyInvalid = (msg) => {
-    msg.author.send({
-        embed: {
-            color: parseInt(Base_Lang.status.warning, 16),
-            description: `:warning: ${Lang.error.parameter}`
-        }
-    });
-}
-
 const main_module = (msg) => {
     fetch(`https://opentdb.com/api.php?amount=1&encode=base64&category=${allowedList[Math.floor(allowedList.length * Math.random())]}`)
         .then(response => response.json())
@@ -68,7 +59,12 @@ const execute = (msg, para, cmd) => {
                     }
                 });
             }
-            else NotifyInvalid(msg);
+            else msg.channel.send({
+                embed: {
+                    color: parseInt(Base_Lang.status.warning, 16),
+                    description: `:warning: ${Lang.error.parameter}`
+                }
+            });
         } else {
             let modulePath = __dirname + `/modules/${cmd}.js`
             require(modulePath).execute(msg, para);
