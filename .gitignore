@@ -6,6 +6,7 @@
 **/configs/auth.json
 **/configs/playerdata.json
 **/configs/persist.json
+**/configs/gamestatus.json
 **/temp/*
 !**configs/empty.json
 node_modules/*

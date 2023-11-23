@@ -8,6 +8,7 @@ const Base_Lang = global.Base_Lang;
 const dirname = global.dirname;
 
 const playerDatapath = dirname + '/configs/playerdata.json';
+const statusPath = dirname + '/configs/gamestatus.json';
 
 if (!fs.existsSync(playerDatapath)) {
     fs.writeFileSync(playerDatapath, JSON.stringify({}));
@@ -74,6 +75,26 @@ const keyCompiler = (key, mode) => {
     if (key === '🇩') return "D"
 }
 
+const unlock = () => {
+    const status = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+    if (status.running === 1) {
+        status.running = 0;
+        fs.writeFileSync(statusPath, JSON.stringify(status));
+    }
+}
+
+const lock = () => {
+    const status = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+    if (status.running === 0) {
+        status.running = 1;
+        fs.writeFileSync(statusPath, JSON.stringify(status));
+    }
+}
+
+const loadstatus = () => {
+    return JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+}
+
 module.exports.saveScore = saveScore;
 module.exports.readScore = readScore;
 module.exports.rawdata = rawdata;
@@ -82,3 +103,6 @@ module.exports.allDataDelete = allDataDelete;
 module.exports.decoder = decoder;
 module.exports.shuffle = shuffle;
 module.exports.keyCompiler = keyCompiler;
+module.exports.unlock = unlock;
+module.exports.lock = lock;
+module.exports.loadstatus = loadstatus;

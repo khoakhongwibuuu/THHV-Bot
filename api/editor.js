@@ -23,11 +23,20 @@ const Server_editor = (key, value, overwrite) => {
     }
 }
 
-
 const update = () => {
     // first release, no config updates
+}
+
+const statusReset = () => {
+    const statusPath = dirname + '/configs/gamestatus.json';
+    const status = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+    if (status.running === 1) {
+        status.running = 0;
+        fs.writeFileSync(statusPath, JSON.stringify(status));
+    }
 }
 
 module.exports.Config_editor = Config_editor;
 module.exports.Server_editor = Server_editor;
 module.exports.update = update;
+module.exports.statusReset = statusReset;

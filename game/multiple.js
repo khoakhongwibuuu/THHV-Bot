@@ -47,7 +47,7 @@ const execute = (msg, Datablock, index) => {
         {
             embed: {
                 color: parseInt(Base_Lang.status.info, 16),
-                title: `Session ${sessionID}: ${GameLib.decoder(Datablock.results[index].question)}`,
+                title: `${GameLib.decoder(Datablock.results[index].question)}`,
                 description: Content(),
                 footer: {
                     iconURL: msg.author.displayAvatarURL(),

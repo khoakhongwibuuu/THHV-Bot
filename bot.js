@@ -56,8 +56,15 @@ if (!fs.existsSync(__dirname + '/configs/playerdata.json')) {
     }));
 }
 
+if (!fs.existsSync(__dirname + '/configs/gamestatus.json')) {
+    fs.writeFileSync(__dirname + '/configs/gamestatus.json', JSON.stringify({
+        running: 0
+    }));
+}
+
 // Updating old config files
 require(__dirname + '/api/editor.js').update();
+require(__dirname + '/api/editor.js').statusReset();
 
 // Load security token
 const { token } = JSON.parse(fs.readFileSync(__dirname + '/configs/auth.json', 'utf8'));

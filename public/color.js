@@ -5,24 +5,35 @@ const Lang = global.Lang;
 const Utils = global.Utils;
 const Base_Lang = global.Base_Lang;
 
-const genRanHex = (num) => {
-    let res = "";
-    let val = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
-    for (let i = 0; i < num; i++)
-        res += val[Utils.clockBasedRandom(0, val.length - 1)];
-    return res;
+const hexToRgb = (hex) => {
+    let obj = {}
+    obj.r = +("0x" + hex[1] + hex[2]);
+    obj.g = +("0x" + hex[3] + hex[4]);
+    obj.b = +("0x" + hex[5] + hex[6]);
+    let str = JSON.stringify(obj)
+    return str.slice(1, str.length - 1)
 }
 
 const execute = (msg, para) => {
     if (msg.channel.type === 'text')
         if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
     for (let i = 0; i < 1; i++) {
-        let hexString = genRanHex(6);
+        let hexString = ("000000" + Math.floor(Math.random() * 16777215).toString(16)).slice(-6);
         let intString = parseInt(hexString, 16);
         msg.channel.send({
             embed: {
                 color: intString,
-                description: hexString.toUpperCase(),
+                // description: hexString.toUpperCase(),
+                fields: [
+                    {
+                        name: `Hexadecimal`,
+                        value: `\`\`\`css\n#${hexString.toUpperCase()}\`\`\``
+                    },
+                    {
+                        name: `RGB`,
+                        value: `\`\`\`json\n${hexToRgb("#" + hexString.toUpperCase())}\`\`\``
+                    }
+                ]
             }
         });
     }

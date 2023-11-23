@@ -32,7 +32,7 @@ const handle = (msg, correctKey, member_response, sessionID) => {
     let draftC = (!correctUser.includes(`<@${msg.author.id}>`) && !incorrectUser.includes(`<@${msg.author.id}>`) ? `\n<@${msg.author.id}> did not answer the question. Minus \`${Math.abs(gamesetting.down)}\` points.` : "")
 
     // Notify when the time is up
-    msg.channel.send(`**Session ${sessionID}**: :alarm_clock:  Time's up!` + `\nCorrect answer is \`${correctKey}\`` + draftA + draftB + draftC);
+    msg.channel.send(`:alarm_clock:  Time's up!` + `\nCorrect answer is \`${correctKey}\`` + draftA + draftB + draftC);
 
     // fetching host
     const guild = client.guilds.get(server.host);
@@ -53,7 +53,7 @@ const handle = (msg, correctKey, member_response, sessionID) => {
     if (!correctUser.includes(`<@${msg.author.id}>`) && !incorrectUser.includes(`<@${msg.author.id}>`)) {
         GameLib.saveScore(Utils.objectToID(msg.author.id), gamesetting.down);
     }
-
+    GameLib.unlock();
     // adding role
     const role = guild.roles.get(server.multiple_choice_grandmaster);
     queuedUser.forEach(e => {

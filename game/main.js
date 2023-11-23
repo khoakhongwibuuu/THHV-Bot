@@ -52,10 +52,22 @@ const main_module = (msg) => {
 
 // driver module
 const execute = (msg, para, cmd) => {
+    const GameLib = require(__dirname + '/lib/standardLib.js');
     if (msg.channel.type === 'text') {
         if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
         if (cmd === "play") {
-            if (para.length === 0) main_module(msg);
+            if (para.length === 0) {
+                if (GameLib.loadstatus().running === 0) {
+                    GameLib.lock();
+                    main_module(msg);
+                }
+                else msg.channel.send({
+                    embed: {
+                        color: parseInt(Base_Lang.status.warning, 16),
+                        description: `Another session is running. Please wait!`,
+                    }
+                });
+            }
             else NotifyInvalid(msg);
         } else {
             let modulePath = __dirname + `/modules/${cmd}.js`
