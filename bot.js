@@ -93,7 +93,7 @@ let BotStartTime_rendered = Utils.timestampToDate(BotStartTime, 'short', 0);
 global.BotStartTime = BotStartTime;
 global.BotStartTime_rendered = BotStartTime_rendered;
 
-const PublicCommands = ["commands", "help", "setchannel", "ping", "github", "platform", "color", "time", "language"];
+const PublicCommands = ["commands", "help", "setchannel", "ping", "color", "time", "language"];
 global.PublicCommands = PublicCommands;
 
 const PrivateCommands = ["shutdown", "api", "reload", "pwd", "setcfg", "cache", "debug"];

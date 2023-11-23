@@ -15,7 +15,7 @@ const execute = (msg, para) => {
             msg.channel.send({
                 embed: {
                     color: parseInt(Base_Lang.status.warning, 16),
-                    description: `:warning: For security reasons, this command requires you to provide the user's ID.\nFor example: \n--reset ${msg.author.id} \nor \n--reset <@${msg.author.id}>`
+                    description: `:warning: A User ID is needed for this command in order to prevent users from accidentally reseting their data.`
                 }
             });
         } else if (para.length === 1) {

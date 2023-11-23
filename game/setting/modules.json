@@ -1,0 +1,9 @@
+{
+    "availability": {
+        "main": true,
+        "export": true,
+        "graph": true,
+        "reset": true,
+        "score": true
+    }
+}

@@ -22,11 +22,11 @@ const execute = (msg, para) => {
             + `\n`
             + `> Only \`ONE\` response per player is permitted.\n`
             + `> Think carefully before responding because a correct response will bring \`${Math.abs(gamesetting.up)}\` points, but an incorrect response will result in a loss of \`${Math.abs(gamesetting.down)}\` points.\n`
-            + `\n`
             + `> If the person requiring the question doesn't respond,  their score will be reduced by \`${Math.abs(gamesetting.down)}\` points.\n`
             + `\n`
             + `> Players can view their score by using \`${Config.prefix}score\` command.\n`
-            + `> They can also view another player score by using \`${Config.prefix}score <user_ID>\`.`,
+            + `> They can also view another player score by using \`${Config.prefix}score <user_ID>\`.\n`
+            + `> An exclusive role will be granted to users who reach \`50\` points.`
         )
     } else {
         // Invalid parameter to handle

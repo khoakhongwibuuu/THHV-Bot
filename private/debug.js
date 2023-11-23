@@ -18,7 +18,7 @@ const execute = (msg, para) => {
         if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
     if (Config.owner.includes(msg.author.id)) {
         const archName = new Date().getTime();
-        let output = fs.createWriteStream(path.join(dirname, 'temp', `${archName}.debug.cache`));
+        let output = fs.createWriteStream(path.join(dirname, 'temp', `${archName}.cache`));
         let archive = archiver('zip', {
             zlib: { level: 9 }
         });
@@ -30,8 +30,9 @@ const execute = (msg, para) => {
         archive.on('error', (err) => {
             throw err;
         });
+
         archive.pipe(output);
-        if (para[0] === "all") {
+        if (para[0] === "all" && para.length === 1) {
             archive.glob('*.log', { cwd: path.join(dirname, 'logs') });
         } else {
             archive.glob(`${BotStartTime_rendered}.log`, { cwd: path.join(dirname, 'logs') });
@@ -39,14 +40,14 @@ const execute = (msg, para) => {
         archive.finalize();
         output.on('close', () => {
             msg.author.send({
-                files: [new Discord.MessageAttachment(dirname + `/temp/${archName}.debug.cache`, `${archName}-all`)]
+                files: [new Discord.MessageAttachment(dirname + `/temp/${archName}.cache`, `${archName}${(para[0] === "all" ? "-all" : "")}`)]
             }).then(sentmsg => setTimeout(() => sentmsg.delete(), 5000))
         });
     } else {
         msg.channel.send({
             embed: {
                 color: parseInt(Base_Lang.status.error, 16),
-                description: `:no_entry:  ${Lang.denied.owner}`,
+                description: `: no_entry: ${Lang.denied.owner}`,
             }
         });
     }
