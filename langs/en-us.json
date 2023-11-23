@@ -34,16 +34,6 @@
             "desc": "Check latency when connecting to APIs.",
             "exec": "Pong!"
         },
-        "github": {
-            "desc": "Show this project's repository on GitHub.",
-            "exec": "This is a private repository. You must be invited to access this link."
-        },
-        "platform": {
-            "desc": "Show supported platforms.",
-            "exec": {
-                "title": "Currently supported contest platforms:"
-            }
-        },
         "color": {
             "desc": "Show a random color using Hex."
         },
@@ -59,16 +49,6 @@
         },
         "shutdown": {
             "exec": "The bot has stopped working!"
-        },
-        "reload": {
-            "exec": {
-                "all": "All configurations and display language have been reloaded.",
-                "config": "Bot configurations have been reloaded.",
-                "lang": "Bot display language has been reloaded."
-            }
-        },
-        "setcfg": {
-            "exec": "Changes saved."
         }
     },
     "denied": {

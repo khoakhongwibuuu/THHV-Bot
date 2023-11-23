@@ -34,16 +34,6 @@
             "desc": "Kiểm tra độ trễ khi kết nối đến các API.",
             "exec": "Pong!"
         },
-        "github": {
-            "desc": "Hiển thị mã nguồn của dự án này trên GitHub.",
-            "exec": "Đây là dự án không công khai. Bạn phải được mời để truy cập liên kết này."
-        },
-        "platform": {
-            "desc": "Hiển thị các nền tảng được hỗ trợ.",
-            "exec": {
-                "title": "Các nền tảng thi đấu hiện được hỗ trợ:"
-            }
-        },
         "color": {
             "desc": "Hiển thị màu ngẫu nhiên bằng mã Hex."
         },
@@ -59,16 +49,6 @@
         },
         "shutdown": {
             "exec": "Bot đã ngừng hoạt động!"
-        },
-        "reload": {
-            "exec": {
-                "all": "Các cài đặt và ngôn ngữ hiển thị đã được tải lại.",
-                "config": "Các cài đặt đã được tải lại.",
-                "lang": "Ngôn ngữ hiển thị đã được tải lại."
-            }
-        },
-        "setcfg": {
-            "exec": "Đã lưu các thay đổi."
         }
     },
     "denied": {
