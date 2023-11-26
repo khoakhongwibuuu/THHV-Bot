@@ -15,6 +15,7 @@ const hexToRgb = (hex) => {
 const execute = (msg, para) => {
     if (msg.channel.type === 'text')
         if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
+    msg.react('✅');
     for (let i = 0; i < 1; i++) {
         let hexString = ("000000" + Math.floor(Math.random() * 16777215).toString(16)).slice(-6);
         let intString = parseInt(hexString, 16);

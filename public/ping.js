@@ -15,15 +15,9 @@ const ping = (url, msg) => {
 }
 
 const execute = (msg, para) => {
-    const configAPIPath = dirname + '/api/configAPI.js';
-    const serverAPIPath = dirname + '/api/serverAPI.js';
-    const defaultLang = require(configAPIPath).loadDefaultLanguage();
-    const lang = require(configAPIPath).loadLanguage();
-    const config = require(configAPIPath).loadRawData();
-    const server = require(serverAPIPath).loadRawData();
-    
     if (msg.channel.type === 'text')
         if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
+    msg.react('✅');
     ping('codeforces.com', msg);
     ping('opentdb.com', msg);
     ping('discord.com', msg);

@@ -14,6 +14,7 @@ const execute = (msg, para) => {
     let server_time_zone = Utils.serverTimezone();
     let client_time_zone = config.timezone;
     let penalty = (client_time_zone - server_time_zone) * 60 * 60 * 1000; // difference between client timezone and server timezone
+    msg.react('✅');
     msg.channel.send({
         embed: {
             color: parseInt(defaultLang.status.info, 16),

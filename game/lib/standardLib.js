@@ -7,7 +7,7 @@ const Utils = global.Utils;
 const dirname = global.dirname;
 
 // File paths
-const playerDataPath = dirname + '/configs/playerdata.json';
+const playerDataPath = dirname + '/configs/playerData.json';
 const settingPath = dirname + '/configs/gameSetting.json';
 const modulesPath = dirname + '/configs/modules.json';
 

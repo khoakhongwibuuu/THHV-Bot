@@ -13,14 +13,14 @@ const execute = (msg, para) => {
     const config = require(configAPIPath).loadRawData();
 
     if (config.owner.includes(msg.author.id)) {
-
         if (para.length === 0) {
-            msg.react('⌛');
-            msg.channel.send({
+            msg.react('✅');
+            msg.author.send({
                 files: [new Discord.MessageAttachment(dirname + '/configs/playerdata.json', 'database')]
-            });
-        } else {
-            msg.react('⌛');
+            }).then(thisMessage => setTimeout(() => thisMessage.delete(), 10000));
+        }
+        else {
+            msg.react('⚠️');
             msg.channel.send({
                 embed: {
                     color: parseInt(defaultLang.status.warning, 16),
@@ -28,8 +28,9 @@ const execute = (msg, para) => {
                 }
             });
         }
-    } else {
-        msg.react('⚠️');
+    }
+    else {
+        msg.react('⛔');
         msg.channel.send({
             embed: {
                 color: parseInt(defaultLang.status.error, 16),

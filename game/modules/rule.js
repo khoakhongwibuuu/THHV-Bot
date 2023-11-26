@@ -12,7 +12,7 @@ const execute = (msg, para) => {
     const config = require(configAPIPath).loadRawData();
 
     if (para.length === 0) {
-        msg.react('⌛');
+        msg.react('✅');
         msg.channel.send(`**How to play ?**`
             + `\n`
             + `> Players will take turns using \`${config.prefix}play\` command to receive a random question.\n`
@@ -28,7 +28,8 @@ const execute = (msg, para) => {
             + `> They can also view another player score by using \`${config.prefix}score <user_ID>\`.\n`
             + `> An exclusive role will be granted to users who reach \`50\` points.`
         )
-    } else {
+    }
+    else {
         msg.react('⚠️');
         msg.channel.send({
             embed: {

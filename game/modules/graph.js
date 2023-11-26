@@ -15,18 +15,18 @@ const execute = (msg, para) => {
     const lang = require(configAPIPath).loadLanguage();
 
     if (para.length < 2) {
+        msg.react('⌛');
         const GameLib = require(dirname + '/game/lib/standardLib.js');
         const userID = (para.length === 0) ? msg.author.id : Utils.objectToID(para[0]);
         let loadedData = GameLib.readScore(userID);
         if (loadedData !== "Unknown") {
-            msg.react('⌛');
             const chartConfigString = encodeURIComponent(JSON.stringify({
                 type: 'line',
                 data: {
                     labels: loadedData.map((value, index) => index),
                     datasets: [{
                         label: `Score of ${client.users.get(userID).username}`,
-                        data: loadedData,
+                        data: loadedData.filter(e => typeof e === 'number'),
                         fill: false,
                         borderColor: 'rgb(255, 105, 105)',
                         tension: 0.1
@@ -43,7 +43,8 @@ const execute = (msg, para) => {
                 if (loadedData[i] > loadedData[i - 1]) {
                     length++;
                     correct++;
-                } else {
+                }
+                else {
                     maxLength = Math.max(length, maxLength);
                     length = 1;
                 }
@@ -76,7 +77,8 @@ const execute = (msg, para) => {
                     name: `${userID}.png`
                 }]
             });
-        } else {
+        }
+        else {
             msg.react('⚠️');
             msg.channel.send({
                 embed: {
@@ -85,7 +87,8 @@ const execute = (msg, para) => {
                 }
             });
         }
-    } else {
+    }
+    else {
         msg.react('⚠️');
         msg.channel.send({
             embed: {

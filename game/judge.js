@@ -24,11 +24,10 @@ const handle = (msg, correctKey, member_response) => {
     let queuedUser = [];
 
     for (let ID in member_response) {
-        if (member_response[ID] === correctKey) {
+        if (member_response[ID] === correctKey)
             correctUser.push(`<@${ID}>`);
-        } else {
+        else
             incorrectUser.push(`<@${ID}>`);
-        }
     }
 
     // CORRECT USERS and INCORRECT USERS as message content
@@ -59,19 +58,22 @@ const handle = (msg, correctKey, member_response) => {
         GameLib.saveScore(Utils.objectToID(msg.author.id), gameSetting.down);
     }
     GameLib.unlock();
+
     // adding role
-    const role = guild.roles.get(server.multiple_choice_grandmaster);
-    queuedUser.forEach(e => {
-        let userID = Utils.objectToID(e);
-        msg.channel.send({
-            embed: {
-                color: parseInt(defaultLang.status.info, 16),
-                description: `GG ${Utils.args_logging(queuedUser, false)}! You have received role <@&${server.multiple_choice_grandmaster}>`
-            }
+    if (server.multiple_choice_grandmaster != "") {
+        const role = guild.roles.get(server.multiple_choice_grandmaster);
+        queuedUser.forEach(e => {
+            let userID = Utils.objectToID(e);
+            msg.channel.send({
+                embed: {
+                    color: parseInt(defaultLang.status.info, 16),
+                    description: `GG ${Utils.args_logging(queuedUser, false)}! You have received role <@&${server.multiple_choice_grandmaster}>`
+                }
+            });
+            let member = guild.members.get(userID);
+            member.roles.add(role);
         });
-        let member = guild.members.get(userID);
-        member.roles.add(role);
-    });
+    }
 }
 
 module.exports.handle = handle;

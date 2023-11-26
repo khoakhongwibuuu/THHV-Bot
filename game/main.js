@@ -25,11 +25,10 @@ const main_module = (msg) => {
         .then(Datablock => {
             msg.react('⌛');
             let index = 0;
-            if (GameLib.decoder(Datablock.results[index].type.toString()) === "multiple") {
+            if (GameLib.decoder(Datablock.results[index].type.toString()) === "multiple")
                 require(__dirname + '/multiple.js').execute(msg, Datablock, index);
-            } else {
+            else
                 require(__dirname + '/boolean.js').execute(msg, Datablock, index);
-            }
         })
         .catch(error => {
             msg.react('⚠️');
@@ -68,17 +67,22 @@ const execute = (msg, para, cmd) => {
                     });
                 }
             }
-            else msg.channel.send({
-                embed: {
-                    color: parseInt(defaultLang.status.warning, 16),
-                    description: `:warning: ${lang.error.parameter}`
-                }
-            });
-        } else {
+            else {
+                msg.react('⚠️');
+                msg.channel.send({
+                    embed: {
+                        color: parseInt(defaultLang.status.warning, 16),
+                        description: `:warning: ${lang.error.parameter}`
+                    }
+                });
+            }
+        }
+        else {
             let modulePath = __dirname + `/modules/${cmd}.js`
             require(modulePath).execute(msg, para);
         }
-    } else {
+    }
+    else {
         msg.react('⚠️');
         msg.channel.send({
             embed: {

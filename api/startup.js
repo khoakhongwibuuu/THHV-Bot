@@ -44,10 +44,18 @@ if (!fs.existsSync(dirname + '/configs/persist.json')) {
 // server.json for server-based settings
 if (!fs.existsSync(dirname + '/configs/server.json')) {
     fs.writeFileSync(dirname + '/configs/server.json', JSON.stringify({
+        host: "",
         notify_role: "",
         log_channel: "",
         suggest_channel: "",
         multiple_choice_grandmaster: ""
+    }, null, 4));
+}
+
+// auto.json for automation
+if (!fs.existsSync(dirname + '/configs/auto.json')) {
+    fs.writeFileSync(dirname + '/configs/auto.json', JSON.stringify({
+        commands: []
     }, null, 4));
 }
 

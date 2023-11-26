@@ -17,16 +17,19 @@ const execute = (msg, para) => {
     if (msg.channel.type === 'text') {
         if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
         if (!msg.member.hasPermission('MANAGE_CHANNELS')) {
+            msg.react('⛔');
             msg.channel.send({
                 embed: {
                     color: parseInt(defaultLang.status.error, 16),
                     description: `:no_entry: ${lang.denied.moderator}`,
                 }
             });
-        } else {
+        }
+        else {
             Persist.channel[msg.guild.id] = msg.channel.id;
             Persist.ready[msg.guild.id] = true;
             savePersist();
+            msg.react('✅');
             msg.channel.send({
                 embed: {
                     color: parseInt(defaultLang.status.success, 16),
@@ -34,7 +37,9 @@ const execute = (msg, para) => {
                 }
             });
         }
-    } else {
+    }
+    else {
+        msg.react('⚠️');
         msg.channel.send({
             embed: {
                 color: parseInt(defaultLang.status.error, 16),

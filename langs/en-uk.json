@@ -1,7 +1,7 @@
 {
     "author": "khoa.khong.wibuu",
     "version": "0.1.0",
-    "language": "English (United States)",
+    "language": "English (United Kingdom)",
     "commands": {
         "commands": {
             "exec": "Suppored commands."
@@ -33,13 +33,13 @@
             "desc": "Check latency when connecting to APIs."
         },
         "color": {
-            "desc": "Show a random color using Hex and RGB."
+            "desc": "Show a random colour using Hex and RGB."
         },
         "time": {
-            "desc": "View server time and synchronized time.",
+            "desc": "View server time and synchronised time.",
             "exec": {
                 "server": "Server time",
-                "sync": "Synchronized time"
+                "sync": "Synchronised time"
             }
         },
         "language": {
@@ -49,13 +49,13 @@
             "exec": "The bot has stopped working!"
         },
         "trust": {
-            "exec": "has been authorized successfully.",
-            "already": "has already been authorized. No action was taken."
+            "exec": "has been authorised successfully.",
+            "already": "has already been authorised. No action was taken."
         },
         "untrust": {
-            "exec": "has been deauthorized successfully.",
-            "already": "has already been deauthorized. No action was taken.",
-            "self": "You cannot deauthorize yourself."
+            "exec": "has been deauthorised successfully.",
+            "already": "has already been deauthorised. No action was taken.",
+            "self": "You cannot deauthorise yourself."
         }
     },
     "denied": {

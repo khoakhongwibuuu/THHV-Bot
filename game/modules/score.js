@@ -13,14 +13,15 @@ const execute = (msg, para) => {
         const userID = (para.length === 0) ? msg.author.id : Utils.objectToID(para[0]);
         let loadedData = GameLib.readScore(userID);
         if (loadedData !== "Unknown") {
-            msg.react('⌛');
+            msg.react('✅');
             msg.channel.send({
                 embed: {
                     color: parseInt(defaultLang.status.info, 16),
                     description: `<@${userID}> : \`${loadedData[loadedData.length - 1]}\``
                 }
             });
-        } else {
+        }
+        else {
             msg.react('⚠️');
             msg.channel.send({
                 embed: {
@@ -29,7 +30,8 @@ const execute = (msg, para) => {
                 }
             });
         }
-    } else {
+    }
+    else {
         msg.react('⚠️');
         msg.channel.send({
             embed: {

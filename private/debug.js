@@ -27,26 +27,40 @@ const execute = (msg, para) => {
         });
 
         archive.on('warning', (err) => {
-            throw err;
+            msg.react('⚠️');
+            msg.channel.send({
+                embed: {
+                    color: parseInt(defaultLang.status.error, 16),
+                    description: `:warning: ${lang.error.other}`
+                }
+            });
         });
 
         archive.on('error', (err) => {
-            throw err;
+            msg.react('⚠️');
+            msg.channel.send({
+                embed: {
+                    color: parseInt(defaultLang.status.error, 16),
+                    description: `:warning: ${lang.error.other}`
+                }
+            });
         });
 
         archive.pipe(output);
-        if (para[0] === "all" && para.length === 1) {
+        if (para[0] === "all" && para.length === 1)
             archive.glob('*.log', { cwd: path.join(dirname, 'logs') });
-        } else {
+        else
             archive.glob(`${plainBotStartTime}.log`, { cwd: path.join(dirname, 'logs') });
-        }
         archive.finalize();
         output.on('close', () => {
+            msg.react('✅');
             msg.author.send({
                 files: [new Discord.MessageAttachment(dirname + `/temp/${archName}.cache`, `${archName}${(para[0] === "all" ? "-all" : "")}`)]
             }).then(sentmsg => setTimeout(() => sentmsg.delete(), 5000))
         });
-    } else {
+    }
+    else {
+        msg.react('⛔');
         msg.channel.send({
             embed: {
                 color: parseInt(defaultLang.status.error, 16),

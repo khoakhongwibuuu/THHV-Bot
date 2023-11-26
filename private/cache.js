@@ -14,7 +14,8 @@ const removeTree = (directory) => {
             if (fs.lstatSync(currentPath).isDirectory()) {
                 removeTree(currentPath);
                 fs.rmdirSync(currentPath);
-            } else {
+            }
+            else {
                 fs.unlinkSync(currentPath);
             }
         });
@@ -30,7 +31,7 @@ const execute = (msg, para) => {
     if (msg.channel.type === 'text')
         if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
     if (config.owner.includes(msg.author.id)) {
-        msg.author.send({
+        msg.channel.send({
             embed: {
                 color: parseInt(defaultLang.status.warning, 16),
                 description: `:warning: This action will clear all cached files. Do you want to continue?`
@@ -38,13 +39,13 @@ const execute = (msg, para) => {
         })
             .then(sentMessage => {
                 sentMessage.react('✅')
-                    .then(() => sentMessage.react('❌'));
-                const filter = (reaction, user) => ['✅', '❌'].includes(reaction.emoji.name);
+                    .then(() => sentMessage.react('🚫'));
+                const filter = (reaction, user) => ['✅', '🚫'].includes(reaction.emoji.name);
                 const collector = sentMessage.createReactionCollector(filter, { time: 5000 });
                 let voters = new Set();
                 voters.add(client.user.id);
                 collector.on('collect', (reaction, user) => {
-                    if (!voters.has(user.id) && ['✅', '❌'].includes(reaction._emoji.name)) {
+                    if (!voters.has(user.id) && ['✅', '🚫'].includes(reaction._emoji.name)) {
                         if (config.owner.includes(user.id)) {
                             voters.add(user.id);
                             if (reaction._emoji.name === '✅') {
@@ -54,14 +55,15 @@ const execute = (msg, para) => {
                                         color: parseInt(defaultLang.status.success, 16),
                                         description: `Task finished successfully.`
                                     }
-                                });
-                            } else {
+                                }).then(thisMessage => setTimeout(() => thisMessage.delete(), 10000));
+                            }
+                            else {
                                 msg.author.send({
                                     embed: {
                                         color: parseInt(defaultLang.status.info, 16),
                                         description: `The request was cancelled by the user.`
                                     }
-                                });
+                                }).then(thisMessage => setTimeout(() => thisMessage.delete(), 10000));
                             }
                         }
                     }
@@ -73,15 +75,18 @@ const execute = (msg, para) => {
                                 color: parseInt(defaultLang.status.info, 16),
                                 description: `The request was cancelled automatically.`
                             }
-                        });
+                        }).then(thisMessage => setTimeout(() => thisMessage.delete(), 10000));
                     sentMessage.delete();
+                    msg.delete();
                 });
             });
-    } else {
+    }
+    else {
+        msg.react('⛔');
         msg.channel.send({
             embed: {
                 color: parseInt(defaultLang.status.error, 16),
-                description: `:no_entry:  ${lang.denied.owner}`,
+                description: `:no_entry: ${lang.denied.owner}`,
             }
         });
     }

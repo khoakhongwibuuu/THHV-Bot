@@ -12,6 +12,7 @@ const execute = (msg, para) => {
     if (msg.channel.type === 'text')
         if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
     if (config.owner.includes(msg.author.id)) {
+        msg.react('✅');
         msg.author.send({
             embed: {
                 color: parseInt(defaultLang.status.success, 16),
@@ -21,11 +22,13 @@ const execute = (msg, para) => {
         setTimeout(() => {
             process.exit(1);
         }, 1500);
-    } else {
+    }
+    else {
+        msg.react('⛔');
         msg.channel.send({
             embed: {
                 color: parseInt(defaultLang.status.error, 16),
-                description: `:no_entry:  ${lang.denied.owner}`,
+                description: `:no_entry: ${lang.denied.owner}`,
             }
         });
     }

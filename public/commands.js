@@ -18,7 +18,7 @@ const execute = (msg, para) => {
             v += ('* \`' + config.prefix + e + '\` ' + lang.commands[e].desc + '\n');
         }
     });
-
+    msg.react('✅');
     msg.channel.send({
         embed: {
             author: {

@@ -19,9 +19,9 @@ const execute = (msg, para) => {
                     description: `:warning: A User ID is needed for this command in order to prevent users from accidentally reseting their data.`
                 }
             });
-        } else if (para.length === 1) {
+        }
+        else if (para.length === 1) {
             if (para[0] === "all") {
-                msg.react('⌛');
                 msg.channel.send({
                     embed: {
                         color: parseInt(defaultLang.status.warning, 16),
@@ -30,46 +30,49 @@ const execute = (msg, para) => {
                 })
                     .then(sentMessage => {
                         sentMessage.react('✅')
-                            .then(() => sentMessage.react('❌'));
-                        const filter = (reaction, user) => ['✅', '❌'].includes(reaction.emoji.name);
+                            .then(() => sentMessage.react('🚫'));
+                        const filter = (reaction, user) => ['✅', '🚫'].includes(reaction.emoji.name);
                         const collector = sentMessage.createReactionCollector(filter, { time: 5000 });
                         let voters = new Set();
                         voters.add(client.user.id);
                         collector.on('collect', (reaction, user) => {
-                            if (!voters.has(user.id) && ['✅', '❌'].includes(reaction._emoji.name)) {
+                            if (!voters.has(user.id) && ['✅', '🚫'].includes(reaction._emoji.name)) {
                                 if (config.owner.includes(user.id)) {
                                     voters.add(user.id);
                                     if (reaction._emoji.name === '✅') {
                                         GameLib.allDataDelete();
-                                        msg.channel.send({
+                                        msg.author.send({
                                             embed: {
                                                 color: parseInt(defaultLang.status.success, 16),
                                                 description: `Task finished successfully.`
                                             }
-                                        });
-                                    } else {
-                                        msg.channel.send({
+                                        }).then(thisMessage => setTimeout(() => thisMessage.delete(), 10000));
+                                    }
+                                    else {
+                                        msg.author.send({
                                             embed: {
                                                 color: parseInt(defaultLang.status.info, 16),
                                                 description: `The request was cancelled by the user.`
                                             }
-                                        });
+                                        }).then(thisMessage => setTimeout(() => thisMessage.delete(), 10000));
                                     }
                                 }
                             }
                         });
                         collector.on('end', collected => {
                             if (voters.size === 1)
-                                msg.channel.send({
+                                msg.author.send({
                                     embed: {
                                         color: parseInt(defaultLang.status.info, 16),
                                         description: `The request was cancelled automatically.`
                                     }
-                                });
+                                }).then(thisMessage => setTimeout(() => thisMessage.delete(), 10000));
                             sentMessage.delete();
+                            msg.delete();
                         });
                     });
-            } else {
+            }
+            else {
                 let userID = Utils.objectToID(para[0]);
                 let loadedData = GameLib.readScore(userID);
                 if (loadedData !== "Unknown") {
@@ -79,8 +82,9 @@ const execute = (msg, para) => {
                             color: parseInt(defaultLang.status.info, 16),
                             description: `<@${userID}>'s data has been deleted.`
                         }
-                    });
-                } else {
+                    }).then(sentMessage => setTimeout(() => { sentMessage.delete(); msg.delete(); }, 5000));
+                }
+                else {
                     msg.react('⚠️');
                     msg.channel.send({
                         embed: {
@@ -90,7 +94,8 @@ const execute = (msg, para) => {
                     });
                 }
             }
-        } else {
+        }
+        else {
             msg.react('⚠️');
             msg.channel.send({
                 embed: {
@@ -99,8 +104,9 @@ const execute = (msg, para) => {
                 }
             });
         }
-    } else {
-        msg.react('⚠️');
+    }
+    else {
+        msg.react('⛔');
         msg.channel.send({
             embed: {
                 color: parseInt(defaultLang.status.error, 16),

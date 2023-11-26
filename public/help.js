@@ -12,6 +12,7 @@ const execute = (msg, para) => {
     if (msg.channel.type === 'text')
         if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
     let notifyHours = config.notify_hours;
+    msg.react('✅');
     msg.channel.send({
         embed: {
             author: {
