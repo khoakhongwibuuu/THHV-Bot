@@ -1,9 +1,7 @@
-// Basic
+// Basic variables
 const client = global.client;
-const Config = global.Config;
-const Lang = global.Lang;
 const Utils = global.Utils;
-const Base_Lang = global.Base_Lang;
+const dirname = global.dirname;
 
 const hexToRgb = (hex) => {
     let obj = {}
@@ -23,10 +21,9 @@ const execute = (msg, para) => {
         msg.channel.send({
             embed: {
                 color: intString,
-                // description: hexString.toUpperCase(),
                 fields: [
                     {
-                        name: `Hexadecimal`,
+                        name: `Hex`,
                         value: `\`\`\`css\n#${hexString.toUpperCase()}\`\`\``
                     },
                     {

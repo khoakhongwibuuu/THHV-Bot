@@ -2,157 +2,77 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-// Global client instance
 global.client = client;
-
-// Global __dirname
 global.dirname = __dirname;
 
-// Creating config directory
-if (!fs.existsSync(__dirname + '/configs')) {
-    fs.mkdirSync(__dirname + '/configs', { recursive: true });
-}
+// Create configuration files
+require('./api/startup.js');
 
-if (!fs.existsSync(__dirname + '/logs')) {
-    fs.mkdirSync(__dirname + '/logs', { recursive: true });
-}
-
-// Creating default configuration files
-if (!fs.existsSync(__dirname + '/configs/config.json')) {
-    fs.writeFileSync(__dirname + '/configs/config.json', JSON.stringify({
-        owner: [""],
-        log_usage: false,
-        notify_hours: [6, 24],
-        prefix: "--",
-        language: "en-us",
-        timezone: 0
-    }, null, 4));
-}
-
-if (!fs.existsSync(__dirname + '/configs/persist.json')) {
-    fs.writeFileSync(__dirname + '/configs/persist.json', JSON.stringify({
-        ready: {},
-        channel: {}
-    }));
-}
-
-if (!fs.existsSync(__dirname + '/configs/server.json')) {
-    fs.writeFileSync(__dirname + '/configs/server.json', JSON.stringify({
-        notify_role: "",
-        log_channel: "",
-        suggest_channel: "",
-        multiple_choice_grandmaster: ""
-    }, null, 4));
-}
-
-if (!fs.existsSync(__dirname + '/configs/auth.json')) {
-    fs.writeFileSync(__dirname + '/configs/auth.json', JSON.stringify({
-        token: "",
-    }, null, 4));
-}
-
-if (!fs.existsSync(__dirname + '/configs/playerdata.json')) {
-    fs.writeFileSync(__dirname + '/configs/playerdata.json', JSON.stringify({
-    }));
-}
-
-if (!fs.existsSync(__dirname + '/configs/gamestatus.json')) {
-    fs.writeFileSync(__dirname + '/configs/gamestatus.json', JSON.stringify({
-        running: 0
-    }));
-}
-
-// Updating old config files
-require(__dirname + '/api/editor.js').update();
-require(__dirname + '/api/editor.js').statusReset();
-
-// Load security token
-const { token } = JSON.parse(fs.readFileSync(__dirname + '/configs/auth.json', 'utf8'));
-global.token = token;
-
-// Load configuration
-let Config = JSON.parse(fs.readFileSync(__dirname + '/configs/config.json', 'utf8'));
-global.Config = Config;
-
-let server = JSON.parse(fs.readFileSync(__dirname + '/configs/server.json', 'utf8'));
-global.server = server;
-
-const Persist = JSON.parse(fs.readFileSync(__dirname + '/configs/persist.json', 'utf8'));
-global.Persist = Persist;
-
-const savePersist = () => { fs.writeFileSync(__dirname + '/configs/persist.json', JSON.stringify(Persist)); }
-global.savePersist = savePersist;
-
-// Load Basic language
-let Base_Lang = JSON.parse(fs.readFileSync(__dirname + `/langs/default.json`, 'utf8'));
-global.Base_Lang = Base_Lang;
-
-// Load chosen language
-let Lang = JSON.parse(fs.readFileSync(__dirname + `/langs/${Config.language}.json`, 'utf8'));
-global.Lang = Lang;
-
-// load api
-const Utils = require(__dirname + '/api/utils.js');
+// load main api
+const Utils = require('./api/utils.js');
 global.Utils = Utils;
 
 let BotStartTime = new Date();
-let BotStartTime_rendered = Utils.timestampToDate(BotStartTime, 'short', 0);
+let plainBotStartTime = Utils.timestampToDate(BotStartTime, 'short', 0);
 global.BotStartTime = BotStartTime;
-global.BotStartTime_rendered = BotStartTime_rendered;
+global.plainBotStartTime = plainBotStartTime;
 
 const PublicCommands = ["commands", "help", "setchannel", "ping", "color", "time", "language"];
 global.PublicCommands = PublicCommands;
 
-const PrivateCommands = ["shutdown", "reload", "debug"];
+const PrivateCommands = ["shutdown", "debug", "cache"];
 global.PrivateCommands = PrivateCommands;
 
 const GameCommands = ["play", "score", "graph", "rule", "reset", "export"];
 global.GameCommands = GameCommands;
 
-const Automation = JSON.parse(fs.readFileSync(__dirname + '/configs/auto.json', 'utf8'));
-global.Automation = Automation;
+// Load security token
+const { token } = JSON.parse(fs.readFileSync('./configs/auth.json', 'utf8'));
+const Automation = JSON.parse(fs.readFileSync('./configs/auto.json', 'utf8'));
 
 client.on('ready', () => {
     console.log(`Bot starts at: ${Utils.timestampToDate(BotStartTime, 'full', 0)}`);
     console.log(`Logging as ${client.user.tag}`);
-    require(__dirname + '/api/codeforces.js').fetch();
+    require('./game/lib/standardLib.js').unlock();
+    require('./api/codeforces.js').fetch();
 });
 
 client.on('message', msg => {
+    const config = require('./api/configAPI.js').loadRawData();
+    const server = require('./api/serverAPI.js').loadRawData();
     if (!msg.author.bot) {
         if (msg.mentions.has(client.user)) {
-            require(__dirname + "/public/help.js").execute(msg, "");
+            require('./public/help.js').execute(msg, "");
         }
         else if (msg.channel.id === server.suggest_channel) {
             if (Utils.prefixChecker(Automation.commands, msg.content)) {
-                require(__dirname + '/auto/react.js').execute(msg);
+                require('./auto/react.js').execute(msg);
             }
         } else {
-            if (!msg.content.startsWith(Config.prefix)) return;
-            let commandPart = msg.content.substring(Config.prefix.length);
+            if (!msg.content.startsWith(config.prefix)) return;
+            let commandPart = msg.content.substring(config.prefix.length);
             let parameter = Utils.istream(commandPart);
             let cmd = (commandPart.length !== 0 ? Utils.consume(parameter).toLowerCase() : '');
             if (PublicCommands.includes(cmd)) {
-                require(__dirname + `/public/${cmd}.js`).execute(msg, parameter);
+                require(`./public/${cmd}.js`).execute(msg, parameter);
                 msg.react('✅');
             }
             else if (GameCommands.includes(cmd)) {
-                msg.react('⌛');
-                require(__dirname + `/game/main.js`).execute(msg, parameter, cmd);
+                require('./game/main.js').execute(msg, parameter, cmd);
             }
             else if (PrivateCommands.includes(cmd)) {
-                require(__dirname + `/private/${cmd}.js`).execute(msg, parameter);
-                if (Config.owner.includes(msg.author.id) && msg.channel.type === 'text')
+                require(`./private/${cmd}.js`).execute(msg, parameter);
+                if (config.owner.includes(msg.author.id) && msg.channel.type === 'text')
                     msg.delete();
             } else {
                 msg.react('❌');
-                require(__dirname + '/api/return.js').execute(msg, parameter);
+                require('./api/return.js').execute(msg, parameter);
             }
-            if (Config.log_usage) {
+            if (config.log_usage) {
                 if (msg.channel.type == "text")
-                    Utils.log(`${Utils.timestampToDate(msg.createdTimestamp, 'short', 0)} ${msg.author.username} > ${msg.channel.guild.name} / ${msg.channel.name}: ${msg.content}`, BotStartTime_rendered);
+                    Utils.log(`${Utils.timestampToDate(msg.createdTimestamp, 'short', 0)} ${msg.author.username} > ${msg.channel.guild.name} / ${msg.channel.name}: ${msg.content}`, plainBotStartTime);
                 else if (msg.channel.type == "dm")
-                    Utils.log(`${Utils.timestampToDate(msg.createdTimestamp, 'short', 0)} ${msg.author.username} > DM : ${msg.content}`, BotStartTime_rendered);
+                    Utils.log(`${Utils.timestampToDate(msg.createdTimestamp, 'short', 0)} ${msg.author.username} > DM : ${msg.content}`, plainBotStartTime);
             }
         }
     }

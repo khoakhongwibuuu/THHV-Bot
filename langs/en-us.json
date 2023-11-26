@@ -7,7 +7,6 @@
             "exec": "Suppored commands."
         },
         "help": {
-            "help": "Show this message.",
             "title": " notifies you about upcoming algorithmic programming contests.",
             "desc": [
                 "After the notification channel is set, the bot will notify you",
@@ -31,11 +30,10 @@
             "err": "DMs are not supported."
         },
         "ping": {
-            "desc": "Check latency when connecting to APIs.",
-            "exec": "Pong!"
+            "desc": "Check latency when connecting to APIs."
         },
         "color": {
-            "desc": "Show a random color using Hex."
+            "desc": "Show a random color using Hex and RGB."
         },
         "time": {
             "desc": "View server time and synchronized time.",
@@ -60,13 +58,13 @@
         "unknown": "Unknown command!",
         "parameter": "Invalid parameter! Cannot handle!",
         "locked": "Temporarily locked feature!",
-        "indev": "Feature under development."
+        "DM": "DMs are not supported."
     },
     "api": {
         "codeforces": {
             "on": "Codeforces API works again.",
             "off": "Codeforces API isn't accessible.",
-            "busy" : "Codeforces server is busy."
+            "busy": "Codeforces server is busy."
         },
         "notification": {
             "on": "The notification feature has been automatically turned on.",

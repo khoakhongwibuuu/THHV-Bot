@@ -1,17 +1,22 @@
+// Special Library
 const fs = require('fs');
-// Basic
+
+// Basic variables
 const client = global.client;
-const Config = global.Config;
-const Lang = global.Lang;
 const Utils = global.Utils;
-const Base_Lang = global.Base_Lang;
-const server = global.server;
+const dirname = global.dirname;
 
-// Load game configuration
-const gamesetting = JSON.parse(fs.readFileSync(__dirname + '/setting/game.json', 'utf8'));
+const handle = (msg, correctKey, member_response) => {
+    const configAPIPath = dirname + '/api/configAPI.js';
+    const serverAPIPath = dirname + '/api/serverAPI.js';
+    const defaultLang = require(configAPIPath).loadDefaultLanguage();
+    const server = require(serverAPIPath).loadRawData();
 
-const handle = (msg, correctKey, member_response, sessionID) => {
+    // Load game library
     const GameLib = require(__dirname + '/lib/standardLib.js');
+
+    // Load game configuration
+    const gameSetting = GameLib.loadSetting();
 
     // List all CORRECT USERS and INCORRECT USERS
     let correctUser = [];
@@ -29,7 +34,7 @@ const handle = (msg, correctKey, member_response, sessionID) => {
     // CORRECT USERS and INCORRECT USERS as message content
     let draftA = ((correctUser.length > 0) ? `\nMember${correctUser.length > 1 ? "s" : ""} answered correctly :white_check_mark:: ${Utils.args_logging(correctUser, false)}` : "");
     let draftB = ((incorrectUser.length > 0) ? `\nMember${incorrectUser.length > 1 ? "s" : ""} answered incorrectly :x:: ${Utils.args_logging(incorrectUser, false)}` : "");
-    let draftC = (!correctUser.includes(`<@${msg.author.id}>`) && !incorrectUser.includes(`<@${msg.author.id}>`) ? `\n<@${msg.author.id}> did not answer the question. Minus \`${Math.abs(gamesetting.down)}\` points.` : "")
+    let draftC = (!correctUser.includes(`<@${msg.author.id}>`) && !incorrectUser.includes(`<@${msg.author.id}>`) ? `\n<@${msg.author.id}> did not answer the question. Minus \`${Math.abs(gameSetting.down)}\` points.` : "")
 
     // Notify when the time is up
     msg.channel.send(`:alarm_clock:  Time's up!` + `\nCorrect answer is \`${correctKey}\`` + draftA + draftB + draftC);
@@ -40,7 +45,7 @@ const handle = (msg, correctKey, member_response, sessionID) => {
     // Save player data
     correctUser.forEach(e => {
         let userID = Utils.objectToID(e);
-        GameLib.saveScore(userID, gamesetting.up);
+        GameLib.saveScore(userID, gameSetting.up);
         let loadedData = GameLib.readScore(userID);
         if (loadedData[loadedData.length - 1] >= 50) {
             const member = guild.members.get(userID);
@@ -49,9 +54,9 @@ const handle = (msg, correctKey, member_response, sessionID) => {
             }
         }
     });
-    incorrectUser.forEach(e => GameLib.saveScore(Utils.objectToID(e), gamesetting.down));
+    incorrectUser.forEach(e => GameLib.saveScore(Utils.objectToID(e), gameSetting.down));
     if (!correctUser.includes(`<@${msg.author.id}>`) && !incorrectUser.includes(`<@${msg.author.id}>`)) {
-        GameLib.saveScore(Utils.objectToID(msg.author.id), gamesetting.down);
+        GameLib.saveScore(Utils.objectToID(msg.author.id), gameSetting.down);
     }
     GameLib.unlock();
     // adding role
@@ -60,7 +65,7 @@ const handle = (msg, correctKey, member_response, sessionID) => {
         let userID = Utils.objectToID(e);
         msg.channel.send({
             embed: {
-                color: parseInt(Base_Lang.status.info, 16),
+                color: parseInt(defaultLang.status.info, 16),
                 description: `GG ${Utils.args_logging(queuedUser, false)}! You have received role <@&${server.multiple_choice_grandmaster}>`
             }
         });

@@ -1,22 +1,26 @@
-// Basic
-const client = global.client;
-const Config = global.Config;
-const Lang = global.Lang;
-const Utils = global.Utils;
-const Base_Lang = global.Base_Lang;
+// Special Library
+const fs = require('fs');
 
-// Special
-const Persist = global.Persist;
-const savePersist = global.savePersist
+// Basic variables
+const client = global.client;
+const Utils = global.Utils;
+const dirname = global.dirname;
 
 const execute = (msg, para) => {
+    const configAPIPath = dirname + '/api/configAPI.js';
+    const defaultLang = require(configAPIPath).loadDefaultLanguage();
+    const lang = require(configAPIPath).loadLanguage();
+
+    const Persist = JSON.parse(fs.readFileSync(dirname + '/configs/persist.json', 'utf8'));
+    const savePersist = () => { fs.writeFileSync(dirname + '/configs/persist.json', JSON.stringify(Persist)); }
+
     if (msg.channel.type === 'text') {
         if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
         if (!msg.member.hasPermission('MANAGE_CHANNELS')) {
             msg.channel.send({
                 embed: {
-                    color: parseInt(Base_Lang.status.error, 16),
-                    description: `:no_entry: ${Lang.denied.moderator}`,
+                    color: parseInt(defaultLang.status.error, 16),
+                    description: `:no_entry: ${lang.denied.moderator}`,
                 }
             });
         } else {
@@ -25,16 +29,16 @@ const execute = (msg, para) => {
             savePersist();
             msg.channel.send({
                 embed: {
-                    color: parseInt(Base_Lang.status.success, 16),
-                    description: `${Lang.commands.setchannel.exec}`,
+                    color: parseInt(defaultLang.status.success, 16),
+                    description: `${lang.commands.setchannel.exec}`,
                 }
             });
         }
     } else {
         msg.channel.send({
             embed: {
-                color: parseInt(Base_Lang.status.error, 16),
-                description: `${Lang.commands.setchannel.err}`,
+                color: parseInt(defaultLang.status.error, 16),
+                description: `${lang.error.DM}`,
             }
         });
     }

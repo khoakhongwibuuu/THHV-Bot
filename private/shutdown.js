@@ -1,18 +1,21 @@
-// Basic 
+// Basic variables
 const client = global.client;
-const Config = global.Config;
-const Lang = global.Lang;
 const Utils = global.Utils;
-const Base_Lang = global.Base_Lang;
+const dirname = global.dirname;
 
 const execute = (msg, para) => {
+    const configAPIPath = dirname + '/api/configAPI.js';
+    const defaultLang = require(configAPIPath).loadDefaultLanguage();
+    const lang = require(configAPIPath).loadLanguage();
+    const config = require(configAPIPath).loadRawData();
+
     if (msg.channel.type === 'text')
         if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
-    if (Config.owner.includes(msg.author.id)) {
+    if (config.owner.includes(msg.author.id)) {
         msg.author.send({
             embed: {
-                color: parseInt(Base_Lang.status.success, 16),
-                description: `${Lang.commands.shutdown.exec}`,
+                color: parseInt(defaultLang.status.success, 16),
+                description: `${lang.commands.shutdown.exec}`,
             }
         });
         setTimeout(() => {
@@ -21,8 +24,8 @@ const execute = (msg, para) => {
     } else {
         msg.channel.send({
             embed: {
-                color: parseInt(Base_Lang.status.error, 16),
-                description: `:no_entry:  ${Lang.denied.owner}`,
+                color: parseInt(defaultLang.status.error, 16),
+                description: `:no_entry:  ${lang.denied.owner}`,
             }
         });
     }

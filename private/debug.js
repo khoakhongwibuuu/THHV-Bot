@@ -1,22 +1,25 @@
+// Special Library
 const Discord = require('discord.js');
 const fs = require('fs');
-
-// Basic
-const client = global.client;
-const Config = global.Config;
-const Lang = global.Lang;
-const Utils = global.Utils;
-const Base_Lang = global.Base_Lang;
-const dirname = global.dirname;
-const BotStartTime_rendered = global.BotStartTime_rendered;
-
 const archiver = require('archiver');
 const path = require('path');
 
+// Basic variables
+const client = global.client;
+const Utils = global.Utils;
+const dirname = global.dirname;
+
 const execute = (msg, para) => {
+    const configAPIPath = dirname + '/api/configAPI.js';
+    const defaultLang = require(configAPIPath).loadDefaultLanguage();
+    const lang = require(configAPIPath).loadLanguage();
+    const config = require(configAPIPath).loadRawData();
+
+    const plainBotStartTime = global.plainBotStartTime;
+
     if (msg.channel.type === 'text')
         if (!msg.channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
-    if (Config.owner.includes(msg.author.id)) {
+    if (config.owner.includes(msg.author.id)) {
         const archName = new Date().getTime();
         let output = fs.createWriteStream(path.join(dirname, 'temp', `${archName}.cache`));
         let archive = archiver('zip', {
@@ -35,7 +38,7 @@ const execute = (msg, para) => {
         if (para[0] === "all" && para.length === 1) {
             archive.glob('*.log', { cwd: path.join(dirname, 'logs') });
         } else {
-            archive.glob(`${BotStartTime_rendered}.log`, { cwd: path.join(dirname, 'logs') });
+            archive.glob(`${plainBotStartTime}.log`, { cwd: path.join(dirname, 'logs') });
         }
         archive.finalize();
         output.on('close', () => {
@@ -46,8 +49,8 @@ const execute = (msg, para) => {
     } else {
         msg.channel.send({
             embed: {
-                color: parseInt(Base_Lang.status.error, 16),
-                description: `:no_entry: ${Lang.denied.owner}`,
+                color: parseInt(defaultLang.status.error, 16),
+                description: `:no_entry: ${lang.denied.owner}`,
             }
         });
     }

@@ -1,19 +1,25 @@
-const fs = require('fs');
+// Special library
 const Discord = require('discord.js');
-// Basic
+
+// Basic variables
 const client = global.client;
-const Config = global.Config;
-const Lang = global.Lang;
 const Utils = global.Utils;
-const Base_Lang = global.Base_Lang;
 const dirname = global.dirname;
 
+const lang = global.lang;
+const defaultLang = global.defaultLang;
+
 const execute = (msg, para) => {
+    const configAPIPath = dirname + '/api/configAPI.js';
+    const defaultLang = require(configAPIPath).loadDefaultLanguage();
+    const lang = require(configAPIPath).loadLanguage();
+
     if (para.length < 2) {
         const GameLib = require(dirname + '/game/lib/standardLib.js');
         const userID = (para.length === 0) ? msg.author.id : Utils.objectToID(para[0]);
         let loadedData = GameLib.readScore(userID);
         if (loadedData !== "Unknown") {
+            msg.react('⌛');
             const chartConfigString = encodeURIComponent(JSON.stringify({
                 type: 'line',
                 data: {
@@ -56,7 +62,7 @@ const execute = (msg, para) => {
             msg.channel.send({
                 embeds: [new Discord.MessageEmbed()
                     .setTitle(`Score of ${client.users.get(userID).username}`)
-                    .setColor(parseInt(Base_Lang.status.info, 16))
+                    .setColor(parseInt(defaultLang.status.info, 16))
                     .setDescription(`The following data belongs to <@${userID}>\n\n`
                         + `Current score: \`${analyticsResult.current}\`\n`
                         + `Attempts: \`${analyticsResult.attempt}\`\n`
@@ -71,18 +77,20 @@ const execute = (msg, para) => {
                 }]
             });
         } else {
+            msg.react('⚠️');
             msg.channel.send({
                 embed: {
-                    color: parseInt(Base_Lang.status.warning, 16),
-                    description: (Utils.isNum(userID)) ? `${(userID === msg.author.id) ? "Your" : `<@${userID}>'s`} data is not found in the database.` : "Please use User ID or Mentions instead."
+                    color: parseInt(defaultLang.status.warning, 16),
+                    description: (Utils.isNum(userID)) ? `:warning: ${(userID === msg.author.id) ? "Your" : `<@${userID}>'s`} data is not found in the database.` : "Please use User ID or Mentions instead."
                 }
             });
         }
     } else {
+        msg.react('⚠️');
         msg.channel.send({
             embed: {
-                color: parseInt(Base_Lang.status.warning, 16),
-                description: `:warning: ${Lang.error.parameter}`
+                color: parseInt(defaultLang.status.warning, 16),
+                description: `:warning: ${lang.error.parameter}`
             }
         });
     }

@@ -1,5 +1,6 @@
 {
-    "availability": {
+    "running": false,
+    "enabled": {
         "main": true,
         "export": true,
         "graph": true,

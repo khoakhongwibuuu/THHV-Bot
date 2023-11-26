@@ -1,28 +1,25 @@
-const fs = require('fs');
-// Basic
+// Basic variables
 const client = global.client;
-const Config = global.Config;
-const Lang = global.Lang;
 const Utils = global.Utils;
-const Base_Lang = global.Base_Lang;
-
-// Load game configuration
-const gamesetting = JSON.parse(fs.readFileSync(__dirname + '/setting/game.json', 'utf8'));
+const dirname = global.dirname;
 
 const execute = (msg, Datablock, index) => {
-    // Load game libraries
+    const configAPIPath = dirname + '/api/configAPI.js';
+    const defaultLang = require(configAPIPath).loadDefaultLanguage();
+
+    // Load game library
     const GameLib = require(__dirname + '/lib/standardLib.js');
 
-    // Variables
-    const validkey = ['🇦', '🇧', '🇨', '🇩'];
-    const ETA = gamesetting.ETA + gamesetting.mode[GameLib.decoder(Datablock.results[index].difficulty)];
+    // Load game configuration
+    const gameSetting = GameLib.loadSetting();
 
-    // Random ID
-    const sessionID = Utils.clockBasedRandom(0, 4095) + 1;
+    // Variables
+    const validKey = ['🇦', '🇧', '🇨', '🇩'];
+    const ETA = gameSetting.ETA + gameSetting.mode[GameLib.decoder(Datablock.results[index].difficulty)];
 
     // Generate Answer Key
     let correctKeyIdx = Utils.clockBasedRandom(0, 3);
-    const correctKey = validkey[correctKeyIdx];
+    const correctKey = validKey[correctKeyIdx];
 
     // Load incorrect answers
     let incorrectAnswer = Datablock.results[index].incorrect_answers;
@@ -32,13 +29,14 @@ const execute = (msg, Datablock, index) => {
     // Generate content
     let Content = () => {
         let ret = ""
-        validkey.forEach((OptionalKey, idx) => {
+        validKey.forEach((OptionalKey, idx) => {
             ret += (`${OptionalKey} `
                 + `${OptionalKey === correctKey ? GameLib.decoder(Datablock.results[index].correct_answer) : GameLib.decoder(incorrectAnswer[incorrectIdx++])}`
                 + `${idx == 3 ? "" : "\n"}`);
         });
         return ret;
     }
+
     // Deliver
     msg.channel.send(
         `:alarm_clock: You have \`${ETA}\` seconds for this question.`
@@ -46,7 +44,7 @@ const execute = (msg, Datablock, index) => {
         + `\nDifficulty: \`${GameLib.decoder(Datablock.results[index].difficulty)}\``,
         {
             embed: {
-                color: parseInt(Base_Lang.status.info, 16),
+                color: parseInt(defaultLang.status.info, 16),
                 title: `${GameLib.decoder(Datablock.results[index].question)}`,
                 description: Content(),
                 footer: {
@@ -59,19 +57,19 @@ const execute = (msg, Datablock, index) => {
                 .then(() => sentMessage.react('🇧'))
                 .then(() => sentMessage.react('🇨'))
                 .then(() => sentMessage.react('🇩'));
-            const filter = (reaction, user) => validkey.includes(reaction.emoji.name);
+            const filter = (reaction, user) => validKey.includes(reaction.emoji.name);
             let voters = new Set();
             voters.add(client.user.id);
-            let member_response = {};
+            let memberResposes = {};
             const collector = sentMessage.createReactionCollector(filter, { time: ETA * 1000 });
             collector.on('collect', (reaction, user) => {
-                if (!voters.has(user.id) && validkey.includes(reaction._emoji.name)) {
+                if (!voters.has(user.id) && validKey.includes(reaction._emoji.name)) {
                     voters.add(user.id);
-                    member_response[user.id] = GameLib.keyCompiler(reaction._emoji.name, "multiple");
+                    memberResposes[user.id] = GameLib.keyCompiler(reaction._emoji.name, "multiple");
                 }
             });
             collector.on('end', collected => {
-                require(__dirname + '/judge.js').handle(msg, ['A', 'B', 'C', 'D'][correctKeyIdx], member_response, sessionID);
+                require(__dirname + '/judge.js').handle(msg, ['A', 'B', 'C', 'D'][correctKeyIdx], memberResposes);
             });
         });
 }

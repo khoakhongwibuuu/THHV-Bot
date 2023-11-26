@@ -1,24 +1,21 @@
-const fs = require('fs');
-// Basic
+// Basic variables
 const client = global.client;
-const Config = global.Config;
-const Lang = global.Lang;
 const Utils = global.Utils;
-const Base_Lang = global.Base_Lang;
-
-// Load game configuration
-const gamesetting = JSON.parse(fs.readFileSync(__dirname + '/setting/game.json', 'utf8'));
+const dirname = global.dirname;
 
 const execute = (msg, Datablock, index) => {
-    // Load game libraries
+    const configAPIPath = dirname + '/api/configAPI.js';
+    const defaultLang = require(configAPIPath).loadDefaultLanguage();
+
+    // Load game library
     const GameLib = require(__dirname + '/lib/standardLib.js');
 
-    // Variables
-    const validkey = ['🇦', '🇧'];
-    const ETA = gamesetting.ETA + gamesetting.mode[GameLib.decoder(Datablock.results[index].difficulty)];
+    // Load game configuration
+    const gameSetting = GameLib.loadSetting();
 
-    // Random ID
-    const sessionID = Utils.clockBasedRandom(0, 4095) + 1;
+    // Variables
+    const validKey = ['🇦', '🇧'];
+    const ETA = gameSetting.ETA + gameSetting.mode[GameLib.decoder(Datablock.results[index].difficulty)];
 
     // Generate Answer Key
     const correctKey = GameLib.decoder(Datablock.results[index].correct_answer);
@@ -33,7 +30,7 @@ const execute = (msg, Datablock, index) => {
         + `\nDifficulty: \`${GameLib.decoder(Datablock.results[index].difficulty)}\``,
         {
             embed: {
-                color: parseInt(Base_Lang.status.info, 16),
+                color: parseInt(defaultLang.status.info, 16),
                 title: `${GameLib.decoder(Datablock.results[index].question)}`,
                 description: Content(),
                 footer: {
@@ -42,21 +39,21 @@ const execute = (msg, Datablock, index) => {
                 }
             }
         }).then(sentMessage => {
-            sentMessage.react(validkey[0])
-                .then(() => sentMessage.react(validkey[1]))
-            const filter = (reaction, user) => validkey.includes(reaction.emoji.name);
+            sentMessage.react(validKey[0])
+                .then(() => sentMessage.react(validKey[1]))
+            const filter = (reaction, user) => validKey.includes(reaction.emoji.name);
             let voters = new Set();
             voters.add(client.user.id);
-            let member_response = {};
+            let memberResposes = {};
             const collector = sentMessage.createReactionCollector(filter, { time: ETA * 1000 });
             collector.on('collect', (reaction, user) => {
-                if (!voters.has(user.id) && validkey.includes(reaction._emoji.name)) {
+                if (!voters.has(user.id) && validKey.includes(reaction._emoji.name)) {
                     voters.add(user.id);
-                    member_response[user.id] = GameLib.keyCompiler(reaction._emoji.name, "boolean");
+                    memberResposes[user.id] = GameLib.keyCompiler(reaction._emoji.name, "boolean");
                 }
             });
             collector.on('end', collected => {
-                require(__dirname + '/judge.js').handle(msg, correctKey, member_response, sessionID);
+                require(__dirname + '/judge.js').handle(msg, correctKey, memberResposes);
             });
         });
 }

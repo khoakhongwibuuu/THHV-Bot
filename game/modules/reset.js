@@ -1,28 +1,30 @@
-const fs = require('fs');
-// Basic
+// Basic variables
 const client = global.client;
-const Config = global.Config;
-const Lang = global.Lang;
 const Utils = global.Utils;
-const Base_Lang = global.Base_Lang;
 const dirname = global.dirname;
 
 const execute = (msg, para) => {
-    if (Config.owner.includes(msg.author.id)) {
+    const configAPIPath = dirname + '/api/configAPI.js';
+    const defaultLang = require(configAPIPath).loadDefaultLanguage();
+    const lang = require(configAPIPath).loadLanguage();
+    const config = require(configAPIPath).loadRawData();
+
+    if (config.owner.includes(msg.author.id)) {
         const GameLib = require(dirname + '/game/lib/standardLib.js');
         if (para.length === 0) {
-            // case: that player data is NOT found in the database
+            msg.react('⚠️');
             msg.channel.send({
                 embed: {
-                    color: parseInt(Base_Lang.status.warning, 16),
+                    color: parseInt(defaultLang.status.warning, 16),
                     description: `:warning: A User ID is needed for this command in order to prevent users from accidentally reseting their data.`
                 }
             });
         } else if (para.length === 1) {
             if (para[0] === "all") {
+                msg.react('⌛');
                 msg.channel.send({
                     embed: {
-                        color: parseInt(Base_Lang.status.warning, 16),
+                        color: parseInt(defaultLang.status.warning, 16),
                         description: `:warning: This is a destructive action, do you want to continue?`
                     }
                 })
@@ -35,20 +37,20 @@ const execute = (msg, para) => {
                         voters.add(client.user.id);
                         collector.on('collect', (reaction, user) => {
                             if (!voters.has(user.id) && ['✅', '❌'].includes(reaction._emoji.name)) {
-                                if (Config.owner.includes(user.id)) {
+                                if (config.owner.includes(user.id)) {
                                     voters.add(user.id);
                                     if (reaction._emoji.name === '✅') {
                                         GameLib.allDataDelete();
                                         msg.channel.send({
                                             embed: {
-                                                color: parseInt(Base_Lang.status.success, 16),
+                                                color: parseInt(defaultLang.status.success, 16),
                                                 description: `Task finished successfully.`
                                             }
                                         });
                                     } else {
                                         msg.channel.send({
                                             embed: {
-                                                color: parseInt(Base_Lang.status.info, 16),
+                                                color: parseInt(defaultLang.status.info, 16),
                                                 description: `The request was cancelled by the user.`
                                             }
                                         });
@@ -60,7 +62,7 @@ const execute = (msg, para) => {
                             if (voters.size === 1)
                                 msg.channel.send({
                                     embed: {
-                                        color: parseInt(Base_Lang.status.info, 16),
+                                        color: parseInt(defaultLang.status.info, 16),
                                         description: `The request was cancelled automatically.`
                                     }
                                 });
@@ -74,32 +76,35 @@ const execute = (msg, para) => {
                     GameLib.resetScore(userID);
                     msg.channel.send({
                         embed: {
-                            color: parseInt(Base_Lang.status.info, 16),
+                            color: parseInt(defaultLang.status.info, 16),
                             description: `<@${userID}>'s data has been deleted.`
                         }
                     });
                 } else {
+                    msg.react('⚠️');
                     msg.channel.send({
                         embed: {
-                            color: parseInt(Base_Lang.status.warning, 16),
-                            description: (Utils.isNum(userID)) ? `${(userID === msg.author.id) ? "Your" : `<@${userID}>'s`} data is not found in the database.` : "Please use User ID or Mentions instead."
+                            color: parseInt(defaultLang.status.warning, 16),
+                            description: (Utils.isNum(userID)) ? `:warning: ${(userID === msg.author.id) ? "Your" : `<@${userID}>'s`} data is not found in the database.` : "Please use User ID or Mentions instead."
                         }
                     });
                 }
             }
         } else {
+            msg.react('⚠️');
             msg.channel.send({
                 embed: {
-                    color: parseInt(Base_Lang.status.warning, 16),
-                    description: `:warning: ${Lang.error.parameter}`
+                    color: parseInt(defaultLang.status.warning, 16),
+                    description: `:warning: ${lang.error.parameter}`
                 }
             });
         }
     } else {
+        msg.react('⚠️');
         msg.channel.send({
             embed: {
-                color: parseInt(Base_Lang.status.error, 16),
-                description: `:no_entry: ${Lang.denied.owner}`,
+                color: parseInt(defaultLang.status.error, 16),
+                description: `:no_entry: ${lang.denied.owner}`,
             }
         });
     }

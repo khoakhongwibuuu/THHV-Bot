@@ -4,6 +4,7 @@
     ],
     "log_usage": true,
     "notify_hours": [
+        1,
         6,
         24
     ],

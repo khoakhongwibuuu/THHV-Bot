@@ -1,33 +1,39 @@
-const fs = require('fs');
+// Special library
 const Discord = require('discord.js');
-// Basic
+
+// Basic variables
 const client = global.client;
-const Config = global.Config;
-const Lang = global.Lang;
 const Utils = global.Utils;
-const Base_Lang = global.Base_Lang;
 const dirname = global.dirname;
 
 const execute = (msg, para) => {
-    if (Config.owner.includes(msg.author.id)) {
-        const GameLib = require(dirname + '/game/lib/standardLib.js');
+    const configAPIPath = dirname + '/api/configAPI.js';
+    const defaultLang = require(configAPIPath).loadDefaultLanguage();
+    const lang = require(configAPIPath).loadLanguage();
+    const config = require(configAPIPath).loadRawData();
+
+    if (config.owner.includes(msg.author.id)) {
+
         if (para.length === 0) {
+            msg.react('⌛');
             msg.channel.send({
                 files: [new Discord.MessageAttachment(dirname + '/configs/playerdata.json', 'database')]
             });
         } else {
+            msg.react('⌛');
             msg.channel.send({
                 embed: {
-                    color: parseInt(Base_Lang.status.warning, 16),
-                    description: `:warning: ${Lang.error.parameter}`
+                    color: parseInt(defaultLang.status.warning, 16),
+                    description: `:warning: ${lang.error.parameter}`
                 }
             });
         }
     } else {
+        msg.react('⚠️');
         msg.channel.send({
             embed: {
-                color: parseInt(Base_Lang.status.error, 16),
-                description: `:no_entry: ${Lang.denied.owner}`,
+                color: parseInt(defaultLang.status.error, 16),
+                description: `:no_entry: ${lang.denied.owner}`,
             }
         });
     }

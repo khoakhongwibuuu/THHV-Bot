@@ -7,7 +7,6 @@
             "exec": "Các lệnh được hỗ trợ."
         },
         "help": {
-            "help": "Hiển thị tin nhắn này.",
             "title": " thông báo cho bạn về các cuộc thi lập trình thuật toán.",
             "desc": [
                 "Sau khi đặt kênh thông báo, bot sẽ thông báo cho bạn",
@@ -31,11 +30,10 @@
             "err": "Tin nhắn trực tiếp không được hỗ trợ."
         },
         "ping": {
-            "desc": "Kiểm tra độ trễ khi kết nối đến các API.",
-            "exec": "Pong!"
+            "desc": "Kiểm tra độ trễ khi kết nối đến các API."
         },
         "color": {
-            "desc": "Hiển thị màu ngẫu nhiên bằng mã Hex."
+            "desc": "Hiển thị màu ngẫu nhiên bằng mã Hex và RGB."
         },
         "time": {
             "desc": "Xem giờ máy chủ và giờ đồng bộ",
@@ -60,7 +58,7 @@
         "unknown": "Lệnh không xác định!",
         "parameter": "Tham số không hợp lệ! Không thể xử lý!",
         "locked": "Tính năng tạm thời bị khóa!",
-        "indev": "Tính năng đang được phát triển."
+        "DM": "Tin nhắn trực tiếp không được hỗ trợ."
     },
     "api": {
         "codeforces": {

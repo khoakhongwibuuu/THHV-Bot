@@ -4,9 +4,9 @@
 **/backup/*
 **/**.DS_Store
 **/configs/auth.json
-**/configs/playerdata.json
+**/configs/playerData.json
 **/configs/persist.json
-**/configs/gamestatus.json
+**/configs/gameStatus.json
 **/temp/*
 !**configs/empty.json
 node_modules/*

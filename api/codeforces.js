@@ -1,16 +1,20 @@
+// Special library
 const nf = require('node-fetch');
+const fs = require('fs');
 
 // Basic variables
 const client = global.client;
-const Config = global.Config;
-const Lang = global.Lang;
 const Utils = global.Utils;
-const Base_Lang = global.Base_Lang;
+const dirname = global.dirname;
+
+const defaultLang = require('./configAPI.js').loadDefaultLanguage();
+const config = require('./configAPI.js').loadRawData();
+const lang = require('./configAPI.js').loadLanguage();
+const server = require('./serverAPI.js').loadRawData();
 
 // Special API
-const Persist = global.Persist;
-const savePersist = global.savePersist;
-const server = global.server;
+const Persist = JSON.parse(fs.readFileSync(dirname + '/configs/persist.json', 'utf8'));
+const savePersist = () => { fs.writeFileSync(dirname + '/configs/persist.json', JSON.stringify(Persist)); }
 
 const notify = (res, id, name, url, startTime, type) => {
 	client.guilds.filter(guild => {
@@ -31,12 +35,12 @@ const notify = (res, id, name, url, startTime, type) => {
 				},
 				title: name,
 				url: url,
-				color: parseInt(Base_Lang.status.info, 16),
-				description: `${Lang.notify_desc}<t:${startTime / 1000}:R>`,
+				color: parseInt(defaultLang.status.info, 16),
+				description: `${lang.notify_desc}<t:${startTime / 1000}:R>`,
 				footer: {
-					text: `${res} | ${Lang.notify_foot}`
-						+ `${new Date(startTime.getTime() + (Config.timezone - Utils.server_timezone()) * 3600 * 1000).toLocaleString('vi-vn', { hour12: false })}`
-						+ ` UTC${Utils.number_format(Config.timezone)}`
+					text: `${res} | ${lang.notify_foot}`
+						+ `${new Date(startTime.getTime() + (config.timezone - Utils.server_timezone()) * 3600 * 1000).toLocaleString('vi-vn', { hour12: false })}`
+						+ ` UTC${Utils.number_format(config.timezone)}`
 				}
 			}
 		})
@@ -45,20 +49,21 @@ const notify = (res, id, name, url, startTime, type) => {
 		savePersist();
 	});
 }
+
 let list = [];
 const doNotify = (res) => {
 	list.forEach(obj => {
 		const startTime = new Date(parseInt(obj.startTimeSeconds) * 1000);
 		const rtime = -obj.relativeTimeSeconds;
-		Config.notify_hours.forEach(mark => {
+		config.notify_hours.forEach(mark => {
 			if (rtime <= mark * 3600) {
 				notify(res, obj.id, obj.name, `https://codeforces.com/contests/${obj.id}`, startTime, mark);
 			}
 		})
 	});
 }
-let errorTolerance = 5;
 
+let errorTolerance = 5;
 const clock = () => {
 	nf('http://codeforces.com/api/contest.list')
 		.then(data => data.json())
@@ -67,21 +72,21 @@ const clock = () => {
 				list = res.result.filter(obj => obj.phase === 'BEFORE');
 				if (errorTolerance <= 0)
 					if (server.log_channel !== "")
-						Utils.deliverMsg(Lang.api.codeforces.on + " :white_check_mark: \n" + Lang.api.notification.on, "info", server.log_channel);
+						Utils.deliverMsg(lang.api.codeforces.on + " :white_check_mark: \n" + lang.api.notification.on, "info", server.log_channel);
 				errorTolerance = 5;
 				doNotify('codeforces.com');
 			} else {
 				errorTolerance--;
 				if (errorTolerance === 0)
 					if (server.log_channel !== "")
-						Utils.deliverMsg(Lang.api.codeforces.busy + " :x: \n" + Lang.api.notification.off, "warning", server.log_channel);
+						Utils.deliverMsg(lang.api.codeforces.busy + " :x: \n" + lang.api.notification.off, "warning", server.log_channel);
 			}
 		})
 		.catch(err => {
 			errorTolerance--;
 			if (errorTolerance === 0)
 				if (server.log_channel !== "")
-					Utils.deliverMsg(Lang.api.codeforces.off + " :x: \n" + Lang.api.notification.off, "warning", server.log_channel);
+					Utils.deliverMsg(lang.api.codeforces.off + " :x: \n" + lang.api.notification.off, "warning", server.log_channel);
 		});
 	setTimeout(clock, 1000 * (300 - new Date().getSeconds()));
 }

@@ -1,10 +1,5 @@
 const fs = require('fs');
-// Basic
-const Config = global.Config;
-const Lang = global.Lang;
-const Base_Lang = global.Base_Lang;
 const dirname = global.dirname;
-const server = global.server;
 
 const istream = (str) => {
 	return str.replace(/\s+/g, ' ').trim().split(' ');
@@ -20,42 +15,39 @@ const timestampToDate = (timestamp, mode, penalty) => {
 	let date = new Date(timestamp + penalty);
 	let year = date.getFullYear();
 	let month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-	let full_month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	let month_index = date.getMonth();
+	let fullMonth = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	let monthIdx = date.getMonth();
 	let day = ('0' + date.getDate()).slice(-2);
 	let hours = ('0' + date.getHours()).slice(-2);
 	let minutes = ('0' + date.getMinutes()).slice(-2);
 	let seconds = ('0' + date.getSeconds()).slice(-2);
 	if (mode == 'short')
-		return `${year}-${month[month_index]}-${day}_${hours}-${minutes}-${seconds}`;
+		return `${year}-${month[monthIdx]}-${day}_${hours}-${minutes}-${seconds}`;
 	else
-		return `${year} ${full_month[month_index]} ${day} - ${hours}:${minutes}:${seconds}`;
-}
-
-const format = (core, prefix, suffix) => {
-	return `<${prefix}${core}${suffix}>`;
+		return `${year} ${fullMonth[monthIdx]} ${day} - ${hours}:${minutes}:${seconds}`;
 }
 
 const args_logging = (args, quote) => {
-	let r = ' ';
+	const lang = require('./configAPI.js').loadLanguage();
+	let res = ' ';
 	if (args) args.forEach((e, i, a) => {
-		r += (quote ? `\`${e}\`` : `${e}`);
+		res += (quote ? `\`${e}\`` : `${e}`);
 		if (i === a.length - 1)
-			r += ' ';
+			res += ' ';
 		else if (i === a.length - 2)
-			r += ` ${Lang.and} `
-		else r += ', '
+			res += ` ${lang.and} `
+		else res += ', '
 	});
-	return r;
+	return res;
 }
 
-const server_timezone = () => {
+const serverTimezone = () => {
 	let now = new Date();
 	let timezoneOffset = (now.getTimezoneOffset()) / -60;
 	return timezoneOffset;
 }
 
-const number_format = (num) => {
+const numberFormat = (num) => {
 	if (num >= 0) return `+${num}`;
 	else return `${num}`;
 }
@@ -66,13 +58,20 @@ const clockBasedRandom = (l, h) => {
 }
 
 const deliverMsg = (MsgContent, status, channelID) => {
+	const defaultLang = require('./configAPI.js').loadDefaultLanguage();
+
+	// This is the configuration file (server.json), NOT the Discord.server object
+	const server = require('./serverAPI.js').loadRawData();
+
+	// The variable 'guild' is referenced from Discord.server
 	const guild = client.guilds.get(server.host);
+
 	let channel = guild.channels.get(channelID);
 	if (!channel.permissionsFor(client.user).has('SEND_MESSAGES')) return;
 	channel.send({
 		embed: {
 			description: MsgContent,
-			color: parseInt(Base_Lang.status[status], 16)
+			color: parseInt(defaultLang.status[status], 16)
 		}
 	});
 }
@@ -109,10 +108,9 @@ const isNum = (n) => {
 module.exports.istream = istream;
 module.exports.consume = consume;
 module.exports.timestampToDate = timestampToDate;
-module.exports.format = format;
 module.exports.args_logging = args_logging;
-module.exports.server_timezone = server_timezone;
-module.exports.number_format = number_format;
+module.exports.serverTimezone = serverTimezone;
+module.exports.numberFormat = numberFormat;
 module.exports.clockBasedRandom = clockBasedRandom;
 module.exports.deliverMsg = deliverMsg;
 module.exports.prefixChecker = prefixChecker;
