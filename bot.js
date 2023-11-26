@@ -31,10 +31,18 @@ const { token } = JSON.parse(fs.readFileSync('./configs/auth.json', 'utf8'));
 const Automation = JSON.parse(fs.readFileSync('./configs/auto.json', 'utf8'));
 
 client.on('ready', () => {
-    console.log(`Bot starts at: ${Utils.timestampToDate(BotStartTime, 'full', 0)}`);
-    console.log(`Logging as ${client.user.tag}`);
-    require('./game/lib/standardLib.js').unlock();
-    require('./api/codeforces.js').fetch();
+    const server = require('./api/serverAPI.js').loadRawData();
+    if (server.host != "") {
+        console.log(`Bot starts at: ${Utils.timestampToDate(BotStartTime, 'full', 0)}`);
+        console.log(`Logging as ${client.user.tag}`);
+        require('./game/lib/standardLib.js').unlock();
+        require('./api/codeforces.js').fetch();
+    } else {
+        console.log("Since this bot only works in ONE server, please specify a guild host in server.json to use the bot.");
+        setTimeout(() => {
+            process.exit(1);
+        }, 1500);
+    }
 });
 
 client.on('message', msg => {
