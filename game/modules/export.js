@@ -16,7 +16,7 @@ const execute = (msg, para) => {
         if (para.length === 0) {
             msg.react('✅');
             msg.author.send({
-                files: [new Discord.MessageAttachment(dirname + '/configs/playerdata.json', 'database')]
+                files: [new Discord.MessageAttachment(dirname + '/configs/playerData.json', 'database')]
             }).then(thisMessage => setTimeout(() => thisMessage.delete(), 10000));
         }
         else {

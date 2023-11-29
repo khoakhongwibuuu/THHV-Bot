@@ -39,8 +39,8 @@ const notify = (res, id, name, url, startTime, type) => {
 				description: `${lang.notify_desc}<t:${startTime / 1000}:R>`,
 				footer: {
 					text: `${res} | ${lang.notify_foot}`
-						+ `${new Date(startTime.getTime() + (config.timezone - Utils.server_timezone()) * 3600 * 1000).toLocaleString('vi-vn', { hour12: false })}`
-						+ ` UTC${Utils.number_format(config.timezone)}`
+						+ `${new Date(startTime.getTime() + (config.timezone - Utils.serverTimezone()) * 3600 * 1000).toLocaleString('vi-vn', { hour12: false })}`
+						+ ` UTC${Utils.numberFormat(config.timezone)}`
 				}
 			}
 		}).then(sendMsg => sendMsg.react('700345520081600512'));
@@ -87,7 +87,7 @@ const clock = () => {
 				if (server.log_channel !== "")
 					Utils.deliverMsg(lang.api.codeforces.off + " :x: \n" + lang.api.notification.off, "warning", server.log_channel);
 		});
-	setTimeout(clock, 1000 * (300 - new Date().getSeconds()));
+	setTimeout(clock, 1000 * (120 - new Date().getSeconds()));
 }
 
 const fetch = () => {
