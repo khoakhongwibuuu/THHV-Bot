@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "language": "Tiếng Việt",
     "commands": {
-        "commands": {
+        "cmd": {
             "exec": "Các lệnh được hỗ trợ."
         },
         "help": {
@@ -50,12 +50,14 @@
         },
         "trust": {
             "exec": "đã được ủy quyền thành công.",
-            "already": "đã được ủy quyền trước đó."
+            "already": "đã được ủy quyền trước đó.",
+            "notfound": "Người dùng không tồn tại."
         },
         "untrust": {
             "exec": "đã bị hủy quyền.",
             "already": "đã bị hủy quyền trước đó.",
-            "self": "Bạn không được phép tự hủy quyền bản thân."
+            "self": "Bạn không được phép tự hủy quyền bản thân.",
+            "notfound": "Người dùng không tồn tại."
         }
     },
     "denied": {

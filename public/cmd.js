@@ -5,10 +5,14 @@ const dirname = global.dirname;
 
 const execute = (msg, para) => {
     const configAPIPath = dirname + '/api/configAPI.js';
+    const commandAPIPath = dirname + '/api/commandsAPI.js';
+
     const defaultLang = require(configAPIPath).loadDefaultLanguage();
     const lang = require(configAPIPath).loadLanguage();
     const config = require(configAPIPath).loadRawData();
-    const PublicCommands = global.PublicCommands
+    const commandAPI = require(commandAPIPath)
+
+    const PublicCommands = commandAPI.loadPublic();
 
     let v = '';
     if (msg.channel.type === 'text')
@@ -25,7 +29,7 @@ const execute = (msg, para) => {
                 name: client.user.username,
                 icon_url: client.user.displayAvatarURL()
             },
-            title: `${lang.commands.commands.exec}`,
+            title: `${lang.commands.cmd.exec}`,
             color: parseInt(defaultLang.status.info, 16),
             description: `${v}`
         }

@@ -17,12 +17,23 @@ const execute = (msg, para) => {
             if (Utils.isNum(userID)) {
                 if (!config.owner.includes(userID)) {
                     msg.react('⚠️');
-                    msg.channel.send({
-                        embed: {
-                            color: parseInt(defaultLang.status.warning, 16),
-                            description: `:warning: <@${userID}> ${lang.commands.untrust.already}`
-                        }
-                    });
+                    const tempUser = client.users.get(userID);
+                    if (tempUser) {
+                        msg.channel.send({
+                            embed: {
+                                color: parseInt(defaultLang.status.warning, 16),
+                                description: `:warning: <@${userID}> ${lang.commands.untrust.already}`
+                            }
+                        });
+                    }
+                    else {
+                        msg.channel.send({
+                            embed: {
+                                color: parseInt(defaultLang.status.warning, 16),
+                                description: `:warning: ${lang.commands.untrust.notfound}`
+                            }
+                        });
+                    }
                 }
                 else {
                     if (msg.author.id === userID) {
@@ -35,14 +46,25 @@ const execute = (msg, para) => {
                         });
                     }
                     else {
-                        require(configAPIPath).untrust(userID);
-                        msg.react('✅');
-                        msg.channel.send({
-                            embed: {
-                                color: parseInt(defaultLang.status.success, 16),
-                                description: `<@${userID}> ${lang.commands.untrust.exec}`
-                            }
-                        });
+                        const tempUser = client.users.get(userID);
+                        if (tempUser) {
+                            require(configAPIPath).untrust(userID);
+                            msg.react('✅');
+                            msg.channel.send({
+                                embed: {
+                                    color: parseInt(defaultLang.status.success, 16),
+                                    description: `<@${userID}> ${lang.commands.untrust.exec}`
+                                }
+                            });
+                        }
+                        else {
+                            msg.channel.send({
+                                embed: {
+                                    color: parseInt(defaultLang.status.warning, 16),
+                                    description: `:warning: ${lang.commands.untrust.notfound}`
+                                }
+                            });
+                        }
                     }
                 }
             }

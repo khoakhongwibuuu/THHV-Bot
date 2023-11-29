@@ -62,7 +62,7 @@ const execute = (msg, para, cmd) => {
                     msg.channel.send({
                         embed: {
                             color: parseInt(defaultLang.status.warning, 16),
-                            description: `Another session is running. Please wait!`,
+                            description: `:warning: Another session is running. Please wait!`,
                         }
                     });
                 }

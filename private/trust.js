@@ -25,14 +25,26 @@ const execute = (msg, para) => {
                     });
                 }
                 else {
-                    require(configAPIPath).trust(userID);
-                    msg.react('✅');
-                    msg.channel.send({
-                        embed: {
-                            color: parseInt(defaultLang.status.success, 16),
-                            description: `<@${userID}> ${lang.commands.trust.exec}`
-                        }
-                    });
+                    const tempUser = client.users.get(userID);
+                    if (tempUser) {
+                        require(configAPIPath).trust(userID);
+                        msg.react('✅');
+                        msg.channel.send({
+                            embed: {
+                                color: parseInt(defaultLang.status.success, 16),
+                                description: `<@${userID}> ${lang.commands.trust.exec}`
+                            }
+                        });
+                    }
+                    else {
+                        msg.react('⚠️');
+                        msg.channel.send({
+                            embed: {
+                                color: parseInt(defaultLang.status.warning, 16),
+                                description: `:warning: ${lang.commands.trust.notfound}`
+                            }
+                        });
+                    }
                 }
             }
             else {

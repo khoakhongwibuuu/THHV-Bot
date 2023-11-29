@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "language": "English (United States)",
     "commands": {
-        "commands": {
+        "cmd": {
             "exec": "Suppored commands."
         },
         "help": {
@@ -50,12 +50,14 @@
         },
         "trust": {
             "exec": "has been authorized successfully.",
-            "already": "has already been authorized. No action was taken."
+            "already": "has already been authorized. No action was taken.",
+            "notfound": "The user with the given ID does not exist."
         },
         "untrust": {
             "exec": "has been deauthorized successfully.",
             "already": "has already been deauthorized. No action was taken.",
-            "self": "You cannot deauthorize yourself."
+            "self": "You cannot deauthorize yourself.",
+            "notfound": "The user with the given ID does not exist."
         }
     },
     "denied": {
@@ -68,7 +70,7 @@
         "parameter": "Invalid parameter! Cannot handle!",
         "locked": "Temporarily locked feature!",
         "DM": "DMs are not supported.",
-        "other" : "Unknown error, please check console."
+        "other": "Unknown error, please check console."
     },
     "api": {
         "codeforces": {

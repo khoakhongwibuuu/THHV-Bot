@@ -43,8 +43,7 @@ const notify = (res, id, name, url, startTime, type) => {
 						+ ` UTC${Utils.number_format(config.timezone)}`
 				}
 			}
-		})
-			.then(sendMsg => sendMsg.react('700345520081600512'));
+		}).then(sendMsg => sendMsg.react('700345520081600512'));
 		Persist[res][guild.id][type].push(id);
 		savePersist();
 	});
