@@ -59,7 +59,6 @@ const handle = (msg, correctKey, member_response) => {
     }
     GameLib.unlock();
 
-
     // adding role
     if (server.multiple_choice_grandmaster != "") {
         const role = guild.roles.get(server.multiple_choice_grandmaster);
