@@ -47,6 +47,15 @@
         },
         "shutdown": {
             "exec": "Bot đã ngừng hoạt động!"
+        },
+        "trust": {
+            "exec": "đã được ủy quyền thành công.",
+            "already": "đã được ủy quyền trước đó."
+        },
+        "untrust": {
+            "exec": "đã bị hủy quyền.",
+            "already": "đã bị hủy quyền trước đó.",
+            "self": "Bạn không được phép tự hủy quyền bản thân."
         }
     },
     "denied": {
@@ -58,7 +67,8 @@
         "unknown": "Lệnh không xác định!",
         "parameter": "Tham số không hợp lệ! Không thể xử lý!",
         "locked": "Tính năng tạm thời bị khóa!",
-        "DM": "Tin nhắn trực tiếp không được hỗ trợ."
+        "DM": "Tin nhắn trực tiếp không được hỗ trợ.",
+        "other": "Lỗi không xác định, vui lòng kiểm tra bảng lệnh."
     },
     "api": {
         "codeforces": {
