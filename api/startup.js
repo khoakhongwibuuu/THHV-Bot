@@ -52,12 +52,5 @@ if (!fs.existsSync(dirname + '/configs/server.json')) {
     }, null, 4));
 }
 
-// auto.json for automation
-if (!fs.existsSync(dirname + '/configs/auto.json')) {
-    fs.writeFileSync(dirname + '/configs/auto.json', JSON.stringify({
-        commands: []
-    }, null, 4));
-}
-
 // Write updating scripts below this line
 // ======================================
