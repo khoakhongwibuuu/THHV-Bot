@@ -77,7 +77,7 @@ const execute = (msg, para) => {
                             }
                         }).then(thisMessage => setTimeout(() => thisMessage.delete(), 10000));
                     sentMessage.delete();
-                    msg.delete();
+                    msg.react('✅');
                 });
             });
     }

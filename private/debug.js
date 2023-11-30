@@ -10,6 +10,7 @@ const Utils = global.Utils;
 const dirname = global.dirname;
 
 const execute = (msg, para) => {
+    return;
     const configAPIPath = dirname + '/api/configAPI.js';
     const defaultLang = require(configAPIPath).loadDefaultLanguage();
     const lang = require(configAPIPath).loadLanguage();
