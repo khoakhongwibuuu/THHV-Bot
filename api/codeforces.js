@@ -62,32 +62,33 @@ const doNotify = (res) => {
 	});
 }
 
-let errorTolerance = 5;
+let Tolerance = 5;
 const clock = () => {
+	console.log(Tolerance);
 	nf('http://codeforces.com/api/contest.list')
 		.then(data => data.json())
 		.then(res => {
 			if (res.status === 'OK') {
 				list = res.result.filter(obj => obj.phase === 'BEFORE');
-				if (errorTolerance <= 0)
+				if (Tolerance <= 0)
 					if (server.log_channel !== "")
 						Utils.deliverMsg(lang.api.codeforces.on + " :white_check_mark: \n" + lang.api.notification.on, "info", server.log_channel);
-				errorTolerance = 5;
+				Tolerance = 5;
 				doNotify('codeforces.com');
 			} else {
-				errorTolerance--;
-				if (errorTolerance === 0)
+				Tolerance--;
+				if (Tolerance === 0)
 					if (server.log_channel !== "")
 						Utils.deliverMsg(lang.api.codeforces.busy + " :x: \n" + lang.api.notification.off, "warning", server.log_channel);
 			}
 		})
 		.catch(err => {
-			errorTolerance--;
-			if (errorTolerance === 0)
+			Tolerance--;
+			if (Tolerance === 0)
 				if (server.log_channel !== "")
 					Utils.deliverMsg(lang.api.codeforces.off + " :x: \n" + lang.api.notification.off, "warning", server.log_channel);
 		});
-	setTimeout(clock, 1000 * (120 - new Date().getSeconds()));
+	setTimeout(clock, 1000 * 60 - new Date().getMilliseconds());
 }
 
 const fetch = () => {
