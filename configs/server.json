@@ -3,5 +3,7 @@
     "notify_role": "1139230081236090910",
     "log_channel": "705462132455505970",
     "suggest_channel": "700384376147673232",
-    "multiple_choice_grandmaster": "1169996017530318898"
+    "multiple_choice_grandmaster": "1169996017530318898",
+    "yes": "700345520081600512",
+    "no": "700345520039657613"
 }

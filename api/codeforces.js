@@ -64,7 +64,6 @@ const doNotify = (res) => {
 
 let Tolerance = 5;
 const clock = () => {
-	console.log(Tolerance);
 	nf('http://codeforces.com/api/contest.list')
 		.then(data => data.json())
 		.then(res => {
