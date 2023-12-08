@@ -27,4 +27,12 @@ if (!fs.existsSync(authPath)) {
     }, null, 4));
 }
 
+const persistPath = dirname + '/configs/persist.json';
+if (!fs.existsSync(persistPath)) {
+    fs.writeFileSync(persistPath, JSON.stringify({
+        ready: {},
+        channel: {}
+    }));
+}
+
 gameLib.unlock();
