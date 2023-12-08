@@ -1,0 +1,30 @@
+// Special library
+const fs = require('fs');
+
+// Basic variables
+const dirname = global.dirname;
+
+// Creating config directory
+if (!fs.existsSync(dirname + '/configs')) {
+    fs.mkdirSync(dirname + '/configs', { recursive: true });
+}
+
+// Creating log directory
+if (!fs.existsSync(dirname + '/logs')) {
+    fs.mkdirSync(dirname + '/logs', { recursive: true });
+}
+
+const coreLib = require(dirname + '/assets/library/core.js');
+const gameLib = require(dirname + '/assets/library/game.js');
+const serverLib = require(dirname + '/assets/library/server.js');
+
+const authPath = dirname + '/configs/auth.json';
+if (!fs.existsSync(authPath)) {
+    fs.writeFileSync(authPath, JSON.stringify({
+        ClientID: "",
+        PublicKey: "",
+        token: ""
+    }, null, 4));
+}
+
+gameLib.unlock();
