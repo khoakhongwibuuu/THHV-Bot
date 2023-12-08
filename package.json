@@ -1,0 +1,22 @@
+{
+    "dependencies": {
+        "discord.js": "^14.14.1",
+        "fs": "^0.0.1-security",
+        "node-fetch": "^3.3.2",
+        "ping": "^0.4.4"
+    },
+    "devDependencies": {
+        "eslint": "^8.55.0"
+    },
+    "name": "thhv-bot-rewrite",
+    "version": "1.0.0",
+    "main": "index.js",
+    "directories": {},
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "khoa.khong.wibuuu",
+    "license": "ISC",
+    "description": ""
+}
