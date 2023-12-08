@@ -3,6 +3,3 @@ node_modules/*
 cache/*
 logs/*
 _archived/*
-snippet/*
-deploy-commands.js
-undeploy-commands.js
