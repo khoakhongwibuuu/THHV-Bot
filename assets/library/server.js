@@ -9,6 +9,7 @@ if (!fs.existsSync(serverPath)) {
     fs.writeFileSync(serverPath, JSON.stringify({
         guildID: "",
         log: "",
+        suggest: "",
         emoji: {
             yes: "",
             no: ""
