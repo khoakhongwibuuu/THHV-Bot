@@ -44,7 +44,7 @@ const notify = (res, id, name, url, startTime, type) => {
 		channel.send({
 			content: (core.notificationRole === "") ? "Upcoming contest announced!" : `<@&${core.notificationRole}>, upcoming contest announced!`,
 			embeds: [embed]
-		});
+		}).then(thisMsg => thisMsg.react(serverLib.load().emoji.yes));
 		Persist[res][guild.id][type].push(id);
 		savePersist();
 	});
