@@ -5,7 +5,7 @@ const stdlib = global.stdlib;
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('trust')
-        .setDescription('???')
+        .setDescription('[DEVELOPER ONLY] - Grant authorisation from a user.')
         .addUserOption(option =>
             option.setName('target')
                 .setDescription('The user')

@@ -8,9 +8,15 @@ const corePath = dirname + '/configs/core.json';
 
 if (!fs.existsSync(corePath)) {
     fs.writeFileSync(corePath, JSON.stringify({
-        owner: "",
+        owner: "671624293674909717",
         trusted: [],
-        timezone: 0
+        timezone: 7,
+        notificationRole: "1139230081236090910",
+        notificationHours: [
+            1,
+            6,
+            24
+        ]
     }, null, 4));
 }
 

@@ -1,22 +1,24 @@
 const { SlashCommandBuilder } = require('discord.js');
+const fs = require('fs');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('shutdown')
-        .setDescription('[DEVELOPER ONLY] - Turn off the bot.'),
+        .setName('setvote')
+        .setDescription('[DEVELOPER ONLY] - Set voting channel.'),
     async execute(interaction) {
         const coreLib = require(dirname + '/assets/library/core.js');
+        const serverLib = require(dirname + '/assets/library/server.js');
+        const server = serverLib.load();
         const config = coreLib.load();
         if (interaction.user.id === config.owner || config.trusted.includes(interaction.user.id)) {
+            server['suggest'] = interaction.channel.id;
+            fs.writeFileSync(dirname + '/configs/server.json', JSON.stringify(server, null, 4));
             interaction.reply({
-                content: "The bot has stopped working!",
+                content: "Voting channel has been set.",
                 ephemeral: true
             });
-            const now = new Date().toISOString();
-            (`Bot was shut down manually at ${now} by ${interaction.user.id}`).logToFile(global.BotStartTime);
-            setTimeout(() => process.exit(1), 1500);
         } else {
             interaction.reply({
                 content: "You do not have permission to run this command.",

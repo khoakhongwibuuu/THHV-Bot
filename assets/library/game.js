@@ -8,7 +8,7 @@ const gameSettingPath = dirname + '/configs/gameSetting.json';
 if (!fs.existsSync(gameSettingPath)) {
     fs.writeFileSync(gameSettingPath, JSON.stringify({
         running: false,
-        rewardRole: "",
+        rewardRole: "1169996017530318898",
         time: 12,
         up: 2,
         down: -3,

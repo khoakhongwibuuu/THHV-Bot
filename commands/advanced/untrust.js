@@ -5,7 +5,7 @@ const stdlib = global.stdlib;
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('untrust')
-        .setDescription('???')
+        .setDescription('[DEVELOPER ONLY] - Revoke authorisation from a user.')
         .addUserOption(option =>
             option.setName('target')
                 .setDescription('The user')
