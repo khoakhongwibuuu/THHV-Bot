@@ -9,7 +9,7 @@ if (!fs.existsSync(gameSettingPath)) {
     fs.writeFileSync(gameSettingPath, JSON.stringify({
         running: false,
         rewardRole: "",
-        time: 10,
+        time: 12,
         up: 2,
         down: -3,
         mode: {

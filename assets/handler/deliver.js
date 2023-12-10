@@ -67,11 +67,24 @@ const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {
             memberVotedCount++;
             responseData[subInteraction.user.id] = subInteraction.customId;
             await subInteraction.reply({ content: 'Successfully recorded your response.', ephemeral: true });
+            // console.log(emb)
+            interaction.editReply({
+                embeds: [embed
+                    .setFooter({
+                        text: `Received ${memberVotedCount} response${(memberVotedCount > 1) ? 's' : ''}.`
+                    })
+                ]
+            });
         }
     });
 
     collector.on('end', () => {
-        interaction.editReply({ embeds: [embed.setFooter({ text: "This session has ended." }).setTimestamp()], components: [] });
+        interaction.editReply({
+            embeds: [embed
+                .setFooter({ text: "This session has ended." })
+            ],
+            components: []
+        });
         require('./judge.js').execute(interaction, responseData, key);
     });
 }

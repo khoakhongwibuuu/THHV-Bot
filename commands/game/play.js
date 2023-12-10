@@ -5,7 +5,7 @@ const stdlib = global.stdlib;
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('play')
-        .setDescription('Command under experiment. Dont touch.'),
+        .setDescription('Get a random question.'),
     async execute(interaction) {
         const gameLib = require(dirname + '/assets/library/game.js');
         const serverLib = require(dirname + '/assets/library/server.js');

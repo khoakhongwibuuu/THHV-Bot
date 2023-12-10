@@ -14,9 +14,9 @@ if (!fs.existsSync(dirname + '/logs')) {
     fs.mkdirSync(dirname + '/logs', { recursive: true });
 }
 
-const coreLib = require(dirname + '/assets/library/core.js');
-const gameLib = require(dirname + '/assets/library/game.js');
-const serverLib = require(dirname + '/assets/library/server.js');
+const coreLib = require('./core.js');
+const gameLib = require('./game.js');
+const serverLib = require('./server.js');
 
 const authPath = dirname + '/configs/auth.json';
 if (!fs.existsSync(authPath)) {

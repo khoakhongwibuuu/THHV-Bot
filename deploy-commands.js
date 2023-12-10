@@ -2,6 +2,7 @@ const { REST, Routes } = require('discord.js');
 const { ClientID, token } = require('./configs/auth.json');
 const fs = require('node:fs');
 const path = require('node:path');
+global.dirname = __dirname
 
 const commands = [];
 // Grab all the command folders from the commands directory you created earlier
