@@ -51,7 +51,7 @@ Object.prototype.isNumber = function () {
 }
 
 Number.prototype.numFormat = function () {
-	return (this > 0) ? "+" + this.toString() : this.toString();
+	return (this > 0) ? "+" + JSON.stringify(this) : JSON.stringify(this);
 }
 
 String.prototype.prefixChecker = function (arr) {
@@ -64,24 +64,27 @@ String.prototype.prefixChecker = function (arr) {
 
 String.prototype.logToFile = function (filename) {
 	const content = this;
-	fs.appendFile(dirname + '/logs/' + filename.replace(/:/g, "") + '.log', content + '\n', (err) => {
+	fs.appendFile(dirname + '/logs/' + global.BotStartTime.replace(/:/g, "") + '.log', content + '\n', (err) => {
 		if (err) throw err;
 	});
 }
 
-String.prototype.logToChannel = function (guildID, channelID, status) {
-	const guild = client.guilds.cache.get(guildID);
-	const channel = guild.channels.cache.get(channelID);
-	const content = this;
-	channel.send({
-		embed: {
-			description: content
-		}
-	});
+String.prototype.logToChannel = function () {
+	const serverLib = require('./server.js');
+	const guild = global.client.guilds.cache.get(serverLib.load().guildID);
+	const channel = guild.channels.cache.get(serverLib.load().log);
+	channel.send(`\`${this}\``);
 }
 
 String.prototype.URLdecode = function () {
 	return decodeURIComponent(this);
+}
+
+String.prototype.logE = function () {
+	const content = JSON.stringify(this)
+	content.substring(1, content.length - 1).logToChannel();
+	content.substring(1, content.length - 1).logToFile();
+	console.log(content.substring(1, content.length - 1))
 }
 
 const serverTimezone = () => {

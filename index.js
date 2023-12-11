@@ -7,11 +7,6 @@ const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
 const { token } = require('./configs/auth.json');
 
-const stdlib = require('./assets/library/standard.js');
-global.stdlib = stdlib;
-
-
-
 const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
@@ -30,6 +25,8 @@ const client = new Client({
 });
 global.client = client;
 
+const stdlib = require('./assets/library/standard.js');
+global.stdlib = stdlib;
 
 client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');
@@ -64,6 +61,21 @@ for (const file of eventFiles) {
 
 const BotStartTime = new Date().toISOString();
 global.BotStartTime = BotStartTime;
+
+client.on('error', (err) => {
+	console.error(err);
+	('Client error occured: ' + new Date()).logE();
+});
+
+process.on('uncaughtException', (err) => {
+	console.error(err);
+	(`[${new Date().toISOString()}] [ERROR] Exiting due to uncaught exception: `).logE();
+	process.exit(1);
+});
+
+process.on('unhandledRejection', (err) => {
+	console.error(err);
+});
 
 if (token != "")
 	client.login(token);

@@ -16,11 +16,9 @@ module.exports = {
             console.log('[ERROR] You have NOT provide the Bot owner ID in configs/core.json, this BOT will be automatically turned off.');
             process.exit(1);
         }
-        console.log(`[SUCCESS] Ready! Logged in as ${client.user.tag}`);
-        (`Bot starts at ${BotStartTime}`).logToFile(BotStartTime);
-        // client.guilds.cache.forEach(e => {
-        //     console.log(e)
-        // });
+        
+        (`[${BotStartTime}] [SUCCESS] Ready! Logged in as ${client.user.tag}`).logE();
+
         client.user.setPresence({
             activities: [{
                 name: 'codeforces contest.',

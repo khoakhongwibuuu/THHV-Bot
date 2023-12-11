@@ -15,7 +15,7 @@ module.exports = {
                 ephemeral: true
             });
             const now = new Date().toISOString();
-            (`Bot was shut down manually at ${now} by ${interaction.user.id}`).logToFile(global.BotStartTime);
+            (`[${new Date().toISOString()}] [WARN] Bot was shut down manually by ${interaction.user.id}`).logE();
             setTimeout(() => process.exit(1), 1500);
         } else {
             interaction.reply({

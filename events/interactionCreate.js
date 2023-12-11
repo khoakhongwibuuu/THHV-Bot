@@ -13,14 +13,17 @@ module.exports = {
 		}
 
 		try {
-			(`${new Date().toISOString()} ${interaction.user.username} ${command.data.name}`).logToFile(global.BotStartTime);
+			await (`[${new Date().toISOString()}] [INFO] ${interaction.user.username} ${command.data.name}`).logE();
 			await command.execute(interaction);
 		} catch (error) {
 			console.error(error);
 			if (interaction.replied || interaction.deferred) {
 				await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+				// await (`[${new Date().toISOString()}] [ERROR] ${interaction.user.username} ${command.data.name}`).logE();
+
 			} else {
 				await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+				// await (`[${new Date().toISOString()}] [ERROR] ${interaction.user.username} ${command.data.name}`).logE();
 			}
 		}
 	},
