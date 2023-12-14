@@ -1,4 +1,6 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const Discord = require('discord.js');
+const dirname = global.dirname;
+const stdlib = global.stdlib;
 
 const hexToRgb = (hex) => {
     let obj = {}
@@ -9,7 +11,7 @@ const hexToRgb = (hex) => {
 }
 
 module.exports = {
-    data: new SlashCommandBuilder()
+    data: new Discord.SlashCommandBuilder()
         .setName('color')
         .setDescription('Randomly generate color with Hex and RGB.'),
     async execute(interaction) {
@@ -17,7 +19,7 @@ module.exports = {
         let intString = parseInt(hexString, 16);
         let RGB = hexToRgb('#' + hexString.toUpperCase())
         await interaction.reply({
-            embeds: [new EmbedBuilder()
+            embeds: [new Discord.EmbedBuilder()
                 .setColor(intString)
                 .addFields(
                     {

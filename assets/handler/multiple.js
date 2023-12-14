@@ -18,21 +18,19 @@ const execute = (interaction, questionBlock) => {
     stdlib.shuffle(incorrectAnswer);
 
     // Generate content
-    let Content = () => {
-        let ret = ""
-        validKey.forEach((OptionalKey, idx) => {
-            ret += (`**${OptionalKey}**. `
-                + `${OptionalKey === correctKey ? (questionBlock.correct_answer).URLdecode() : (incorrectAnswer[incorrectIdx++]).URLdecode()}`
-                + `${idx == 3 ? "" : "\n"}`);
-        });
-        return ret;
-    }
+    let content = "";
+    validKey.forEach((OptionalKey, idx) => {
+        const answer = OptionalKey === correctKey ? questionBlock.correct_answer : incorrectAnswer[incorrectIdx++];
+        content += `**${OptionalKey}**. ${answer.URLdecode()}${idx == 3 ? "" : "\n"}`;
+    });
+
+
     require('./deliver.js')
         .execute(interaction,
             questionBlock.category.URLdecode(),
             questionBlock.difficulty.URLdecode(),
             questionBlock.question.URLdecode(),
-            correctKey, Content(), "multiple", ETA);
+            correctKey, content, "multiple", ETA);
 }
 
 module.exports.execute = execute;

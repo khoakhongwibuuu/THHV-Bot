@@ -1,5 +1,5 @@
-const { SlashCommandBuilder } = require('discord.js');
 const fs = require('fs');
+const Discord = require('discord.js');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
 
@@ -7,7 +7,7 @@ const Persist = JSON.parse(fs.readFileSync(dirname + '/configs/persist.json', 'u
 const savePersist = () => { fs.writeFileSync(dirname + '/configs/persist.json', JSON.stringify(Persist)); }
 
 module.exports = {
-    data: new SlashCommandBuilder()
+    data: new Discord.SlashCommandBuilder()
         .setName('setnotify')
         .setDescription('[DEVELOPER ONLY] - Set notification channel.'),
     async execute(interaction) {

@@ -1,7 +1,9 @@
-const { Events } = require('discord.js');
+const Discord = require('discord.js');
+const dirname = global.dirname;
+const stdlib = global.stdlib;
 
 module.exports = {
-	name: Events.InteractionCreate,
+	name: Discord.Events.InteractionCreate,
 	async execute(interaction) {
 		if (!interaction.isChatInputCommand()) return;
 
@@ -19,11 +21,8 @@ module.exports = {
 			console.error(error);
 			if (interaction.replied || interaction.deferred) {
 				await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
-				// await (`[${new Date().toISOString()}] [ERROR] ${interaction.user.username} ${command.data.name}`).logE();
-
 			} else {
 				await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-				// await (`[${new Date().toISOString()}] [ERROR] ${interaction.user.username} ${command.data.name}`).logE();
 			}
 		}
 	},

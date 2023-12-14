@@ -1,9 +1,9 @@
-const { Events } = require('discord.js');
+const Discord = require('discord.js');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
 
 module.exports = {
-	name: Events.MessageCreate,
+	name: Discord.Events.MessageCreate,
 	async execute(msg) {
 		if (msg.author.bot) return;
 		const coreLib = require(dirname + '/assets/library/core.js');

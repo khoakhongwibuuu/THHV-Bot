@@ -1,5 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const ping = require('ping');
+const Discord = require('discord.js');
+const dirname = global.dirname;
+const stdlib = global.stdlib;
 
 async function pingServer(url) {
     try {
@@ -12,14 +14,13 @@ async function pingServer(url) {
     }
 }
 
-
 module.exports = {
-    data: new SlashCommandBuilder()
+    data: new Discord.SlashCommandBuilder()
         .setName('ping')
         .setDescription('Check latency when connecting to APIs!'),
     async execute(interaction) {
         await interaction.deferReply({ ephemeral: false });
-        const PingResult = new EmbedBuilder()
+        const PingResult = new Discord.EmbedBuilder()
             .setFooter({ text: `Requested by ${interaction.user.username} at ` })
             .setTimestamp();
         const discordLatency = await pingServer('discord.com');

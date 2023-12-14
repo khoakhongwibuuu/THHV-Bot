@@ -1,9 +1,9 @@
-const { SlashCommandBuilder } = require('discord.js');
+const Discord = require('discord.js');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
 
 module.exports = {
-    data: new SlashCommandBuilder()
+    data: new Discord.SlashCommandBuilder()
         .setName('untrust')
         .setDescription('[DEVELOPER ONLY] - Revoke authorisation from a user.')
         .addUserOption(option =>

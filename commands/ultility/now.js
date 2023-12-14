@@ -1,9 +1,9 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const Discord = require('discord.js');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
 
 module.exports = {
-    data: new SlashCommandBuilder()
+    data: new Discord.SlashCommandBuilder()
         .setName('now')
         .setDescription('Show current time.'),
     async execute(interaction) {
@@ -12,7 +12,7 @@ module.exports = {
         const defaultTimezone = coreLib.timezone;
         const penalty = (defaultTimezone - serverTimezone) * 3600000;
         const now = new Date(new Date().getTime() + penalty);
-        const sentEmbed = new EmbedBuilder()
+        const sentEmbed = new Discord.EmbedBuilder()
             .addFields(
                 {
                     name: "Year",

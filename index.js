@@ -3,24 +3,23 @@ const path = require('node:path');
 global.dirname = __dirname;
 require('./assets/library/startup.js');
 
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
-
+const Discord = require('discord.js');
 const { token } = require('./configs/auth.json');
 
-const client = new Client({
+const client = new Discord.Client({
 	intents: [
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.MessageContent,
-		GatewayIntentBits.GuildMembers,
-		GatewayIntentBits.GuildVoiceStates,
-		GatewayIntentBits.GuildMessageReactions,
-		GatewayIntentBits.GuildMessageTyping,
-		GatewayIntentBits.GuildPresences,
-		GatewayIntentBits.GuildEmojisAndStickers,
-		GatewayIntentBits.DirectMessages,
-		GatewayIntentBits.DirectMessageReactions,
-		GatewayIntentBits.DirectMessageTyping
+		Discord.GatewayIntentBits.Guilds,
+		Discord.GatewayIntentBits.GuildMessages,
+		Discord.GatewayIntentBits.MessageContent,
+		Discord.GatewayIntentBits.GuildMembers,
+		Discord.GatewayIntentBits.GuildVoiceStates,
+		Discord.GatewayIntentBits.GuildMessageReactions,
+		Discord.GatewayIntentBits.GuildMessageTyping,
+		Discord.GatewayIntentBits.GuildPresences,
+		Discord.GatewayIntentBits.GuildEmojisAndStickers,
+		Discord.GatewayIntentBits.DirectMessages,
+		Discord.GatewayIntentBits.DirectMessageReactions,
+		Discord.GatewayIntentBits.DirectMessageTyping
 	],
 });
 global.client = client;
@@ -28,7 +27,7 @@ global.client = client;
 const stdlib = require('./assets/library/standard.js');
 global.stdlib = stdlib;
 
-client.commands = new Collection();
+client.commands = new Discord.Collection();
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 

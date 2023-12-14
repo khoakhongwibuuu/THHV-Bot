@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js');
+const Discord = require('discord.js');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
 
@@ -47,7 +47,7 @@ const execute = (interaction, responseData, key) => {
             }
         });
         if (award.length > 0) {
-            const embed = new EmbedBuilder()
+            const embed = new Discord.EmbedBuilder()
                 .setDescription(`GG ${award.argList("mention")}! You have received role <@&${gameSetting.rewardRole}>`);
             interaction.followUp({ embeds: [embed] });
         }

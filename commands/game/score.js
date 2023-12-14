@@ -1,9 +1,9 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const Discord = require('discord.js');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
 
 module.exports = {
-    data: new SlashCommandBuilder()
+    data: new Discord.SlashCommandBuilder()
         .setName('score')
         .setDescription('View your score or anyone else.')
         .addUserOption(option =>
@@ -18,7 +18,7 @@ module.exports = {
             const userID = target.id;
             const loadedData = gameLib.readScore(userID);
             if (loadedData !== "Unknown") {
-                const embed = new EmbedBuilder();
+                const embed = new Discord.EmbedBuilder();
                 interaction.reply({
                     embeds: [embed
                         .setDescription(`<@${userID}> : \`${loadedData.lastValue()}\``)

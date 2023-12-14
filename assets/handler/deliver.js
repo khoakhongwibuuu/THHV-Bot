@@ -1,46 +1,49 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder } = require('discord.js');
+const Discord = require('discord.js');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
-
 const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {
+    const emojiMap = require(dirname + '/assets/misc/emojiCharacters.js');
+
     // Create an embed
-    const embed = new EmbedBuilder()
+    const embed = new Discord.EmbedBuilder()
         .setTitle(quest)
         .setDescription(cont);
 
     // Create buttons
     let row = null;
     if (mode === "multiple") {
-        row = new ActionRowBuilder()
+        row = new Discord.ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder()
+                new Discord.ButtonBuilder()
                     .setCustomId('A')
-                    .setLabel('A')
-                    .setStyle('Secondary'),
-                new ButtonBuilder()
+                    .setEmoji(emojiMap.a)
+                    .setStyle('Primary'),
+                new Discord.ButtonBuilder()
                     .setCustomId('B')
-                    .setLabel('B')
-                    .setStyle('Secondary'),
-                new ButtonBuilder()
+                    .setEmoji(emojiMap.b)
+                    .setStyle('Primary'),
+                new Discord.ButtonBuilder()
                     .setCustomId('C')
-                    .setLabel('C')
-                    .setStyle('Secondary'),
-                new ButtonBuilder()
+                    .setEmoji(emojiMap.c)
+                    .setStyle('Primary'),
+                new Discord.ButtonBuilder()
                     .setCustomId('D')
-                    .setLabel('D')
-                    .setStyle('Secondary')
+                    .setEmoji(emojiMap.d)
+                    .setStyle('Primary')
             );
     } else {
-        row = new ActionRowBuilder()
+        row = new Discord.ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder()
+                new Discord.ButtonBuilder()
                     .setCustomId('True')
-                    .setLabel('A')
-                    .setStyle('Secondary'),
-                new ButtonBuilder()
+                    .setLabel('True')
+                    // .setEmoji(serverLib.load().emoji.yes)
+                    .setStyle('Success'),
+                new Discord.ButtonBuilder()
                     .setCustomId('False')
-                    .setLabel('B')
-                    .setStyle('Secondary')
+                    .setLabel('False')
+                    // .setEmoji(serverLib.load().emoji.no)
+                    .setStyle('Danger')
             );
     }
 

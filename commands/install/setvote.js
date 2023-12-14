@@ -1,10 +1,10 @@
-const { SlashCommandBuilder } = require('discord.js');
 const fs = require('fs');
+const Discord = require('discord.js');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
 
 module.exports = {
-    data: new SlashCommandBuilder()
+    data: new Discord.SlashCommandBuilder()
         .setName('setvote')
         .setDescription('[DEVELOPER ONLY] - Set voting channel.'),
     async execute(interaction) {

@@ -8,9 +8,6 @@ const client = global.client;
 const stdlib = global.stdlib;
 const dirname = global.dirname;
 
-const serverLib = require(dirname + '/assets/library/server.js');
-const server = serverLib.load();
-
 const coreLib = require(dirname + '/assets/library/core.js');
 const core = coreLib.load();
 
@@ -55,7 +52,7 @@ const doNotify = (res) => {
 	list.forEach(obj => {
 		const startTime = new Date(parseInt(obj.startTimeSeconds) * 1000);
 		const rtime = -obj.relativeTimeSeconds;
-		core.notificationHours.forEach(time => {
+		coreLib.load().notificationHours.forEach(time => {
 			if (rtime <= time * 3600) {
 				notify(res, obj.id, obj.name, `https://codeforces.com/contests/${obj.id}`, startTime, time);
 			}

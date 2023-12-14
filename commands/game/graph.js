@@ -1,9 +1,9 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const Discord = require('discord.js');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
 
 module.exports = {
-    data: new SlashCommandBuilder()
+    data: new Discord.SlashCommandBuilder()
         .setName('graph')
         .setDescription('View your score history or anyone else as a graph.')
         .addUserOption(option =>
@@ -60,7 +60,7 @@ module.exports = {
                 };
 
                 interaction.reply({
-                    embeds: [new EmbedBuilder()
+                    embeds: [new Discord.EmbedBuilder()
                         .setTitle(`Score of ${target.username}`)
                         .setDescription(`The following data belongs to <@${userID}>\n\n`
                             + `Current score: \`${analyticsResult.current}\`\n`

@@ -1,9 +1,9 @@
-const { SlashCommandBuilder } = require('discord.js');
+const Discord = require('discord.js');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
 
 module.exports = {
-    data: new SlashCommandBuilder()
+    data: new Discord.SlashCommandBuilder()
         .setName('trust')
         .setDescription('[DEVELOPER ONLY] - Grant authorisation to a user.')
         .addUserOption(option =>

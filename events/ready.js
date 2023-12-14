@@ -1,9 +1,9 @@
-const { Events, ActivityType } = require('discord.js');
-
+const Discord = require('discord.js');
 const dirname = global.dirname;
+const stdlib = global.stdlib;
 
 module.exports = {
-    name: Events.ClientReady,
+    name: Discord.Events.ClientReady,
     once: true,
     async execute(client) {
         const serverLib = require(dirname + '/assets/library/server.js');
@@ -16,13 +16,13 @@ module.exports = {
             console.log('[ERROR] You have NOT provide the Bot owner ID in configs/core.json, this BOT will be automatically turned off.');
             process.exit(1);
         }
-        
+
         (`[${BotStartTime}] [SUCCESS] Ready! Logged in as ${client.user.tag}`).logE();
 
         client.user.setPresence({
             activities: [{
                 name: 'codeforces contest.',
-                type: ActivityType.Watching
+                type: Discord.ActivityType.Watching
             }],
             status: 'online'
         });
