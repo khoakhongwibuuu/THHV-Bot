@@ -21,10 +21,10 @@ const execute = (interaction, responseData, key) => {
     });
     let Content = `:alarm_clock:  Time's up!\nCorrect answer is \`${key}\`\n`;
     if (correct.length > 0) {
-        Content += `Member${(correct.length > 1) ? "s" : ""} answered correctly :white_check_mark:: ${correct.argList("mention")}\n`;
+        Content += `Member${(correct.length > 1) ? "s" : ""} answered correctly and gained ${gameSetting.up} points :white_check_mark:: ${correct.argList("mention")}\n`;
     }
     if (incorrect.length > 0) {
-        Content += `Member${(correct.length > 1) ? "s" : ""} answered incorrectly :x:: ${incorrect.argList("mention")}\n`;
+        Content += `Member${(incorrect.length > 1) ? "s" : ""} answered incorrectly and lost ${Math.abs(gameSetting.down)} points :x:: ${incorrect.argList("mention")}\n`;
     }
     if (!responseData.hasOwnProperty(interaction.user.id)) {
         Content += `<@${interaction.user.id}> did not answer the question. Minus \`${Math.abs(gameSetting.down)}\` points.`

@@ -18,15 +18,15 @@ module.exports = {
                     9, 9, 9,    // General Knowledge
                     17, 17, 17, // Nature Science
                     18, 18, 18, // Computer Science
-                    19, 19,     // Math
+                    19, 19, 19, // Math
                     22,         // Geography
                     23,         // History
                     27,         // Animals
                     30, 30, 30, // Gadgets
-                    31, 31      // Anime
+                    31          // Anime
                 ];
 
-                await fetch(`https://opentdb.com/api.php?amount=1&encode=url3986&category=${frequencyMap[Math.floor(frequencyMap.length * Math.random())]}`)
+                await fetch("https://opentdb.com/api.php?amount=1&encode=url3986" + `&category=${frequencyMap[Math.floor(frequencyMap.length * Math.random())]}`)
                     .then(response => response.json())
                     .then(Datablock => {
                         const questionBlock = Datablock.results[0];

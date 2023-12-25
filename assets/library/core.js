@@ -55,6 +55,26 @@ const untrust = (userID) => {
     }
 }
 
+const addHour = (offset) => {
+    const core = JSON.parse(fs.readFileSync(corePath, 'utf-8'));
+    if (!core.notificationHours.includes(offset)) {
+        core.notificationHours.push(offset);
+        core.notificationHours.sort((a, b) => { return a - b; });
+        fs.writeFileSync(corePath, JSON.stringify(core, null, 4));
+        return 0;
+    } else return -1;
+}
+
+const removeHour = (offset) => {
+    const core = JSON.parse(fs.readFileSync(corePath, 'utf-8'));
+    const offsetIndex = core.notificationHours.indexOf(offset);
+    if (offsetIndex !== -1) {
+        core.notificationHours.splice(offsetIndex, 1);
+        fs.writeFileSync(corePath, JSON.stringify(core, null, 4));
+        return 0;
+    } else return -1;
+}
+
 module.exports.load = load;
 module.exports.overwrite = overwrite;
 module.exports.newkey = newkey;

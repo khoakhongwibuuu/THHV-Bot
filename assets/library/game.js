@@ -22,7 +22,10 @@ if (!fs.existsSync(gameSettingPath)) {
 
 const playerDataPath = dirname + '/configs/playerData.json';
 if (!fs.existsSync(playerDataPath)) {
-    fs.writeFileSync(playerDataPath, JSON.stringify({}));
+    fs.writeFileSync(playerDataPath, JSON.stringify({
+        twice: [],
+        saver: []
+    }));
 }
 
 // gameSetting.json
@@ -81,6 +84,8 @@ const allDataDelete = () => {
     Object.keys(playerdata).forEach(key => delete playerdata[key]);
     fs.writeFileSync(playerDataPath, JSON.stringify(playerdata));
 }
+
+const addBoost = (userID) => { }
 
 module.exports.saveScore = saveScore;
 module.exports.readScore = readScore;

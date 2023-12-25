@@ -72,8 +72,10 @@ String.prototype.logToFile = function (filename) {
 String.prototype.logToChannel = function () {
 	const serverLib = require('./server.js');
 	const guild = global.client.guilds.cache.get(serverLib.load().guildID);
-	const channel = guild.channels.cache.get(serverLib.load().log);
-	channel.send(`\`${this}\``);
+	if (serverLib.load().log !== "") {
+		const channel = guild.channels.cache.get(serverLib.load().log);
+		channel.send(`\`${this}\``);
+	}
 }
 
 String.prototype.URLdecode = function () {
