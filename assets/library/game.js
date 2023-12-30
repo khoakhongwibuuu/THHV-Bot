@@ -7,8 +7,11 @@ const dirname = global.dirname;
 const gameSettingPath = dirname + '/configs/gameSetting.json';
 if (!fs.existsSync(gameSettingPath)) {
     fs.writeFileSync(gameSettingPath, JSON.stringify({
+        enable: true,
         running: false,
-        rewardRole: "1169996017530318898",
+        rewardRole: "",
+        trashRole: "",
+        boostRate: 10,
         time: 12,
         up: 2,
         down: -3,
@@ -79,15 +82,53 @@ const resetScore = (userID) => {
     fs.writeFileSync(playerDataPath, JSON.stringify(playerdata));
 }
 
-const allDataDelete = () => {
+const allDataDelete = (mode) => {
     const playerdata = JSON.parse(fs.readFileSync(playerDataPath, 'utf8'));
-    Object.keys(playerdata).forEach(key => delete playerdata[key]);
+    if (mode === "score") {
+        Object.keys(playerdata).forEach(key => {
+            if (key !== "twice" && key !== "saver")
+                delete playerdata[key]
+        });
+    } else if (mode === "boost") {
+        playerdata["twice"] = [];
+        playerdata["saver"] = [];
+    } 
     fs.writeFileSync(playerDataPath, JSON.stringify(playerdata));
 }
 
-const addBoost = (userID) => { }
+const readBoost = (type) => {
+    return JSON.parse(fs.readFileSync(playerDataPath, 'utf8'))[type];
+}
+
+const hasBoost = (userID, type) => {
+    return readBoost(type).includes(userID);
+}
+
+const addBoost = (userID, type) => {
+    const playerdata = JSON.parse(fs.readFileSync(playerDataPath, 'utf8'));
+    if (!hasBoost(userID, type)) {
+        playerdata[type].push(userID);
+        playerdata[type].sort();
+        fs.writeFileSync(playerDataPath, JSON.stringify(playerdata));
+        return 1;
+    } else return 0;
+}
+
+const removeBoost = (userID, type) => {
+    const playerdata = JSON.parse(fs.readFileSync(playerDataPath, 'utf8'));
+    if (hasBoost(userID, type)) {
+        const userIndex = readBoost(type).indexOf(userID);
+        playerdata[type].splice(userIndex, 1);
+        fs.writeFileSync(playerDataPath, JSON.stringify(playerdata));
+        return 1;
+    } else return 0;
+}
 
 module.exports.saveScore = saveScore;
 module.exports.readScore = readScore;
 module.exports.resetScore = resetScore;
 module.exports.allDataDelete = allDataDelete;
+module.exports.readBoost = readBoost;
+module.exports.hasBoost = hasBoost;
+module.exports.addBoost = addBoost;
+module.exports.removeBoost = removeBoost;

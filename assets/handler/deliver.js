@@ -16,19 +16,19 @@ const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {
             .addComponents(
                 new Discord.ButtonBuilder()
                     .setCustomId('A')
-                    .setEmoji(emojiMap.a)
+                    .setLabel('A')
                     .setStyle('Primary'),
                 new Discord.ButtonBuilder()
                     .setCustomId('B')
-                    .setEmoji(emojiMap.b)
+                    .setLabel('B')
                     .setStyle('Primary'),
                 new Discord.ButtonBuilder()
                     .setCustomId('C')
-                    .setEmoji(emojiMap.c)
+                    .setLabel('C')
                     .setStyle('Primary'),
                 new Discord.ButtonBuilder()
                     .setCustomId('D')
-                    .setEmoji(emojiMap.d)
+                    .setLabel('D')
                     .setStyle('Primary')
             );
     } else {
@@ -69,7 +69,8 @@ const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {
         } else {
             memberVotedCount++;
             responseData[subInteraction.user.id] = subInteraction.customId;
-            await subInteraction.reply({ content: 'Successfully recorded your response.', ephemeral: true });
+            await subInteraction.reply({ content: 'Successfully recorded your response.', ephemeral: true })
+                .then(thisMessage => setTimeout(() => thisMessage.delete(), 2500));
             // console.log(emb)
             interaction.editReply({
                 embeds: [embed
@@ -84,7 +85,7 @@ const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {
     collector.on('end', () => {
         interaction.editReply({
             embeds: [embed
-                .setFooter({ text: "This session has ended." })
+                .setFooter({ text: `This session has ended. ${memberVotedCount} player${(memberVotedCount > 1) ? 's' : ''} joined.` })
             ],
             components: []
         });

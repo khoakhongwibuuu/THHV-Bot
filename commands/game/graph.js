@@ -19,24 +19,6 @@ module.exports = {
             const userID = target.id;
             const loadedData = gameLib.readScore(userID);
             if (loadedData !== "Unknown") {
-                const chartConfigString = encodeURIComponent(JSON.stringify({
-                    type: 'line',
-                    data: {
-                        labels: loadedData.map((value, index) => index),
-                        datasets: [{
-                            label: `Score of ${target.username}`,
-                            data: loadedData.filter(e => typeof e === 'number'),
-                            fill: false,
-                            borderColor: 'rgb(255, 105, 105)',
-                            tension: 0.1
-                        }]
-                    }
-                }));
-
-                // Image size
-                const width = 1440;
-                const height = 720;
-
                 let analyticsResult = {}, maxLength = 1, length = 1, correct = 0, datasize = loadedData.length;
                 for (let i = 1; i < datasize; i++) {
                     if (loadedData[i] > loadedData[i - 1]) {
@@ -58,30 +40,76 @@ module.exports = {
                     "correct": correct,
                     "max": Math.max(...loadedData)
                 };
-
-                interaction.reply({
-                    embeds: [new Discord.EmbedBuilder()
-                        .setTitle(`Score of ${target.username}`)
-                        .setDescription(`The following data belongs to <@${userID}>\n\n`
-                            + `Current score: \`${analyticsResult.current}\`\n`
-                            + `Attempts: \`${analyticsResult.attempt}\`\n`
-                            + `Highest Score: \`${analyticsResult.max}\`\n`
-                            + `Longest Streak: \`${analyticsResult.streak}\`\n`
-                            + `Correct Answers: \`${analyticsResult.correct}\`\n`
-                            + `Accuracy: \`${analyticsResult["accuracy"]}%\``)
-                        .setImage(`attachment://${userID}.png`)],
-                    files: [{
-                        attachment: `https://quickchart.io/chart?w=${width}&h=${height}&c=${chartConfigString}`,
-                        name: `${userID}.png`
-                    }]
-                });
+                const embed = new Discord.EmbedBuilder()
+                    .setTitle(`Score of ${target.username}`)
+                    .setDescription(`The following data belongs to <@${userID}>\n`)
+                    .addFields(
+                        {
+                            name: "Current Score",
+                            value: `\`\`\`\n${analyticsResult.current}\`\`\``,
+                            inline: true
+                        },
+                        {
+                            name: "Attempts",
+                            value: `\`\`\`\n${analyticsResult.attempt}\`\`\``,
+                            inline: true
+                        },
+                        {
+                            name: "Highest Score",
+                            value: `\`\`\`\n${analyticsResult.max}\`\`\``,
+                            inline: true
+                        },
+                        {
+                            name: "Longest Streak",
+                            value: `\`\`\`\n${analyticsResult.streak}\`\`\``,
+                            inline: true
+                        },
+                        {
+                            name: "Correct Answers",
+                            value: `\`\`\`\n${analyticsResult.correct}\`\`\``,
+                            inline: true
+                        },
+                        {
+                            name: "Accuracy",
+                            value: `\`\`\`\n${analyticsResult.accuracy}%\`\`\``,
+                            inline: true
+                        }
+                    )
+                if (analyticsResult.attempt < 250) {
+                    // Image size
+                    const width = 1440;
+                    const height = 720;
+                    const chartConfigString = encodeURIComponent(JSON.stringify({
+                        type: 'line',
+                        data: {
+                            labels: loadedData.map((value, index) => index),
+                            datasets: [{
+                                label: `Score of ${target.username}`,
+                                data: loadedData.filter(e => typeof e === 'number'),
+                                fill: false,
+                                borderColor: 'rgb(255, 105, 105)',
+                                tension: 0.1
+                            }]
+                        }
+                    }));
+                    interaction.reply({
+                        embeds: [embed.setImage(`attachment://${userID}.png`)],
+                        files: [{
+                            attachment: `https://quickchart.io/chart?w=${width}&h=${height}&c=${chartConfigString}`,
+                            name: `${userID}.png`
+                        }]
+                    });
+                } else {
+                    interaction.reply({
+                        embeds: [embed.setFooter({ text: "[WARN] - Your score history is to big to be display as a graph." })]
+                    });
+                }
             } else {
                 interaction.reply({
                     content: `${(userID === interaction.user.id) ? 'Your ' : `<@${userID}>'s `}data is not found in the database.`,
                     ephemeral: true
                 });
             }
-
         } else {
             interaction.reply({
                 content: "This command cannot be used outside THHV.",

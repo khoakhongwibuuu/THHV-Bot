@@ -24,7 +24,6 @@ const execute = (interaction, questionBlock) => {
         content += `**${OptionalKey}**. ${answer.URLdecode()}${idx == 3 ? "" : "\n"}`;
     });
 
-
     require('./deliver.js')
         .execute(interaction,
             questionBlock.category.URLdecode(),

@@ -6,6 +6,7 @@ const execute = (interaction, questionBlock) => {
     const serverLib = require(dirname + '/assets/library/server.js');
     const ETA = gameLib.loadSetting().time + gameLib.loadSetting().mode[questionBlock.difficulty];
     const correctKey = (questionBlock.correct_answer).URLdecode();
+
     require('./deliver.js')
         .execute(interaction,
             questionBlock.category.URLdecode(),

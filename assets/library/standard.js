@@ -62,7 +62,7 @@ String.prototype.prefixChecker = function (arr) {
 	return false;
 }
 
-String.prototype.logToFile = function (filename) {
+String.prototype.logToFile = function () {
 	const content = this;
 	fs.appendFile(dirname + '/logs/' + global.BotStartTime.replace(/:/g, "") + '.log', content + '\n', (err) => {
 		if (err) throw err;
@@ -108,6 +108,11 @@ const shuffle = (array) => {
 	}
 }
 
+const randomEvent = (limit) => {
+	return clockBasedRandom(1, limit) === clockBasedRandom(1, limit);
+}
+
 module.exports.serverTimezone = serverTimezone;
 module.exports.clockBasedRandom = clockBasedRandom;
 module.exports.shuffle = shuffle;
+module.exports.randomEvent = randomEvent;

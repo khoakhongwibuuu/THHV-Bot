@@ -9,11 +9,11 @@ module.exports = {
         const serverLib = require(dirname + '/assets/library/server.js');
         const coreLib = require(dirname + '/assets/library/core.js');
         if (serverLib.load().guildID === "") {
-            console.log('[ERROR] You have NOT provide a guild ID in configs/server.json, this BOT will be automatically turned off.');
+            console.log('[ERROR] You have NOT provide a guild ID in configs/server.json, for security reasons, this BOT will be automatically turned off.');
             process.exit(1);
         }
         if (coreLib.load().owner === "") {
-            console.log('[ERROR] You have NOT provide the Bot owner ID in configs/core.json, this BOT will be automatically turned off.');
+            console.log('[ERROR] You have NOT provide the Bot owner ID in configs/core.json, for security reasons, this BOT will be automatically turned off.');
             process.exit(1);
         }
 
@@ -21,8 +21,8 @@ module.exports = {
 
         client.user.setPresence({
             activities: [{
-                name: 'codeforces contest.',
-                type: Discord.ActivityType.Watching
+                name: 'Mention me to get started.',
+                type: Discord.ActivityType.Playing
             }],
             status: 'online'
         });

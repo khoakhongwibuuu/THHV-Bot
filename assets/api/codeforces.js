@@ -1,6 +1,6 @@
 // Special library
 const fs = require('fs');
-const { EmbedBuilder } = require('discord.js');
+const Discord = require('discord.js');
 // import fetch from 'node-fetch';
 
 // Basic variables
@@ -26,7 +26,7 @@ const notify = (res, id, name, url, startTime, type) => {
 		if (!Persist.ready[guild.id]) return;
 		const channelID = Persist.channel[guild.id];
 		const channel = guild.channels.cache.get(channelID);
-		const embed = new EmbedBuilder()
+		const embed = new Discord.EmbedBuilder()
 			.setAuthor({
 				name: client.user.username,
 				iconURL: client.user.displayAvatarURL()

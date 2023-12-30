@@ -11,7 +11,7 @@ if (!fs.existsSync(corePath)) {
         owner: "671624293674909717",
         trusted: [],
         timezone: 7,
-        notificationRole: "1139230081236090910",
+        notificationRole: "",
         notificationHours: [
             1,
             6,
