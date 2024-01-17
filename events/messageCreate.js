@@ -7,7 +7,6 @@ module.exports = {
 	async execute(msg) {
 		if (msg.author.bot) return;
 		const coreLib = require(dirname + '/assets/library/core.js');
-		const gameLib = require(dirname + '/assets/library/game.js');
 		const serverLib = require(dirname + '/assets/library/server.js');
 		const suggestChannel = serverLib.load().suggest;
 		if (msg.channel.id === suggestChannel) {
