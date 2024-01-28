@@ -1,0 +1,37 @@
+const Discord = require('discord.js');
+const dirname = global.dirname;
+const stdlib = global.stdlib;
+
+module.exports = {
+    data: new Discord.SlashCommandBuilder()
+        .setName('untrust')
+        .setDescription('[ADMIN ONLY] - Revoke authorisation from a user.')
+        .addUserOption(option =>
+            option.setName('target')
+                .setDescription('The user')
+                .setRequired(true)),
+    async execute(interaction) {
+        const coreLib = require(dirname + '/assets/library/core.js');
+        const config = coreLib.load();
+        if (interaction.user.id === config.owner) {
+            const userID = interaction.options.get('target').value;
+            if (userID === config.owner || !config.trusted.includes(userID)) {
+                interaction.reply({
+                    content: "This command is not avaiable for that user.",
+                    ephemeral: true
+                });
+            } else {
+                coreLib.untrust(userID);
+                interaction.reply({
+                    content: `Successfully removed <@${userID}> from trusted members.`,
+                    ephemeral: true
+                });
+            }
+        } else {
+            interaction.reply({
+                content: "You do not have permission to run this command.",
+                ephemeral: true
+            });
+        }
+    },
+};

@@ -22,6 +22,7 @@ const client = new Discord.Client({
 		Discord.GatewayIntentBits.DirectMessageTyping
 	],
 });
+
 global.client = client;
 
 const stdlib = require('./assets/library/standard.js');
@@ -63,12 +64,12 @@ global.BotStartTime = BotStartTime;
 
 client.on('error', (err) => {
 	console.error(err);
-	('Client error occured: ' + new Date()).logE();
+	(`[${new Date().toISOString()}] [WARNING] Client error occured. Please review.`).logE();
 });
 
 process.on('uncaughtException', (err) => {
 	console.error(err);
-	(`[${new Date().toISOString()}] [ERROR] Exiting due to uncaught exception: `).logE();
+	(`[${new Date().toISOString()}] [ERROR] Exiting due to uncaught exception.`).logE();
 	process.exit(1);
 });
 

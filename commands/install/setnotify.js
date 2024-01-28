@@ -9,7 +9,7 @@ const savePersist = () => { fs.writeFileSync(dirname + '/configs/persist.json', 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('setnotify')
-        .setDescription('[DEVELOPER ONLY] - Set Codeforces contests notification channel.'),
+        .setDescription('[ADMIN ONLY] - Set Codeforces contests notification channel.'),
     async execute(interaction) {
         const coreLib = require(dirname + '/assets/library/core.js');
         const serverLib = require(dirname + '/assets/library/server.js');

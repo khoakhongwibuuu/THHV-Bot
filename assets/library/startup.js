@@ -33,3 +33,4 @@ if (!fs.existsSync(persistPath)) {
         channel: {}
     }));
 }
+

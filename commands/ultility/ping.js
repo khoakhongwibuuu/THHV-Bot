@@ -8,6 +8,6 @@ module.exports = {
         .setName('ping')
         .setDescription('Check if the BOT is dead or not.'),
     async execute(interaction) {
-        await interaction.reply("Pong!");
+        await interaction.reply("Pong!").then(thismsg => thismsg.edit(`Pong! \`${new Date().getTime() - interaction.createdTimestamp}ms\``));
     },
 };

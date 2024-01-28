@@ -63,8 +63,9 @@ String.prototype.prefixChecker = function (arr) {
 }
 
 String.prototype.logToFile = function () {
-	const content = this;
-	fs.appendFile(dirname + '/logs/' + global.BotStartTime.replace(/:/g, "") + '.log', content + '\n', (err) => {
+	const content = JSON.stringify(this);
+	console.log(content.substring(1, content.length - 1));
+	fs.appendFile(dirname + '/logs/' + global.BotStartTime.replace(/:/g, "") + '.log', content.substring(1, content.length - 1) + '\n', (err) => {
 		if (err) throw err;
 	});
 }
@@ -74,7 +75,10 @@ String.prototype.logToChannel = function () {
 	const guild = global.client.guilds.cache.get(serverLib.load().guildID);
 	if (serverLib.load().log !== "") {
 		const channel = guild.channels.cache.get(serverLib.load().log);
-		channel.send(`\`${this}\``);
+		if (channel) {
+			const content = JSON.stringify(this);
+			channel.send(`\`${content.substring(1, content.length - 1)}\``);
+		}
 	}
 }
 
@@ -86,7 +90,6 @@ String.prototype.logE = function () {
 	const content = JSON.stringify(this)
 	content.substring(1, content.length - 1).logToChannel();
 	content.substring(1, content.length - 1).logToFile();
-	console.log(content.substring(1, content.length - 1))
 }
 
 const serverTimezone = () => {

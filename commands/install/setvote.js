@@ -6,7 +6,7 @@ const stdlib = global.stdlib;
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('setvote')
-        .setDescription('[DEVELOPER ONLY] - Set voting channel.'),
+        .setDescription('[ADMIN ONLY] - Set voting channel.'),
     async execute(interaction) {
         const coreLib = require(dirname + '/assets/library/core.js');
         const serverLib = require(dirname + '/assets/library/server.js');

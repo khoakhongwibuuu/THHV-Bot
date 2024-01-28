@@ -5,7 +5,7 @@ const stdlib = global.stdlib;
 module.exports = {
 	name: Discord.Events.MessageCreate,
 	async execute(msg) {
-		if (msg.author.bot) return;
+		if (msg.author.bot || msg.system) return;
 		const coreLib = require(dirname + '/assets/library/core.js');
 		const serverLib = require(dirname + '/assets/library/server.js');
 		const suggestChannel = serverLib.load().suggest;

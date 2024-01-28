@@ -1,7 +1,6 @@
 // Special library
 const fs = require('fs');
 const Discord = require('discord.js');
-// import fetch from 'node-fetch';
 
 // Basic variables
 const client = global.client;
