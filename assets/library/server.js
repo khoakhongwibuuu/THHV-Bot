@@ -7,13 +7,13 @@ const dirname = global.dirname;
 const serverPath = dirname + '/configs/server.json';
 if (!fs.existsSync(serverPath)) {
     fs.writeFileSync(serverPath, JSON.stringify({
-        guildID: "",
-        log: "",
-        suggest: "",
-        panel: "",
+        guildID: "698528270873788466",
+        log: "1183439042138865865",
+        suggest: "700384376147673232",
+        panel: "1152758629506748557",
         emoji: {
-            yes: "",
-            no: ""
+            yes: "700345520081600512",
+            no: "700345520039657613"
         }
     }, null, 4));
 }
