@@ -111,8 +111,8 @@ const clock = () => {
 }
 
 const exec = () => {
-	// setTimeout(clock, 1000 * (60 - new Date().getSeconds()));
-	clock();
+	setTimeout(clock, 1000 * (60 - new Date().getSeconds()));
+	// clock();
 }
 
 module.exports.exec = exec;
