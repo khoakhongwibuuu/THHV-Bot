@@ -1,6 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 global.dirname = __dirname;
+global.coreLib = require('./assets/library/core.js');
 require('./assets/library/startup.js');
 
 const Discord = require('discord.js');
@@ -22,7 +23,6 @@ const client = new Discord.Client({
 		Discord.GatewayIntentBits.DirectMessageTyping
 	],
 });
-
 global.client = client;
 
 const stdlib = require('./assets/library/standard.js');

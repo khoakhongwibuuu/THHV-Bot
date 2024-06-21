@@ -54,14 +54,6 @@ Number.prototype.numFormat = function () {
 	return (this > 0) ? "+" + JSON.stringify(this) : JSON.stringify(this);
 }
 
-String.prototype.prefixChecker = function (arr) {
-	const tempString = this.toLowerCase();
-	for (i of arr)
-		if (tempString.startsWith(i.toLowerCase()))
-			return true;
-	return false;
-}
-
 String.prototype.logToFile = function () {
 	const content = JSON.stringify(this);
 	console.log(content.substring(1, content.length - 1));
@@ -70,25 +62,12 @@ String.prototype.logToFile = function () {
 	});
 }
 
-String.prototype.logToChannel = function () {
-	const serverLib = require('./server.js');
-	const guild = global.client.guilds.cache.get(serverLib.load().guildID);
-	if (serverLib.load().log !== "") {
-		const channel = guild.channels.cache.get(serverLib.load().log);
-		if (channel) {
-			const content = JSON.stringify(this);
-			channel.send(`\`${content.substring(1, content.length - 1)}\``);
-		}
-	}
-}
-
 String.prototype.URLdecode = function () {
 	return decodeURIComponent(this);
 }
 
 String.prototype.logE = function () {
 	const content = JSON.stringify(this)
-	content.substring(1, content.length - 1).logToChannel();
 	content.substring(1, content.length - 1).logToFile();
 }
 

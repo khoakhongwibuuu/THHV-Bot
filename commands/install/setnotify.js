@@ -2,6 +2,7 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
+const coreLib = global.coreLib;
 
 const Persist = JSON.parse(fs.readFileSync(dirname + '/configs/persist.json', 'utf8'));
 const savePersist = () => { fs.writeFileSync(dirname + '/configs/persist.json', JSON.stringify(Persist)); }
@@ -9,11 +10,8 @@ const savePersist = () => { fs.writeFileSync(dirname + '/configs/persist.json', 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('setnotify')
-        .setDescription('[ADMIN ONLY] - Set Codeforces contests notification channel.'),
+        .setDescription('Set Codeforces contests notification channel.'),
     async execute(interaction) {
-        const coreLib = require(dirname + '/assets/library/core.js');
-        const serverLib = require(dirname + '/assets/library/server.js');
-        const server = serverLib.load();
         const config = coreLib.load();
         if (interaction.user.id === config.owner || config.trusted.includes(interaction.user.id)) {
             Persist.channel[interaction.guild.id] = interaction.channel.id;

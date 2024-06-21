@@ -14,9 +14,6 @@ if (!fs.existsSync(dirname + '/logs')) {
     fs.mkdirSync(dirname + '/logs', { recursive: true });
 }
 
-const coreLib = require('./core.js');
-const serverLib = require('./server.js');
-
 const authPath = dirname + '/configs/auth.json';
 if (!fs.existsSync(authPath)) {
     fs.writeFileSync(authPath, JSON.stringify({
