@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
 const coreLib = global.coreLib;
+const discordAPI = global.discordAPI;
 
 const Persist = JSON.parse(fs.readFileSync(dirname + '/configs/persist.json', 'utf8'));
 const savePersist = () => { fs.writeFileSync(dirname + '/configs/persist.json', JSON.stringify(Persist)); }
@@ -13,7 +14,7 @@ module.exports = {
         .setDescription('Set Codeforces contests notification channel.'),
     async execute(interaction) {
         const config = coreLib.load();
-        if (interaction.user.id === config.owner || config.trusted.includes(interaction.user.id)) {
+        if (interaction.user.id === config.owner || config.trusted.includes(interaction.user.id) || discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
             Persist.channel[interaction.guild.id] = interaction.channel.id;
             Persist.ready[interaction.guild.id] = true;
             savePersist();

@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
 const coreLib = global.coreLib;
+const discordAPI = global.discordAPI;
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -9,7 +10,7 @@ module.exports = {
         .setDescription('Turn off the bot.'),
     async execute(interaction) {
         const config = coreLib.load();
-        if (interaction.user.id === config.owner || config.trusted.includes(interaction.user.id)) {
+        if (interaction.user.id === config.owner || config.trusted.includes(interaction.user.id) || discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
             interaction.reply({
                 content: "The bot has stopped working!",
                 ephemeral: true
