@@ -20,6 +20,6 @@ module.exports = {
             }],
             status: 'online'
         });
-        require(dirname + '/assets/api/codeforces.js').exec();
+        require(dirname + '/assets/api/codeforces.api.js').exec();
     },
 };

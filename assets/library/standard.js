@@ -70,31 +70,3 @@ String.prototype.logE = function () {
 	const content = JSON.stringify(this)
 	content.substring(1, content.length - 1).logToFile();
 }
-
-const serverTimezone = () => {
-	let now = new Date();
-	let timezoneOffset = (now.getTimezoneOffset()) / -60;
-	return timezoneOffset;
-}
-
-const clockBasedRandom = (l, h) => {
-	let x = Math.floor(Math.random() * Math.random() * Date.now());
-	return l + x % (h - l + 1);
-}
-
-const shuffle = (array) => {
-	for (let x = 0; x < (array.length) * (array.length); x++) {
-		let i = clockBasedRandom(0, array.length - 1);
-		let j = clockBasedRandom(0, array.length - 1);
-		[array[i], array[j]] = [array[j], array[i]];
-	}
-}
-
-const randomEvent = (limit) => {
-	return clockBasedRandom(1, limit) === clockBasedRandom(1, limit);
-}
-
-module.exports.serverTimezone = serverTimezone;
-module.exports.clockBasedRandom = clockBasedRandom;
-module.exports.shuffle = shuffle;
-module.exports.randomEvent = randomEvent;

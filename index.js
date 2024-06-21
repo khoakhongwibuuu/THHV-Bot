@@ -25,8 +25,8 @@ const client = new Discord.Client({
 });
 global.client = client;
 
-const stdlib = require('./assets/library/standard.js');
-global.stdlib = stdlib;
+global.discordAPI = require('./assets/api/discord.api.js');
+global.stdlib = require('./assets/library/standard.js');
 
 client.commands = new Discord.Collection();
 const foldersPath = path.join(__dirname, 'commands');

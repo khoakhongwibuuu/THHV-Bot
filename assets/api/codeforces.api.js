@@ -7,6 +7,7 @@ const client = global.client;
 const stdlib = global.stdlib;
 const dirname = global.dirname;
 const coreLib = global.coreLib;
+const discordAPI = global.discordAPI;
 
 // Load settings from core.json
 const notificationHour = coreLib.load().notificationHour;
@@ -29,11 +30,6 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 	});
 	notifiable.forEach(guild => {
 		if (!Persist.ready[guild.id]) return;
-
-		// Init destination
-		const channelID = Persist.channel[guild.id];
-		const channel = guild.channels.cache.get(channelID);
-
 		// Create Embed
 		const embed = new Discord.EmbedBuilder()
 			.setAuthor({
@@ -64,7 +60,9 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 			.addComponents(webviewbtn, registerbtn);
 
 		// Deliver
-		channel.send({
+		const guildId = guild.id;
+		const channelId = Persist.channel[guild.id];
+		discordAPI.GuildChannel(guildId, channelId).send({
 			content: (notificationRole === "") ? "Upcoming contest announced!" : `<@&${notificationRole}>, upcoming contest announced!`,
 			embeds: [embed],
 			components: [row]
@@ -106,14 +104,15 @@ const clock = () => {
 		})
 		.catch(err => {
 			Tolerance--;
-			(`[${new Date().toISOString()}] [WARN] Client: Cannot connect to codeforces.com. Details of this error:`).logE();
+			(`[${new Date().toISOString()}] [WARN] Client: An error occurred. Details of this error:`).logE();
 			console.log(err);
 		});
 	setTimeout(clock, 1000 * 60 * clockInterval - new Date().getMilliseconds());
 }
 
 const exec = () => {
-	setTimeout(clock, 1000 * (60 - new Date().getSeconds()));
+	// setTimeout(clock, 1000 * (60 - new Date().getSeconds()));
+	clock();
 }
 
 module.exports.exec = exec;
