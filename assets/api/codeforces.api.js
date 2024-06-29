@@ -63,7 +63,9 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		const guildId = guild.id;
 		const channelId = Persist.channel[guild.id];
 		discordAPI.GuildChannel(guildId, channelId).send({
-			content: (notificationRole === "") ? "Upcoming contest announced!" : `<@&${notificationRole}>, upcoming contest announced!`,
+			content: (notificationRole === "")
+				? "Upcoming contest announced!"
+				: `<@&${notificationRole}>, upcoming contest announced!`,
 			embeds: [embed],
 			components: [row]
 		});
