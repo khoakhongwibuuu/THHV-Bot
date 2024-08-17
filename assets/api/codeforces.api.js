@@ -12,14 +12,17 @@ const discordAPI = global.discordAPI;
 // Load settings from core.json
 const notificationHour = coreLib.load().notificationHour;
 const notificationRole = coreLib.load().notificationRole;
+const owner = coreLib.load().owner;
 
 // Special API
 const Persist = JSON.parse(fs.readFileSync(dirname + '/configs/persist.json', 'utf8'));
 const savePersist = () => { fs.writeFileSync(dirname + '/configs/persist.json', JSON.stringify(Persist)); }
 
 // Clock setting
-let Tolerance = 5; // Alert if codeforces API is unavailable for 20 minutes
 const clockInterval = 5; // Connect to codeforces.com after every 5 minutes
+
+// API link
+const CODEFORCES_API = 'http://codeforces.com/api/contest.list'
 
 const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => {
 	const notifiable = client.guilds.cache.filter(guild => {
@@ -38,7 +41,7 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 			})
 			.setTitle(name)
 			.setURL(contesturl)
-			.setDescription(`Contest starts <t:${startTime / 1000}:F>`)
+			.setDescription(`Contest starts <t:${startTime / 1000}:F> (<t:${startTime / 1000}:R>)`)
 			.setFooter({
 				text: `${domain} | This message was sent at`
 			})
@@ -78,13 +81,13 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 
 const clock = () => {
 	(`[${new Date().toISOString()}] [INFO] Client: start connecting to codeforces.com.`).logE();
-	fetch('http://codeforces.com/api/contest.list')
+	fetch(CODEFORCES_API)
 		.then(data => data.json())
 		.then(res => {
 			if (res.status === 'OK') {
 				const list = res.result.filter(contest => contest.phase === 'BEFORE');
-				(`[${new Date().toISOString()}] [INFO] Client: Connected successfully. Found ${list.length} scheduled contests.`).logE();
-				Tolerance = 5;
+				(`[${new Date().toISOString()}] [INFO] Client: connected successfully. Found ${list.length} scheduled contests.`).logE();
+
 				list.forEach(contest => {
 					const startTime = new Date(parseInt(contest.startTimeSeconds) * 1000);
 					const rtime = -contest.relativeTimeSeconds;
@@ -96,25 +99,50 @@ const clock = () => {
 					}
 				});
 			} else {
-				Tolerance--;
-				if (Tolerance > 0)
-					(`[${new Date().toISOString()}] [WARN] Client: server is busy. Try connect again in ${clockInterval} minutes.`).logE();
-				else {
-					(`[${new Date().toISOString()}] [WARN] Client: server is busy.`).logE();
-				}
+				(`[${new Date().toISOString()}] [WARN] Client: server is busy. Try connecting again in ${clockInterval} minutes.`).logE();
 			}
 		})
 		.catch(err => {
-			Tolerance--;
-			(`[${new Date().toISOString()}] [WARN] Client: An error occurred. Details of this error:`).logE();
+			(`[${new Date().toISOString()}] [WARN] Client: host unreachable. Try connecting again in ${clockInterval} minutes.`).logE();
 			console.log(err);
 		});
 	setTimeout(clock, 1000 * 60 * clockInterval - new Date().getMilliseconds());
 }
 
+const clockStandby = (delay) => {
+	setTimeout(clock, delay);
+}
+
+const getDelay = (now) => {
+	let minutes = 5 * (Math.floor(now.getMinutes() / 5) + 1) - now.getMinutes();
+	let seconds = 0;
+	let miliSeconds = 0;
+	if (now.getSeconds() !== 0) {
+		minutes--;
+		seconds = 60 - now.getSeconds();
+	}
+
+	if (now.getMilliseconds() !== 0) {
+		seconds--;
+		miliSeconds = 1000 - now.getMilliseconds();
+		if (seconds === -1) {
+			seconds = 59;
+			minutes--;
+		}
+	}
+
+	return {
+		m: minutes,
+		s: seconds,
+		ms: miliSeconds
+	};
+}
+
 const exec = () => {
-	setTimeout(clock, 1000 * (60 - new Date().getSeconds()));
-	// clock();
+	const now = new Date();
+	const delay = getDelay(now);
+	(`[${new Date().toISOString()}] [INFO] Client: the clock will start in ${delay.m}m-${delay.s}s-${delay.ms}ms.`).logE();
+	clockStandby(delay.m * 60 * 100 + delay.s * 1000 + delay.ms);
 }
 
 module.exports.exec = exec;

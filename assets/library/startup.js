@@ -1,5 +1,5 @@
 // Special library
-const fs = require('fs');
+const fs = require('node:fs');
 
 // Basic variables
 const dirname = global.dirname;

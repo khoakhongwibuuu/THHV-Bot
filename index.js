@@ -69,12 +69,14 @@ client.on('error', (err) => {
 
 process.on('uncaughtException', (err) => {
 	console.error(err);
-	(`[${new Date().toISOString()}] [ERROR] Exiting due to uncaught exception.`).logE();
-	process.exit(1);
+	(`[${new Date().toISOString()}] [ERROR] The bot was automatically shut down by uncaught exception.`).logE();
+	setTimeout(() => process.exit(1), 1000);
 });
 
 process.on('unhandledRejection', (err) => {
 	console.error(err);
+	(`[${new Date().toISOString()}] [ERROR] The bot was automatically shut down by unhandled rejection.`).logE();
+	setTimeout(() => process.exit(1), 1000);
 });
 
 if (token != "")

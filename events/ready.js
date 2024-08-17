@@ -15,7 +15,7 @@ module.exports = {
 
         client.user.setPresence({
             activities: [{
-                name: 'orz khoa.khong.wibuuu',
+                name: '',
                 type: Discord.ActivityType.Playing
             }],
             status: 'online'

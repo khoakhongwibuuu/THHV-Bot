@@ -14,7 +14,7 @@ module.exports = {
         .setDescription('Set Codeforces contests notification channel.'),
     async execute(interaction) {
         const config = coreLib.load();
-        if (interaction.user.id === config.owner || config.trusted.includes(interaction.user.id) || discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+        if (interaction.user.id === config.owner || discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
             Persist.channel[interaction.guild.id] = interaction.channel.id;
             Persist.ready[interaction.guild.id] = true;
             savePersist();
