@@ -11,7 +11,7 @@ module.exports = {
             (`[${new Date().toISOString()}] [ERROR] You have NOT provide the Bot owner ID in configs/core.json. This BOT will be automatically turned off.`).logToFile();
             process.exit(1);
         }
-        (`[${BotStartTime}] [SUCCESS] Ready! Logged in as ${client.user.tag}`).logE();
+        (`[${global.BotStartTime}] [SUCCESS] Ready! Logged in as ${client.user.tag}`).logE();
 
         client.user.setPresence({
             activities: [{
