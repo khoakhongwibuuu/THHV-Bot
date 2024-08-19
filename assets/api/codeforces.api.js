@@ -138,7 +138,7 @@ const exec = () => {
 	const now = new Date();
 	const delay = getDelay(now);
 	(`[${new Date().toISOString()}] [INFO] Client: the clock will start in ${delay.m}m-${delay.s}s-${delay.ms}ms.`).logE();
-	setTimeout(clock, delay.m * 60 * 100 + delay.s * 1000 + delay.ms);
+	setTimeout(clock, delay.m * 60 * 1000 + delay.s * 1000 + delay.ms);
 }
 
 module.exports.exec = exec;
