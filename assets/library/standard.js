@@ -10,6 +10,10 @@ String.prototype.logToFile = function () {
 }
 
 String.prototype.logToChannel = function () {
+	const channel = client.guilds.cache.get('698528270873788466').channels.cache.get('1273259339960029214');
+	channel.send({
+		content: `\`${this}\``
+	});
 }
 
 String.prototype.logE = function () {
