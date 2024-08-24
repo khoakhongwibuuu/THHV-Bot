@@ -13,7 +13,9 @@
     "main": "index.js",
     "directories": {},
     "scripts": {
-        "start": "node index.js"
+        "start": "node --env-file=./auth/login.env index.js",
+        "deploy": "node --env-file=./auth/login.env ./deploy.js",
+        "undeploy": "node --env-file=./auth/login.env ./undeploy.js"
     },
     "keywords": [],
     "author": "khoa.khong.wibuuu",

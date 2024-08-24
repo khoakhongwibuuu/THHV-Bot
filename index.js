@@ -1,11 +1,17 @@
+const BotStartTime = new Date().toISOString();
+global.BotStartTime = BotStartTime;
+
 const fs = require('node:fs');
 const path = require('node:path');
+
 global.dirname = __dirname;
-global.coreLib = require('./assets/library/core.js');
-require('./assets/library/startup.js');
+const dirname = global.dirname;
+
+if (!fs.existsSync(dirname + '/logs')) {
+	fs.mkdirSync(dirname + '/logs', { recursive: true });
+}
 
 const Discord = require('discord.js');
-const { token } = require('./configs/auth.json');
 
 const client = new Discord.Client({
 	intents: [
@@ -59,27 +65,24 @@ for (const file of eventFiles) {
 	}
 }
 
-const BotStartTime = new Date().toISOString();
-global.BotStartTime = BotStartTime;
-
 client.on('error', (err) => {
+	(`[${new Date().toISOString()}] [WARNING] Error occured. Please review.`).logOffline();
 	console.error(err);
-	(`[${new Date().toISOString()}] [WARNING] Client error occured. Please review.`).logE();
 });
 
 process.on('uncaughtException', (err) => {
+	(`[${new Date().toISOString()}] [ERROR] The bot was automatically shut down by uncaught exception.`).logOffline();
 	console.error(err);
-	(`[${new Date().toISOString()}] [ERROR] The bot was automatically shut down by uncaught exception.`).logE();
 	setTimeout(() => process.exit(1), 1000);
 });
 
 process.on('unhandledRejection', (err) => {
+	(`[${new Date().toISOString()}] [WARN] The bot was automatically shut down by unhandled rejection.`).logOffline();
 	console.error(err);
-	(`[${new Date().toISOString()}] [ERROR] The bot was automatically shut down by unhandled rejection.`).logE();
 	setTimeout(() => process.exit(1), 1000);
 });
 
-if (token != "")
-	client.login(token);
+if (process.env.TOKEN != "")
+	client.login(process.env.TOKEN);
 else
 	console.log("Please provide a token.")

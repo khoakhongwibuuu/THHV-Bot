@@ -1,4 +1,6 @@
 const Discord = require('discord.js');
+const path = require('path');
+
 const dirname = global.dirname;
 const stdlib = global.stdlib;
 
@@ -12,7 +14,7 @@ module.exports = {
 			return;
 		}
 		try {
-			await (`[${new Date().toISOString()}] [COMMAND] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: /${command.data.name}`).logE();
+			await (`[${new Date().toISOString()}] [COMMAND] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: /${command.data.name}`).logOffline();
 			await command.execute(interaction);
 		} catch (error) {
 			console.error(error);

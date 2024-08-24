@@ -1,24 +1,21 @@
-
 const Discord = require('discord.js');
 const dirname = global.dirname;
 const stdlib = global.stdlib;
-const coreLib = global.coreLib;
 const discordAPI = global.discordAPI;
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
-        .setName('clear-cache')
-        .setDescription('Clear bot cache.'),
+        .setName('shutdown')
+        .setDescription('Turn off the bot.'),
     async execute(interaction) {
-        const config = coreLib.load();
-
-        if (interaction.user.id === config.owner || discordAPI.isAdmin(interaction.guild.id, interaction.user.id)) {
-            stdlib.clearCache(global.BotStartTime.replace(/:/g, ""));
+        if (process.env.OWNER_ID === interaction.user.id || discordAPI.isAdmin(interaction.guild.id, interaction.user.id)) {
             interaction.reply({
-                content: "Cache cleared!",
+                content: "The bot has stopped working!",
                 ephemeral: true
             });
-
+            
+            (`[${new Date().toISOString()}] [WARNING] Bot was shut down manually by ${interaction.user.id} (${interaction.user.username})`).logOffline();
+            setTimeout(() => process.exit(1), 1500);
         } else {
             interaction.reply({
                 content: "You do not have permission to run this command.",

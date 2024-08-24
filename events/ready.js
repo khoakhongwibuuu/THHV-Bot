@@ -1,4 +1,6 @@
 const Discord = require('discord.js');
+const path = require('path');
+
 const dirname = global.dirname;
 const stdlib = global.stdlib;
 
@@ -6,13 +8,14 @@ module.exports = {
     name: Discord.Events.ClientReady,
     once: true,
     async execute(client) {
-        const coreLib = require(dirname + '/assets/library/core.js');
-        if (coreLib.load().owner === "") {
-            (`[${new Date().toISOString()}] [ERROR] You have NOT provide the Bot owner ID in configs/core.json. This BOT will be automatically turned off.`).logToFile();
+        if (process.env.OWNER_ID === "") {
+            (`[${new Date().toISOString()}] [ERROR] You have NOT provide the Bot owner ID in auth/login.key. This BOT will be automatically turned off.`).logOffline();
             process.exit(1);
         }
-        (`[${global.BotStartTime}] [SUCCESS] Ready! Logged in as ${client.user.tag}`).logE();
 
+        (`[${new Date().toISOString()}] [SUCCESS] Ready! Logged in as ${client.user.tag}`).logOffline();
+        // Load modules
+        require(path.join(dirname, '/modules/codeforces-contest/main.js'));
         client.user.setPresence({
             activities: [{
                 name: '',
@@ -20,6 +23,5 @@ module.exports = {
             }],
             status: 'online'
         });
-        require(dirname + '/assets/api/codeforces.api.js').exec();
     },
 };

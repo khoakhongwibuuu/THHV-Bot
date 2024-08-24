@@ -1,7 +1,6 @@
-configs/*
+modules/*/config
 node_modules/*
 cache/*
 logs/*
 test/*
 auth/*
-.idea/*

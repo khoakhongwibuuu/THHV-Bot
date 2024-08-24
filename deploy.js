@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-const { ClientID, token } = require('./configs/auth.json');
 const fs = require('node:fs');
 const path = require('node:path');
 global.dirname = __dirname
@@ -23,12 +22,12 @@ for (const folder of commandFolders) {
     }
 }
 
-const rest = new Discord.REST().setToken(token);
+const rest = new Discord.REST().setToken(process.env.TOKEN);
 
 (async () => {
     try {
         console.log(`Started refreshing ${commands.length} application (/) commands.`);
-        const data = await rest.put(Discord.Routes.applicationCommands(ClientID), { body: commands });
+        const data = await rest.put(Discord.Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
         console.log(`Successfully reloaded ${data.length} application (/) commands.`);
     } catch (error) {
         console.error(error);
