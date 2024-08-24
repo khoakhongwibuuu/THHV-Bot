@@ -1,4 +1,4 @@
-modules/*/config
+modules/*/config/*
 node_modules/*
 cache/*
 logs/*
