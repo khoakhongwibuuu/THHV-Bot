@@ -24,11 +24,9 @@ module.exports = {
     async execute(interaction) {
         if (discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
             const Persist = cfLib.loadPersist();
-
             Persist.channel[interaction.guild.id] = interaction.channel.id;
             Persist.ready[interaction.guild.id] = true;
             Persist.role[interaction.guild.id] = interaction.options.getRole('role').id;
-
             cfLib.savePersist(Persist);
 
             interaction.reply({
