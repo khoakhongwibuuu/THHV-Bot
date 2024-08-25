@@ -20,7 +20,7 @@ const clockInterval = 5;
 const debugMode = false;
 
 // notify contest 24h before it starts
-const demandHours = 48;
+const demandHours = 24;
 
 // API link
 const CODEFORCES_API = 'http://codeforces.com/api/contest.list'
@@ -32,6 +32,7 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		if (!Persist[domain][guild.id][hours]) Persist[domain][guild.id][hours] = [];
 		return Persist[domain][guild.id][hours].indexOf(id) < 0;
 	});
+	(`[${new Date().toISOString()}] [INFO] Client: data processed successfully. Found ${notifiable.length} notifiable servers.`).logOffline();
 	notifiable.forEach(guild => {
 		if (!Persist.ready[guild.id]) return;
 
@@ -68,9 +69,7 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		const guildId = guild.id;
 		const channelId = Persist.channel[guild.id];
 		discordAPI.GuildChannel(guildId, channelId).send({
-			content: (Persist.role[guild.id] === "")
-				? "Upcoming contest announced!"
-				: `<@&${Persist.role[guild.id]}>, upcoming contest announced!`,
+			content: `<@&${Persist.role[guild.id]}>, upcoming contest announced!`,
 			embeds: [embed],
 			components: [row]
 		});
