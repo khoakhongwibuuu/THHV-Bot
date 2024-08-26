@@ -7,6 +7,7 @@ const stdlib = global.stdlib;
 module.exports = {
 	name: Discord.Events.MessageCreate,
 	async execute(msg) {
+		if (msg.author.bot || msg.system || msg.tts || msg.content.hasWhiteSpace() || !msg.content.englishOnly()) return;
 		require(path.join(dirname, 'modules/word-match/lib/wordLib.js')).handleInput(msg);
 	},
 };

@@ -70,7 +70,6 @@ const modifyPlayerScore = (guildId, playerId, offset) => {
 }
 
 const handleInput = (msg) => {
-    if (msg.author.bot || msg.system || msg.tts || msg.content.hasWhiteSpace() || !msg.content.englishOnly()) return;
     if (isValidChannel(msg.guildId, msg.channelId)) {
         let guildData = loadGuildFile(msg.guildId);
         if (msg.author.id === guildData.recentUser) {
