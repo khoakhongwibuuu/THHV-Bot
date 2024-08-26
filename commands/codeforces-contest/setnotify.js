@@ -18,7 +18,7 @@ module.exports = {
         .addRoleOption(option =>
             option.setName("role")
                 .setDescription("The role to be notified.")
-                .setRequired(true)
+                .setRequired(false)
         )
     ,
     async execute(interaction) {
@@ -26,11 +26,12 @@ module.exports = {
             const Persist = cfLib.loadPersist();
             Persist.channel[interaction.guild.id] = interaction.channel.id;
             Persist.ready[interaction.guild.id] = true;
-            Persist.role[interaction.guild.id] = interaction.options.getRole('role').id;
+            const notifier = interaction.options.getRole('role') ?? { id: "" };
+            Persist.role[interaction.guild.id] = notifier.id;
             cfLib.savePersist(Persist);
 
             interaction.reply({
-                content: `Notification channel has been set. I will notify members this role <@&${interaction.options.getRole('role').id}> \`24\` hours before a contest.`,
+                content: `Notification channel has been set at <#${interaction.channel.id}>. I will notify${(notifier.id != "") ? ` members this role <@&${notifier.id}>` : ""} \`24\` hours before a contest.`,
                 ephemeral: true
             });
         } else {
