@@ -69,6 +69,16 @@ const modifyPlayerScore = (guildId, playerId, offset) => {
     return guildData;
 }
 
+const getUserScore = (guildId, playerId) => {
+    const guildData = loadGuildFile(guildId);
+    console.log("Im here", guildData)
+    if (!guildData.playerScore.hasOwnProperty(playerId)) {
+        return "Không tìm thấy trong database.";
+    } else {
+        return `${guildData.playerScore[playerId].lastValue()} điểm.`
+    }
+}
+
 const handleInput = (msg) => {
     if (isValidChannel(msg.guildId, msg.channelId)) {
         let guildData = loadGuildFile(msg.guildId);
@@ -107,7 +117,8 @@ const handleInput = (msg) => {
             writeGuildFile(msg.guildId, guildData);
             return;
         }
-
+        
+        guildData = modifyPlayerScore(msg.guildId, msg.author.id, 2);
         guildData.used[msg.content.toLowerCase()] = 1;
         guildData.recentWord = msg.content.toLowerCase().lastDigit();
         guildData.recentSentTime = msg.createdTimestamp;
@@ -117,7 +128,6 @@ const handleInput = (msg) => {
         msg.react("➕");
         msg.react("2️⃣");
 
-        guildData = modifyPlayerScore(msg.guildId, msg.author.id, 2);
         writeGuildFile(msg.guildId, guildData);
     }
 }
@@ -127,5 +137,6 @@ const validateLib = () => { return true }
 
 module.exports.guildSetup = guildSetup;
 module.exports.guildReset = guildReset;
+module.exports.getUserScore = getUserScore;
 module.exports.handleInput = handleInput;
 module.exports.validateLib = validateLib;

@@ -1,0 +1,35 @@
+// Packages
+const fs = require('fs');
+const path = require('path');
+const Discord = require('discord.js');
+
+// Universal
+const dirname = global.dirname;
+const stdlib = global.stdlib;
+const discordAPI = global.discordAPI;
+
+// Module Specified
+const wordLib = require(path.join(dirname, 'modules/word-match/lib/wordLib.js'));
+
+module.exports = {
+    data: new Discord.SlashCommandBuilder()
+        .setName('score-wordmatch')
+        .setDescription('View your wordMatch score or anyone else.')
+        .addUserOption(option =>
+            option.setName("member")
+                .setDescription("Member whose score you want to view")
+                .setRequired(false)
+        )
+    ,
+    async execute(interaction) {
+        const targetUser = interaction.options.getUser('member') ?? interaction.user;
+        // console.log(targetUser.id)
+        console.log(wordLib.getUserScore(interaction.guild.id, targetUser.id));
+        interaction.reply({
+            embeds: [new Discord.EmbedBuilder()
+                .setDescription(`<@${targetUser.id}>: ${wordLib.getUserScore(interaction.guild.id, targetUser.id)}`)
+            ],
+            ephemeral: false
+        });
+    },
+};
