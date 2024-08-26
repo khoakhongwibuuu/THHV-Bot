@@ -74,10 +74,10 @@ const modifyPlayerScore = (guildId, playerId, offset) => {
 }
 
 const getUserScore = (guildId, playerId) => {
-    if (!isSetup(guildId)) return `Không tìm thấy trong database.`;
+    if (!isSetup(guildId)) return `Không tìm thấy dữ liệu trong database.`;
     const guildData = loadGuildFile(guildId);
     if (!guildData.playerScore.hasOwnProperty(playerId)) {
-        return "Không tìm thấy trong database.";
+        return "Không tìm thấy dữ liệu trong database.";
     } else {
         return `${guildData.playerScore[playerId].lastValue()} điểm.`
     }
