@@ -14,7 +14,7 @@ const cfLib = require(path.join(dirname, 'modules/codeforces-contest/lib/cf.js')
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('setnotify')
-        .setDescription('Set Codeforces contests notification module at this channel.')
+        .setDescription('[Moderators Only] - Set Codeforces contests notification module at this channel.')
         .addRoleOption(option =>
             option.setName("role")
                 .setDescription("The role to be notified.")

@@ -7,7 +7,7 @@ const discordAPI = global.discordAPI;
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('clear-cache')
-        .setDescription('Clear bot cache.'),
+        .setDescription('[Admins Only] - Clear bot cache.'),
     async execute(interaction) {
         if (process.env.OWNER_ID === interaction.user.id || discordAPI.isAdmin(interaction.guild.id, interaction.user.id)) {
             stdlib.clearCache(global.BotStartTime.replace(/:/g, ""));

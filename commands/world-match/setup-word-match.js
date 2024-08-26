@@ -14,13 +14,14 @@ const wordLib = require(path.join(dirname, 'modules/word-match/lib/wordLib.js'))
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('setup-wordmatch')
-        .setDescription('Set wordMatch game at this channel.')
+        .setDescription('[Moderators Only] - Set wordMatch game at this channel.')
     ,
     async execute(interaction) {
         if (discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
             wordLib.guildSetup(interaction.guild.id, interaction.channel.id);
             interaction.reply({
-                content: `Đã chọn phòng chơi: <#${interaction.channel.id}>.\nTrò chơi bắt đầu! Vui lòng nhập 1 từ bất kỳ!`,
+                content: `Đã chọn phòng chơi: <#${interaction.channel.id}>.\n`
+                    + `Trò chơi bắt đầu! Vui lòng nhập 1 từ bất kỳ!`,
                 ephemeral: false
             });
         } else {

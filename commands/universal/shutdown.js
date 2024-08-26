@@ -6,14 +6,14 @@ const discordAPI = global.discordAPI;
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('shutdown')
-        .setDescription('Turn off the bot.'),
+        .setDescription('[Admins Only] - Turn off the bot.'),
     async execute(interaction) {
         if (process.env.OWNER_ID === interaction.user.id || discordAPI.isAdmin(interaction.guild.id, interaction.user.id)) {
             interaction.reply({
                 content: "The bot has stopped working!",
                 ephemeral: true
             });
-            
+
             (`[${new Date().toISOString()}] [WARNING] Bot was shut down manually by ${interaction.user.id} (${interaction.user.username})`).logOffline();
             setTimeout(() => process.exit(1), 1500);
         } else {

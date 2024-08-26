@@ -9,12 +9,12 @@ const stdlib = global.stdlib;
 const discordAPI = global.discordAPI;
 
 // Module Specified
-const wordLib = require(path.join(dirname, 'modules/word-match/lib/wordLib.js'));
+const mcLib = require(path.join(dirname, 'modules/multiple-choices/lib/game.js'));
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
-        .setName('score-wordmatch')
-        .setDescription('View your wordMatch game score or anyone else.')
+        .setName('score-multiple-choices')
+        .setDescription('View your multipleChoice game score or anyone else.')
         .addUserOption(option =>
             option.setName("member")
                 .setDescription("Member whose score you want to view")
@@ -23,11 +23,11 @@ module.exports = {
     ,
     async execute(interaction) {
         const targetUser = interaction.options.getUser('member') ?? interaction.user;
-        interaction.reply({
-            embeds: [new Discord.EmbedBuilder()
-                .setDescription(`<@${targetUser.id}>: ${wordLib.getUserScore(interaction.guild.id, targetUser.id)}`)
-            ],
-            ephemeral: false
-        });
+        // interaction.reply({
+        //     embeds: [new Discord.EmbedBuilder()
+        //         .setDescription(`<@${targetUser.id}>: ${wordLib.getUserScore(interaction.guild.id, targetUser.id)}`)
+        //     ],
+        //     ephemeral: false
+        // });
     },
 };

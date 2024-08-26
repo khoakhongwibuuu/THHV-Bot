@@ -129,9 +129,6 @@ const handleInput = (msg) => {
         guildData.recentUser = msg.author.id;
 
         msg.react("<:AC:700345520081600512>");
-        msg.react("➕");
-        msg.react("2️⃣");
-
         writeGuildFile(msg.guildId, guildData);
     }
 }
