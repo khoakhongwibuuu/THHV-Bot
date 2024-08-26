@@ -13,14 +13,20 @@ const wordLib = require(path.join(dirname, 'modules/word-match/lib/wordLib.js'))
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
-        .setName('setup-wordmatch')
-        .setDescription('[Moderators Only] - Set wordMatch game at this channel.')
+        .setName('wm-reset')
+        .setDescription('[Moderators Only] - Reset WordMatch game data.')
+        .addBooleanOption(option =>
+            option.setName("remove-all-player-scores")
+                .setDescription("Delete all player scores?")
+                .setRequired(true)
+        )
     ,
     async execute(interaction) {
         if (discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
-            wordLib.guildSetup(interaction.guild.id, interaction.channel.id);
+            wordLib.guildReset(interaction.guild.id, interaction.options.getBoolean('remove-all-player-scores'));
             interaction.reply({
-                content: `Đã chọn phòng chơi: <#${interaction.channel.id}>.\n`
+                content: `Dữ liệu trò chơi ${(interaction.options.getBoolean('remove-all-player-scores')) ? "và điểm của người chơi" : ""} đã được reset!\n`
+                    + `Đã chọn phòng chơi: <#${interaction.channel.id}>.\n`
                     + `Trò chơi bắt đầu! Vui lòng nhập 1 từ bất kỳ!`,
                 ephemeral: false
             });

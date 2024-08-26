@@ -88,7 +88,7 @@ const handleInput = (msg) => {
         let guildData = loadGuildFile(msg.guildId);
         if (msg.author.id === guildData.recentUser) {
             msg.reply("Bạn đã nối từ trước đó. Trừ 2 điểm.");
-            msg.react("<:WA:700345520039657613>");
+            msg.react("<:wm_not_ok:1277623510780481687>");
             guildData = modifyPlayerScore(msg.guildId, msg.author.id, -2);
             writeGuildFile(msg.guildId, guildData);
             return;
@@ -102,21 +102,21 @@ const handleInput = (msg) => {
         }
         if (guildData.recentSentTime !== 0 && msg.content.toLowerCase().firstDigit() !== guildData.recentWord) {
             msg.reply(`Từ mới phải bắt đầu bằng \`${guildData.recentWord}\`. Trừ 3 điểm.`);
-            msg.react("<:WA:700345520039657613>");
+            msg.react("<:wm_not_ok:1277623510780481687>");
             guildData = modifyPlayerScore(msg.guildId, msg.author.id, -3);
             writeGuildFile(msg.guildId, guildData);
             return;
         }
         if (!dict.hasOwnProperty(msg.content.toLowerCase())) {
             msg.reply(`Từ \`${msg.content.toLowerCase()}\` không tồn tại trong từ điển. Trừ 3 điểm.`);
-            msg.react("<:WA:700345520039657613>");
+            msg.react("<:wm_not_ok:1277623510780481687>");
             guildData = modifyPlayerScore(msg.guildId, msg.author.id, -3);
             writeGuildFile(msg.guildId, guildData);
             return;
         }
         if (guildData.used.hasOwnProperty(msg.content.toLowerCase())) {
             msg.reply(`Từ \`${msg.content.toLowerCase()}\` đã được nối. Trừ 2 điểm.`);
-            msg.react("<:WA:700345520039657613>");
+            msg.react("<:wm_not_ok:1277623510780481687>");
             guildData = modifyPlayerScore(msg.guildId, msg.author.id, -2);
             writeGuildFile(msg.guildId, guildData);
             return;
@@ -128,11 +128,13 @@ const handleInput = (msg) => {
         guildData.recentSentTime = msg.createdTimestamp;
         guildData.recentUser = msg.author.id;
 
-        msg.react("<:AC:700345520081600512>");
+        msg.react("<:wm_ok:1277623512651141141>");
         writeGuildFile(msg.guildId, guildData);
     }
 }
 
+module.exports.isSetup = isSetup;
+module.exports.loadGuildFile = loadGuildFile;
 module.exports.guildSetup = guildSetup;
 module.exports.guildReset = guildReset;
 module.exports.getUserScore = getUserScore;
