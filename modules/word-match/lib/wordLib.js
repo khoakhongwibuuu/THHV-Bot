@@ -66,43 +66,46 @@ const modifyPlayerScore = (guildId, playerId, offset) => {
     } else {
         guildData.playerScore[playerId].push(guildData.playerScore[playerId].lastValue() + offset);
     }
-    writeGuildFile(guildId, guildData);
+    return guildData;
 }
 
 const handleInput = (msg) => {
     if (msg.author.bot || msg.system || msg.tts || msg.content.hasWhiteSpace() || !msg.content.englishOnly()) return;
     if (isValidChannel(msg.guildId, msg.channelId)) {
-        const guildData = loadGuildFile(msg.guildId);
+        let guildData = loadGuildFile(msg.guildId);
         if (msg.author.id === guildData.recentUser) {
             msg.reply("Bạn đã nối từ trước đó. Trừ 2 điểm.");
             msg.react("<:WA:700345520039657613>");
-            modifyPlayerScore(msg.guildId, msg.author.id, -2);
+            guildData = modifyPlayerScore(msg.guildId, msg.author.id, -2);
+            writeGuildFile(msg.guildId, guildData);
             return;
         }
         if (msg.createdTimestamp - guildData.recentSentTime < 3000) {
             msg.reply("Bạn sử dụng bot hơi nhanh rồi, hãy chậm lại. Trừ 3 điểm.");
             msg.react("⏳");
-            modifyPlayerScore(msg.guildId, msg.author.id, -3);
+            guildData = modifyPlayerScore(msg.guildId, msg.author.id, -3);
+            writeGuildFile(msg.guildId, guildData);
             return;
         }
         if (guildData.recentSentTime !== 0 && msg.content.toLowerCase().firstDigit() !== guildData.recentWord) {
             msg.reply(`Từ mới phải bắt đầu bằng \`${guildData.recentWord}\`. Trừ 3 điểm.`);
             msg.react("<:WA:700345520039657613>");
-            modifyPlayerScore(msg.guildId, msg.author.id, -3);
+            guildData = modifyPlayerScore(msg.guildId, msg.author.id, -3);
+            writeGuildFile(msg.guildId, guildData);
             return;
         }
         if (!dict.hasOwnProperty(msg.content.toLowerCase())) {
             msg.reply(`Từ \`${msg.content.toLowerCase()}\` không tồn tại trong từ điển. Trừ 3 điểm.`);
             msg.react("<:WA:700345520039657613>");
-            // -3 points
-            modifyPlayerScore(msg.guildId, msg.author.id, -3);
+            guildData = modifyPlayerScore(msg.guildId, msg.author.id, -3);
+            writeGuildFile(msg.guildId, guildData);
             return;
         }
         if (guildData.used.hasOwnProperty(msg.content.toLowerCase())) {
             msg.reply(`Từ \`${msg.content.toLowerCase()}\` đã được nối. Trừ 2 điểm.`);
             msg.react("<:WA:700345520039657613>");
-            // -2 points
-            modifyPlayerScore(msg.guildId, msg.author.id, -2);
+            guildData = modifyPlayerScore(msg.guildId, msg.author.id, -2);
+            writeGuildFile(msg.guildId, guildData);
             return;
         }
 
@@ -110,11 +113,13 @@ const handleInput = (msg) => {
         guildData.recentWord = msg.content.toLowerCase().lastDigit();
         guildData.recentSentTime = msg.createdTimestamp;
         guildData.recentUser = msg.author.id;
-        writeGuildFile(msg.guildId, guildData);
-        modifyPlayerScore(msg.guildId, msg.author.id, 2);
+
         msg.react("<:AC:700345520081600512>");
         msg.react("➕");
         msg.react("2️⃣");
+
+        guildData = modifyPlayerScore(msg.guildId, msg.author.id, 2);
+        writeGuildFile(msg.guildId, guildData);
     }
 }
 
