@@ -23,8 +23,6 @@ module.exports = {
     ,
     async execute(interaction) {
         const targetUser = interaction.options.getUser('member') ?? interaction.user;
-        // console.log(targetUser.id)
-        console.log(wordLib.getUserScore(interaction.guild.id, targetUser.id));
         interaction.reply({
             embeds: [new Discord.EmbedBuilder()
                 .setDescription(`<@${targetUser.id}>: ${wordLib.getUserScore(interaction.guild.id, targetUser.id)}`)

@@ -1,4 +1,4 @@
-(`[${new Date().toISOString()}] [INFO] Loading codeforces-contest module!`).logOffline();
+(`[${new Date().toISOString()}] [INFO] Client: loading codeforces-contest module!`).logOffline();
 
 // Packages
 const fs = require('fs');
@@ -23,5 +23,5 @@ if (!fs.existsSync(persistPath)) {
 }
 
 
-(`[${new Date().toISOString()}] [SUCCESS] Loaded codeforces-contest module!`).logOffline();
+(`[${new Date().toISOString()}] [SUCCESS] Client: loaded codeforces-contest module!`).logOffline();
 require(path.join(dirname, '/modules/codeforces-contest/api/codeforces.api.js')).exec();
