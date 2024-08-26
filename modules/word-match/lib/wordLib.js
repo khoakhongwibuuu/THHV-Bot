@@ -23,6 +23,11 @@ const defaultSettingProfile = (channelId) => {
 }
 
 // Functions
+const isSetup = (guildId) => {
+    const guildDataPath = path.join(dirname, 'modules/word-match/config', `${guildId}.json`);
+    return fs.existsSync(guildDataPath);
+}
+
 const loadGuildFile = (guildId) => {
     const guildDataPath = path.join(dirname, 'modules/word-match/config', `${guildId}.json`);
     return JSON.parse(fs.readFileSync(guildDataPath, 'utf-8'));
@@ -51,8 +56,7 @@ const guildReset = (guildId, removeScore) => {
 }
 
 const isValidChannel = (guildId, channelId) => {
-    const guildDataPath = path.join(dirname, 'modules/word-match/config', `${guildId}.json`);
-    if (!fs.existsSync(guildDataPath)) return false;
+    if (!isSetup(guildId)) return false;
     else {
         const guildData = loadGuildFile(guildId);
         return (guildData.channelId === channelId);
@@ -70,8 +74,8 @@ const modifyPlayerScore = (guildId, playerId, offset) => {
 }
 
 const getUserScore = (guildId, playerId) => {
+    if (!isSetup(guildId)) return `Không tìm thấy trong database.`;
     const guildData = loadGuildFile(guildId);
-    console.log("Im here", guildData)
     if (!guildData.playerScore.hasOwnProperty(playerId)) {
         return "Không tìm thấy trong database.";
     } else {
@@ -117,7 +121,7 @@ const handleInput = (msg) => {
             writeGuildFile(msg.guildId, guildData);
             return;
         }
-        
+
         guildData = modifyPlayerScore(msg.guildId, msg.author.id, 2);
         guildData.used[msg.content.toLowerCase()] = 1;
         guildData.recentWord = msg.content.toLowerCase().lastDigit();
@@ -132,11 +136,7 @@ const handleInput = (msg) => {
     }
 }
 
-// Lib validation
-const validateLib = () => { return true }
-
 module.exports.guildSetup = guildSetup;
 module.exports.guildReset = guildReset;
 module.exports.getUserScore = getUserScore;
 module.exports.handleInput = handleInput;
-module.exports.validateLib = validateLib;
