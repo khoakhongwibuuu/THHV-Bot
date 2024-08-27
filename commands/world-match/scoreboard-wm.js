@@ -26,7 +26,7 @@ module.exports = {
             const numOfEntries = interaction.options.getInteger('number-of-players') ?? 5;
             if (numOfEntries >= 1 && numOfEntries <= 10) {
                 let rawmap = new Map();
-                const playerdata = wordLib.loadGuildFile(interaction.guildId).playerScore;
+                const playerdata = wordLib.loadGuildFile(interaction.guild.id).playerScore;
                 Object.keys(playerdata).forEach(key => rawmap.set(key, playerdata[key].lastValue()));
                 const sortedEntries = Array.from(rawmap.entries()).sort((a, b) => b[1] - a[1]);
                 if (sortedEntries.length !== 0) {

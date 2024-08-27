@@ -5,3 +5,5 @@ logs/*
 test/*
 auth/*
 *.exe
+commands/multiple-choice
+modules/multiple-choice

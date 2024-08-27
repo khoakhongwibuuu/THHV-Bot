@@ -18,7 +18,7 @@ if (!fs.existsSync(configPath)) {
     fs.mkdirSync(configPath, { recursive: true });
 }
 
-const persistPath = path.join(dirname, '/modules/codeforces-contest/config/persist.json');
+const persistPath = path.join(dirname, 'modules/codeforces-contest/config/persist.json');
 if (!fs.existsSync(persistPath)) {
     fs.writeFileSync(persistPath, JSON.stringify({
         ready: {},
@@ -29,4 +29,4 @@ if (!fs.existsSync(persistPath)) {
 
 
 (`[${new Date().toISOString()}] [SUCCESS] Client: loaded codeforces-contest module!`).logOffline();
-require(path.join(dirname, '/modules/codeforces-contest/api/codeforces.api.js')).exec();
+require(path.join(dirname, 'modules/codeforces-contest/api/codeforces.api.js')).exec();
