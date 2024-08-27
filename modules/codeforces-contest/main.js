@@ -13,6 +13,11 @@ const discordAPI = global.discordAPI;
 const cfLib = require('./lib/cf.js');
 global.cfLib = cfLib;
 
+const configPath = path.join(dirname, 'modules/codeforces-contest/config');
+if (!fs.existsSync(configPath)) {
+    fs.mkdirSync(configPath, { recursive: true });
+}
+
 const persistPath = path.join(dirname, '/modules/codeforces-contest/config/persist.json');
 if (!fs.existsSync(persistPath)) {
     fs.writeFileSync(persistPath, JSON.stringify({

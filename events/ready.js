@@ -13,9 +13,13 @@ module.exports = {
             process.exit(1);
         }
 
+        // Login success event
         (`[${new Date().toISOString()}] [SUCCESS] Ready! Logged in as ${client.user.tag}`).logOffline();
+
         // Load modules
         require(path.join(dirname, '/modules/codeforces-contest/main.js'));
+        require(path.join(dirname, '/modules/word-match/main.js'));
+
         client.user.setPresence({
             activities: [{
                 name: '',
