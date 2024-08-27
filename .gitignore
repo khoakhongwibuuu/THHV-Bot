@@ -2,8 +2,9 @@ modules/*/config/*
 node_modules/*
 cache/*
 logs/*
-test/*
 auth/*
 *.exe
 commands/multiple-choice
 modules/multiple-choice
+_raw/
+_test
