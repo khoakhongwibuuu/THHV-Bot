@@ -14,4 +14,4 @@ if (!fs.existsSync(configPath)) {
     fs.mkdirSync(configPath, { recursive: true });
 }
 
-(`[${new Date().toISOString()}] [SUCCESS] Client: loaded wordMatch module!`).logOffline();
+(`[${new Date().toISOString()}] [SUCCESS] Client: loaded wordMatch module successfully!`).logOffline();

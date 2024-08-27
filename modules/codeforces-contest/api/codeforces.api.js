@@ -32,7 +32,6 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		if (!Persist[domain][guild.id][hours]) Persist[domain][guild.id][hours] = [];
 		return Persist[domain][guild.id][hours].indexOf(id) < 0;
 	});
-	(`[${new Date().toISOString()}] [INFO] Client: data processed successfully. Found ${notifiable.length} notifiable servers.`).logOffline();
 	notifiable.forEach(guild => {
 		if (!Persist.ready[guild.id]) return;
 
@@ -83,7 +82,7 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 }
 
 const clock = () => {
-	(`[${new Date().toISOString()}] [INFO] Client: start connecting to codeforces.com.`).logOffline();
+	console.log(`[${new Date().toISOString()}] [INFO] Client: start connecting to codeforces.com.`);
 	fetch(CODEFORCES_API)
 		.then(response => {
 			const contentType = response.headers.get('content-type');
@@ -93,7 +92,7 @@ const clock = () => {
 			if (typeof response === 'object') {
 				if (response.status === 'OK') {
 					const list = response.result.filter(contest => contest.phase === 'BEFORE');
-					(`[${new Date().toISOString()}] [INFO] Client: connected successfully. Found ${list.length} scheduled contests.`).logOffline();
+					console.log(`[${new Date().toISOString()}] [SUCCESS] Client: connected successfully. Found ${list.length} scheduled contests.`);
 
 					list.forEach(contest => {
 						const startTime = new Date(parseInt(contest.startTimeSeconds) * 1000);
@@ -106,14 +105,14 @@ const clock = () => {
 						}
 					});
 				} else {
-					(`[${new Date().toISOString()}] [WARN] Client: server is busy. Try connecting again in ${clockInterval} minutes.`).logOffline();
+					console.log(`[${new Date().toISOString()}] [WARN] Client: server is busy. Try connecting again in ${clockInterval} minutes.`);
 				}
 			} else {
-				(`[${new Date().toISOString()}] [WARN] Client: invalid data. Try connecting again in ${clockInterval} minutes.`).logOffline();
+				console.log(`[${new Date().toISOString()}] [WARN] Client: invalid data. Try connecting again in ${clockInterval} minutes.`);
 			}
 		})
 		.catch(err => {
-			(`[${new Date().toISOString()}] [WARN] Client: host unreachable. Try connecting again in ${clockInterval} minutes.`).logOffline();
+			console.log(`[${new Date().toISOString()}] [WARN] Client: host unreachable. Try connecting again in ${clockInterval} minutes.`);
 			console.log(err);
 		})
 	setTimeout(clock, 1000 * 60 * clockInterval - new Date().getMilliseconds());
@@ -148,10 +147,10 @@ const exec = () => {
 	if (!debugMode) {
 		const now = new Date();
 		const delay = getDelay(now);
-		(`[${new Date().toISOString()}] [INFO] Client: the clock will start in ${delay.m}m-${delay.s}s-${delay.ms}ms.`).logOffline();
+		console.log(`[${new Date().toISOString()}] [INFO] Client: the clock will start in ${delay.m}m-${delay.s}s-${delay.ms}ms.`);
 		setTimeout(clock, delay.m * 60 * 1000 + delay.s * 1000 + delay.ms);
 	} else {
-		(`[${new Date().toISOString()}] [INFO] Client: the clock will start in ${0}m-${3}s-${0}ms.`).logOffline();
+		console.log(`[${new Date().toISOString()}] [INFO] Client: the clock will start in ${0}m-${3}s-${0}ms.`);
 		setTimeout(clock, 3000);
 	}
 }

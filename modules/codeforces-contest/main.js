@@ -28,5 +28,5 @@ if (!fs.existsSync(persistPath)) {
 }
 
 
-(`[${new Date().toISOString()}] [SUCCESS] Client: loaded codeforces-contest module!`).logOffline();
+(`[${new Date().toISOString()}] [SUCCESS] Client: loaded codeforces-contest module successfully!`).logOffline();
 require(path.join(dirname, 'modules/codeforces-contest/api/codeforces.api.js')).exec();
