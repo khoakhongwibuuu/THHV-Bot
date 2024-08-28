@@ -26,7 +26,7 @@ module.exports = {
             });
         } else {
             interaction.reply({
-                content: "You do not have permission to run this command.",
+                content: "🚫 Bạn không có quyền sử dụng lệnh này.",
                 ephemeral: true
             });
         }
