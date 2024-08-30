@@ -57,7 +57,10 @@ module.exports = {
                 });
             }
         } else {
-
+            interaction.reply({
+                content: "⚠️ Không tìm thấy dữ liệu của server này.",
+                ephemeral: true
+            });
         }
     },
 };

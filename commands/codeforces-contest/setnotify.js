@@ -36,7 +36,7 @@ module.exports = {
             });
         } else {
             interaction.reply({
-                content: "You do not have permission to run this command.",
+                content: "🚫 You do not have permission to run this command.",
                 ephemeral: true
             });
         }

@@ -14,7 +14,7 @@ const wordLib = require(path.join(dirname, 'modules/word-match/lib/wordLib.js'))
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('wm-setup')
-        .setDescription('[Moderators Only] - Set wWrdMatch game at this channel.')
+        .setDescription('[Moderators Only] - Set WordMatch game at this channel.')
     ,
     async execute(interaction) {
         if (discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
@@ -26,7 +26,7 @@ module.exports = {
             });
         } else {
             interaction.reply({
-                content: "You do not have permission to run this command.",
+                content: "🚫 Bạn không có quyền sử dụng lệnh này.",
                 ephemeral: true
             });
         }
