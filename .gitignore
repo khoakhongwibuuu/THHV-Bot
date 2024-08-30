@@ -8,4 +8,4 @@ commands/multiple-choice
 modules/multiple-choice
 _raw/
 _test
-.env
+**/**.env
