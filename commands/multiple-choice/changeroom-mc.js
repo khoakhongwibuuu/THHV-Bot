@@ -14,7 +14,7 @@ const mcLib = require(path.join(dirname, 'modules/multiple-choice/lib/gameLib.js
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-changeroom')
-        .setDescription('[Moderators Only] - Set MultipleChoice game at this channel.')
+        .setDescription('[Moderators Only] - Change MultipleChoice game room at this channel.')
     ,
     async execute(interaction) {
         if (discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
