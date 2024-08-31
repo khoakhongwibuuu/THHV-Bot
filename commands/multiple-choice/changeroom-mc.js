@@ -25,7 +25,7 @@ module.exports = {
                     ephemeral: true
                 });
             } else {
-                mcLib.guildSetup(interaction.guild.id, interaction.channel.id);
+                mcLib.resetRoomId(interaction.guild.id, interaction.channel.id);
                 interaction.reply({
                     content: `Đã chọn phòng chơi: <#${interaction.channel.id}>.`,
                     ephemeral: false

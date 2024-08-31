@@ -23,7 +23,7 @@ const execute = (interaction, responseData, key) => {
     if (!mcLib.isRunning(interaction.guild.id)) {
         // Only when server moderator use /stop,
         interaction.followUp({
-            content: "Có vẻ như một người điều hành máy chủ đã buộc phải dừng lượt chơi này, do đó kết quả của lượt chơi sẽ bị hủy."
+            content: "Có vẻ như một người điều hành máy chủ đã buộc dừng lượt chơi này, do đó kết quả của lượt chơi sẽ bị hủy."
         });
     } else {
         let correct = [], incorrect = [];
