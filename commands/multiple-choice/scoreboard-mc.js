@@ -22,7 +22,7 @@ module.exports = {
         )
     ,
     async execute(interaction) {
-        if (mcLib.isSetup(interaction.guild.id)) {
+        if (!mcLib.isSetup(interaction.guild.id)) {
             interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
