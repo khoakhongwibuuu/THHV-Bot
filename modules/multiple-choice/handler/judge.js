@@ -13,7 +13,7 @@ const generateLuckData = (eligiblePlayer, rndRate) => {
     const rateMet = stdlib.randomPercent(rndRate);
     return {
         playerId: (rateMet) ? eligiblePlayer.randomValue() : null,
-        boostId: (rateMet) ? stdlib.trueRnd(0, 1 << stdlib.trueRnd(1, 8)) % 2 + 1 : 0
+        boostId: (rateMet) ? stdlib.trueRnd(0, 1) + 1 : 0
     }
 }
 
