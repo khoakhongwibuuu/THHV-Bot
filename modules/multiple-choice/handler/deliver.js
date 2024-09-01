@@ -105,7 +105,7 @@ const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {
         require('./judge.js').execute(interaction, responseData, key);
         interaction.editReply({
             embeds: [embed
-                .setDescription(`${cont}\n\nCâu hỏi sẽ bị xóa <t:${parseInt(new Date().getTime() / 1000) + timeHidden + 1}:R>.`)
+                .setDescription(`${cont}\n\nCâu hỏi sẽ bị xóa trong <t:${parseInt(new Date().getTime() / 1000) + timeHidden + 1}:R>.`)
             ]
         });
         setTimeout(() => {
