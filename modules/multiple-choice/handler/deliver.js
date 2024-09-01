@@ -9,9 +9,9 @@ const discordAPI = global.discordAPI;
 // Module Specified
 const mcLib = require(path.join(dirname, 'modules/multiple-choice/lib/gameLib.js'));
 const dictionary = {
-    easy: "dễ",
-    medium: "trung bình",
-    hard: "khó"
+    easy: "Dễ",
+    medium: "Trung bình",
+    hard: "Khó"
 }
 
 const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {

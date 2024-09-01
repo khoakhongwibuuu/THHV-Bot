@@ -22,12 +22,14 @@ module.exports = {
         )
     ,
     async execute(interaction) {
+        if (!wordLib.isSetup(interaction.guild.id)) {
+            interaction.reply({ content: "🔍 Không tìm thấy dữ liệu của server này.", ephemeral: true });
+            return;
+        }
         const targetUser = interaction.options.getUser('member') ?? interaction.user;
         interaction.reply({
-            embeds: [new Discord.EmbedBuilder()
-                .setDescription(`<@${targetUser.id}>: ${wordLib.getUserScore(interaction.guild.id, targetUser.id)}`)
-            ],
-            ephemeral: false
+            embeds: [new Discord.EmbedBuilder().setDescription(`<@${targetUser.id}>: ${wordLib.getUserScore(interaction.guild.id, targetUser.id)}`)],
+            ephemeral: !wordLib.isInRoom(interaction.guild.id, interaction.channel.id)
         });
     },
 };

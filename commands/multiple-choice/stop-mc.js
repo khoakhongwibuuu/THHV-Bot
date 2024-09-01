@@ -17,28 +17,26 @@ module.exports = {
         .setDescription('[Moderators Only] - Force stop an instance.')
     ,
     async execute(interaction) {
-        if (discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
-            if (!mcLib.isSetup(interaction.guild.id)) {
-                interaction.reply({ content: 'Phòng chơi chưa được cài đặt trên server này. Vui lòng sử dụng `/mc-setup` để đặt phòng chơi.', ephemeral: true })
-            } else {
-                if (!mcLib.isRunning(interaction.guild.id)) {
-                    interaction.reply({
-                        content: `Không có lượt chơi nào đang diễn ra.`,
-                        ephemeral: true
-                    });
-                } else {
-                    mcLib.guildUnlock(interaction.guild.id);
-                    interaction.reply({
-                        content: `<@${interaction.user.id}>: đã buộc dừng lượt chơi.`,
-                        ephemeral: false
-                    });
-                }
-            }
-        } else {
+        if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+            interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
+            return;
+        }
+        if (!mcLib.isSetup(interaction.guild.id)) {
             interaction.reply({
-                content: "🚫 Bạn không có quyền sử dụng lệnh này.",
+                content: 'Phòng chơi chưa được cài đặt trên server này.\n'
+                    + 'Vui lòng sử dụng `/mc-setup` để đặt phòng chơi.',
                 ephemeral: true
             });
+            return;
         }
+        if (!mcLib.isRunning(interaction.guild.id)) {
+            interaction.reply({ content: `⚠️ Không có lượt chơi nào đang diễn ra.`, ephemeral: true });
+            return;
+        }
+        mcLib.guildUnlock(interaction.guild.id);
+        interaction.reply({
+            content: `<@${interaction.user.id}>: đã buộc dừng lượt chơi.`,
+            ephemeral: false
+        });
     },
 };

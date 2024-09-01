@@ -8,7 +8,7 @@ const stdlib = global.stdlib;
 const discordAPI = global.discordAPI;
 
 // Module based
-const qsDB = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/multiple-choice/database/database.min.json'), 'utf-8'));
+const qsDB = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/multiple-choice/database/processed.database.min.json'), 'utf-8'));
 const configDirPath = path.join(dirname, "modules/multiple-choice/config");
 
 // Configuration
@@ -69,13 +69,12 @@ const writeGuildFile = (guildId, newData) => {
 
 const getRoomId = (guildId) => {
     if (!isSetup(guildId)) return null;
-    const guildData = loadGuildFile(guildId);
-    return guildData.setting.channelId;
+    else return loadGuildFile(guildId).setting.channelId;
 }
 
 const isInRoom = (guildId, testChannelId) => {
     if (!isSetup(guildId)) return false;
-    return getRoomId(guildId) === testChannelId;
+    else return (getRoomId(guildId) === testChannelId);
 }
 
 const resetRoomId = (guildId, newChannelId) => {
@@ -91,7 +90,7 @@ module.exports.loadGuildFile = loadGuildFile;
 module.exports.writeGuildFile = writeGuildFile;
 module.exports.getRoomId = getRoomId;
 module.exports.isInRoom = isInRoom;
-module.exports.resetRoomId = resetRoomId
+module.exports.resetRoomId = resetRoomId;
 
 // Ingame tasks
 const hasPlayerData = (guildId, userId) => {

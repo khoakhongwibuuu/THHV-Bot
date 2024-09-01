@@ -55,12 +55,14 @@ const guildReset = (guildId, removeScore) => {
     writeGuildFile(guildId, guildData);
 }
 
-const isValidChannel = (guildId, channelId) => {
+const getRoomId = (guildId) => {
+    if (!isSetup(guildId)) return null;
+    else return loadGuildFile(guildId).channelId;
+}
+
+const isInRoom = (guildId, testChannelId) => {
     if (!isSetup(guildId)) return false;
-    else {
-        const guildData = loadGuildFile(guildId);
-        return (guildData.channelId === channelId);
-    }
+    else return (getRoomId(guildId) === testChannelId);
 }
 
 const modifyPlayerScore = (guildId, playerId, offset) => {
@@ -74,7 +76,6 @@ const modifyPlayerScore = (guildId, playerId, offset) => {
 }
 
 const getUserScore = (guildId, playerId) => {
-    if (!isSetup(guildId)) return `Không tìm thấy dữ liệu trong database.`;
     const guildData = loadGuildFile(guildId);
     if (!guildData.playerScore.hasOwnProperty(playerId)) {
         return "Không tìm thấy dữ liệu trong database.";
@@ -84,7 +85,7 @@ const getUserScore = (guildId, playerId) => {
 }
 
 const handleInput = (msg) => {
-    if (isValidChannel(msg.guild.id, msg.channel.id)) {
+    if (isInRoom(msg.guild.id, msg.channel.id)) {
         let guildData = loadGuildFile(msg.guild.id);
         if (msg.author.id === guildData.recentUser) {
             msg.reply("Bạn đã nối từ trước đó. Trừ 2 điểm.");
@@ -137,5 +138,7 @@ module.exports.isSetup = isSetup;
 module.exports.loadGuildFile = loadGuildFile;
 module.exports.guildSetup = guildSetup;
 module.exports.guildReset = guildReset;
+module.exports.getRoomId = getRoomId;
+module.exports.isInRoom = isInRoom;
 module.exports.getUserScore = getUserScore;
 module.exports.handleInput = handleInput;

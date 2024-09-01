@@ -70,39 +70,31 @@ module.exports = {
     ,
     async execute(interaction) {
         if (!mcLib.isSetup(interaction.guild.id)) {
-            interaction.reply({ content: 'Phòng chơi chưa được cài đặt trên server này. Vui lòng sử dụng `/mc-setup` để đặt phòng chơi.', ephemeral: true })
-        } else {
-            if (interaction.channel.id !== mcLib.getRoomId(interaction.guild.id)) {
-                interaction.reply({ content: `Vui lòng sử dụng lệnh tại phòng chơi <#${mcLib.getRoomId(interaction.guild.id)}>`, ephemeral: true })
-            } else {
-                const target = interaction.options.getUser('member') ?? interaction.user;
-                const targetScore = mcLib.readPlayerScore(interaction.guildId, target.id);
-                const targetAux = mcLib.readPlayerBoost(interaction.guildId, target.id);
-
-                const targetStat = statBuilder(target.id, targetScore, targetAux);
-
-                const sentEmbed = new Discord.EmbedBuilder()
-                    .setTitle(`Dữ liệu game MultipleChoice`)
-                    .setDescription(`Dữ liệu sau đây thuộc về <@${target.id}>\n`)
-                    .addFields(
-                        { name: "UUID", value: `\`\`\`${targetStat.uuid}\`\`\``, inline: false },
-
-                        { name: "Điểm hiện tại", value: `\`\`\`${targetStat.current}\`\`\``, inline: true },
-                        { name: "Số lượt đã chơi", value: `\`\`\`${targetStat.attempt}\`\`\``, inline: true },
-                        { name: "Số lượt đúng", value: `\`\`\`${targetStat.correct}\`\`\``, inline: true },
-                        { name: "Tỉ lệ đúng", value: `\`\`\`${targetStat.rate}\`\`\``, inline: true },
-                        { name: "Chuỗi đúng dài nhất", value: `\`\`\`${targetStat.streak}\`\`\``, inline: true },
-                        { name: "Điểm cao nhất từng đạt", value: `\`\`\`${targetStat.max}\`\`\``, inline: true },
-
-                        { name: "Phép bổ trợ hiện có", value: `\`\`\`${targetStat.boost}\`\`\``, inline: false }
-                    )
-                    .setTimestamp()
-
-                interaction.reply({
-                    embeds: [sentEmbed],
-                    ephemeral: false
-                });
-            }
+            interaction.reply({ content: 'Phòng chơi chưa được cài đặt trên server này. Vui lòng sử dụng `/mc-setup` để đặt phòng chơi.', ephemeral: true });
+            return;
         }
+        if (interaction.channel.id !== mcLib.getRoomId(interaction.guild.id)) {
+            interaction.reply({ content: `Vui lòng sử dụng lệnh tại phòng chơi <#${mcLib.getRoomId(interaction.guild.id)}>`, ephemeral: true });
+            return;
+        }
+        const target = interaction.options.getUser('member') ?? interaction.user;
+        const targetScore = mcLib.readPlayerScore(interaction.guildId, target.id);
+        const targetAux = mcLib.readPlayerBoost(interaction.guildId, target.id);
+        const targetStat = statBuilder(target.id, targetScore, targetAux);
+        const sentEmbed = new Discord.EmbedBuilder()
+            .setTitle(`Dữ liệu game MultipleChoice`)
+            .setDescription(`Dữ liệu sau đây thuộc về <@${target.id}>\n`)
+            .addFields(
+                { name: "UUID", value: `\`\`\`${targetStat.uuid}\`\`\``, inline: false },
+                { name: "Điểm hiện tại", value: `\`\`\`${targetStat.current}\`\`\``, inline: true },
+                { name: "Số lượt đã chơi", value: `\`\`\`${targetStat.attempt}\`\`\``, inline: true },
+                { name: "Số lượt đúng", value: `\`\`\`${targetStat.correct}\`\`\``, inline: true },
+                { name: "Tỉ lệ đúng", value: `\`\`\`${targetStat.rate}\`\`\``, inline: true },
+                { name: "Chuỗi đúng dài nhất", value: `\`\`\`${targetStat.streak}\`\`\``, inline: true },
+                { name: "Điểm cao nhất từng đạt", value: `\`\`\`${targetStat.max}\`\`\``, inline: true },
+                { name: "Phép bổ trợ hiện có", value: `\`\`\`${targetStat.boost}\`\`\``, inline: false }
+            )
+            .setTimestamp()
+        interaction.reply({ embeds: [sentEmbed], ephemeral: false });
     },
 };
