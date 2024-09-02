@@ -61,6 +61,7 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		if (!Persist[domain][guild.id][hours]) Persist[domain][guild.id][hours] = [];
 		return Persist[domain][guild.id][hours].indexOf(id) < 0;
 	});
+	
 	notifiable.forEach(guild => {
 		if (!Persist.ready[guild.id]) return;
 
