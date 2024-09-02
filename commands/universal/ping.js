@@ -7,8 +7,8 @@ const discordAPI = global.discordAPI;
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('ping')
-        .setDescription('Replo Ponk!.'),
+        .setDescription('Reply Ponk!.'),
     async execute(interaction) {
-        interaction.reply("Ponk");
+        interaction.reply(`Ponk \`${Math.abs(interaction.createdTimestamp - new Date().getTime())}\`ms`);
     },
 };
