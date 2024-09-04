@@ -11,11 +11,14 @@ const discordAPI = global.discordAPI;
 // Module Specified
 const mcLib = require(path.join(dirname, 'modules/multiple-choice/lib/gameLib.js'));
 
-const handleResetEverything = (interaction) => {
-
-
-}
-
+const defaultBtnRow = new Discord.ActionRowBuilder()
+    .addComponents(
+        new Discord.ButtonBuilder()
+            .setCustomId('True')
+            .setLabel('Xác nhận')
+            .setEmoji('⚠️')
+            .setStyle('Success')
+    );
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -38,10 +41,13 @@ module.exports = {
         const sentEmbed = new Discord.EmbedBuilder();
 
         let content = "⚠️ **Bạn đang xóa dữ liệu Trivia game của server này. Bạn chắc chứ?**\n";
-        const affected = mcLib.allPlayer(interaction.guild.id);
+        const affected = mcLib.allPlayerList(interaction.guild.id);
 
         content += `\nNếu bạn tiếp tục, điểm và phép bổ trợ của những người chơi sau đây sẽ bị xóa.\n`;
-        affected.forEach(e => content += `* <@${e}>\n`);
+        if (affected.length > 0)
+            affected.forEach(e => content += `* <@${e}>\n`);
+        else
+            content += "\`\`\`Hiện tại chưa ghi nhận điểm của người chơi nào.\`\`\`";
 
         sentEmbed.setDescription(content);
         sentEmbed.setFooter({ text: "🕑 Bạn có 10s để xác nhận hành động của bạn." });
