@@ -26,6 +26,10 @@ module.exports = {
             interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
+        if (interaction.channel.id !== mcLib.getRoomId(interaction.guild.id)) {
+            interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại phòng chơi <#${mcLib.getRoomId(interaction.guild.id)}>`, ephemeral: true });
+            return;
+        }
         const numOfEntries = interaction.options.getInteger('number-of-players') ?? 5;
         if (numOfEntries < 1 || numOfEntries > 10) {
             interaction.reply({ content: "⚠️ Số lượng người chơi tối thiểu là 1 và tối đa là 10.", ephemeral: true });

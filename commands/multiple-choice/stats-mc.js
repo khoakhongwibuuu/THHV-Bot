@@ -70,7 +70,7 @@ module.exports = {
     ,
     async execute(interaction) {
         if (!mcLib.isSetup(interaction.guild.id)) {
-            interaction.reply({ content: 'Phòng chơi chưa được cài đặt trên server này. Vui lòng sử dụng `/mc-setup` để đặt phòng chơi.', ephemeral: true });
+            interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
         if (interaction.channel.id !== mcLib.getRoomId(interaction.guild.id)) {

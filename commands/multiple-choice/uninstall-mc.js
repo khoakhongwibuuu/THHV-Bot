@@ -13,8 +13,8 @@ const mcLib = require(path.join(dirname, 'modules/multiple-choice/lib/gameLib.js
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
-        .setName('mc-stop')
-        .setDescription('[Moderators Only] - Force stop an instance.')
+        .setName('mc-uninstall')
+        .setDescription('[Moderators Only] - Delete this server MultipleChoice game profile.')
     ,
     async execute(interaction) {
         if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
@@ -29,13 +29,9 @@ module.exports = {
             interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại phòng chơi <#${mcLib.getRoomId(interaction.guild.id)}>`, ephemeral: true });
             return;
         }
-        if (!mcLib.isRunning(interaction.guild.id)) {
-            interaction.reply({ content: `⚠️ Không có lượt chơi nào đang diễn ra.`, ephemeral: true });
-            return;
-        }
-        mcLib.guildUnlock(interaction.guild.id);
+        mcLib.guildUninstall(interaction.guild.id);
         interaction.reply({
-            content: `<@${interaction.user.id}>: đã buộc dừng lượt chơi.`,
+            content: `Đã xóa dữ liệu thành công.`,
             ephemeral: false
         });
     },
