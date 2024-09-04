@@ -4,8 +4,8 @@ services:
     volumes:
       - ./logs:/usr/src/bot/logs
       - ./configs:/usr/src/bot/configs
-    environment:
-      - TOKEN=your_token
+    #environment:
+    #  - TOKEN=your_token
     deploy:
       restart_policy:
         condition: on-failure
