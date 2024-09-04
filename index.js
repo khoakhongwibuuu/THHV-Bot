@@ -90,6 +90,11 @@ process.on('unhandledRejection', (err) => {
 });
 
 if (process.env.TOKEN != "")
-	client.login(process.env.TOKEN);
+	try {
+		client.login(process.env.TOKEN);
+	} catch (error) {
+		console.error(error);
+		console.log(`Your token is {${process.env.TOKEN}}`);
+	}
 else
 	console.log("Please provide a token.")
