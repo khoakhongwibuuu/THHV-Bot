@@ -8,9 +8,10 @@ global.dirname = __dirname;
 const dirname = global.dirname;
 const dotenv = require('dotenv');
 
-if (!process.env.TOKENS) {
+if (!process.env.TOKEN) {
 	// load config from login.env
 	dotenv.config({ path: "./auth/login.env" });
+	console.info("Loaded config from login.env");
 }
 
 if (!fs.existsSync(dirname + '/logs')) {
