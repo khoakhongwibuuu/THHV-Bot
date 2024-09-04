@@ -11,6 +11,12 @@ const discordAPI = global.discordAPI;
 // Module Specified
 const mcLib = require(path.join(dirname, 'modules/multiple-choice/lib/gameLib.js'));
 
+const handleResetEverything = (interaction) => {
+
+
+}
+
+
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-uninstall')
@@ -29,10 +35,43 @@ module.exports = {
             interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại phòng chơi <#${mcLib.getRoomId(interaction.guild.id)}>`, ephemeral: true });
             return;
         }
-        mcLib.guildUninstall(interaction.guild.id);
+        const sentEmbed = new Discord.EmbedBuilder();
+
+        let content = "⚠️ **Bạn đang xóa dữ liệu Trivia game của server này. Bạn chắc chứ?**\n";
+        const affected = mcLib.allPlayer(interaction.guild.id);
+
+        content += `\nNếu bạn tiếp tục, điểm và phép bổ trợ của những người chơi sau đây sẽ bị xóa.\n`;
+        affected.forEach(e => content += `* <@${e}>\n`);
+
+        sentEmbed.setDescription(content);
+        sentEmbed.setFooter({ text: "🕑 Bạn có 10s để xác nhận hành động của bạn." });
+
         interaction.reply({
-            content: `Đã xóa dữ liệu thành công.`,
-            ephemeral: false
+            embeds: [sentEmbed],
+            components: [defaultBtnRow],
+            ephemeral: true
+        });
+
+        let executed = false;
+        const filter = (interaction) => interaction.isButton();
+        const collector = interaction.channel.createMessageComponentCollector({ filter, time: 10000 });
+        collector.on('collect', async () => {
+            await mcLib.guildUninstall(interaction.guild.id);
+            executed = true;
+            interaction.editReply({
+                embeds: [sentEmbed.setFooter({ text: "✅ Đã xóa dữ liệu thành công." })],
+                components: [],
+                ephemeral: true
+            });
+        });
+        collector.on('end', () => {
+            if (!executed) {
+                interaction.editReply({
+                    embeds: [sentEmbed.setFooter({ text: "⛔ Đã hết giờ." })],
+                    components: [],
+                    ephemeral: true
+                });
+            }
         });
     },
 };
