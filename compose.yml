@@ -5,7 +5,7 @@ services:
     volumes:
       - ./logs:/usr/src/bot/logs
       - ./configs:/usr/src/bot/configs
-    environments:
+    environment:
       - TOKEN=your_token
       - CLIENT_ID=your_id
       - OWNER_ID=your_id
