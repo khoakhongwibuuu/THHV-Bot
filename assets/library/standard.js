@@ -39,7 +39,7 @@ String.prototype.logToFile = function () {
 String.prototype.logOffline = function () {
 	const content = JSON.stringify(this)
 	console.log(content.substring(1, content.length - 1));
-	content.substring(1, content.length - 1).logToFile();
+	// content.substring(1, content.length - 1).logToFile();
 }
 
 String.prototype.URLdecode = function () {

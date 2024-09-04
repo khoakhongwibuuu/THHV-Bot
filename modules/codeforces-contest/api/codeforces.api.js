@@ -26,48 +26,47 @@ const demandHours = 24;
 const CODEFORCES_API = 'http://codeforces.com/api/contest.list'
 
 const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => {
+	// Create Embed
+	const embed = new Discord.EmbedBuilder()
+		.setAuthor({
+			name: client.user.username,
+			iconURL: client.user.displayAvatarURL()
+		})
+		.setTitle(name)
+		.setURL(contesturl)
+		.setDescription(`Contest starts <t:${startTime / 1000}:F> (<t:${startTime / 1000}:R>)`)
+		.setFooter({
+			text: `${domain} | This message was sent at`
+		})
+		.setTimestamp();
+
+	// Create buttons
+	const registerbtn = new Discord.ButtonBuilder()
+		.setLabel('Register')
+		.setURL(registerurl)
+		.setStyle(Discord.ButtonStyle.Link);
+
+	const webviewbtn = new Discord.ButtonBuilder()
+		.setLabel('View detail')
+		.setURL(contesturl)
+		.setStyle(Discord.ButtonStyle.Link);
+
+	// Create action row from buttons
+	const row = new Discord.ActionRowBuilder()
+		.addComponents(webviewbtn, registerbtn);
+
 	const notifiable = client.guilds.cache.filter(guild => {
 		if (!Persist[domain]) Persist[domain] = {};
 		if (!Persist[domain][guild.id]) Persist[domain][guild.id] = {};
 		if (!Persist[domain][guild.id][hours]) Persist[domain][guild.id][hours] = [];
 		return Persist[domain][guild.id][hours].indexOf(id) < 0;
 	});
+	
 	notifiable.forEach(guild => {
 		if (!Persist.ready[guild.id]) return;
 
-		// Create Embed
-		const embed = new Discord.EmbedBuilder()
-			.setAuthor({
-				name: client.user.username,
-				iconURL: client.user.displayAvatarURL()
-			})
-			.setTitle(name)
-			.setURL(contesturl)
-			.setDescription(`Contest starts <t:${startTime / 1000}:F> (<t:${startTime / 1000}:R>)`)
-			.setFooter({
-				text: `${domain} | This message was sent at`
-			})
-			.setTimestamp();
-
-		// Create buttons
-		const registerbtn = new Discord.ButtonBuilder()
-			.setLabel('Register')
-			.setURL(registerurl)
-			.setStyle(Discord.ButtonStyle.Link);
-
-		const webviewbtn = new Discord.ButtonBuilder()
-			.setLabel('View detail')
-			.setURL(contesturl)
-			.setStyle(Discord.ButtonStyle.Link);
-
-		// Create action row from buttons
-		const row = new Discord.ActionRowBuilder()
-			.addComponents(webviewbtn, registerbtn);
-
 		// Deliver
-		const guildId = guild.id;
-		const channelId = Persist.channel[guild.id];
-		discordAPI.GuildChannel(guildId, channelId).send({
+		discordAPI.GuildChannel(guild.id, Persist.channel[guild.id]).send({
 			content: (Persist.role[guild.id] === "")
 				? "Upcoming contest announced!"
 				: `<@&${Persist.role[guild.id]}>, upcoming contest announced!`,

@@ -1,0 +1,289 @@
+// Packages
+const fs = require('fs');
+const path = require('path');
+
+// Universal
+const dirname = global.dirname;
+const stdlib = global.stdlib;
+const discordAPI = global.discordAPI;
+
+// Module based
+const qsDB = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/multiple-choice/database/processed.database.min.json'), 'utf-8'));
+const configDirPath = path.join(dirname, "modules/multiple-choice/config");
+
+// Configuration
+const defaultSettingProfile = (channelId) => {
+    return {
+        running: false,
+        channelId: channelId,
+        score: {
+            up: 2,
+            down: -3,
+            boostRate: 0
+        },
+        time: {
+            base: 10,
+            easy: 0,
+            medium: 5,
+            hard: 10
+        },
+        roles: {
+            high: "",
+            low: ""
+        }
+    }
+}
+
+// Root
+const isSetup = (guildId) => {
+    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
+    return fs.existsSync(guildDataPath);
+}
+
+const guildSetup = (guildId, channelId) => {
+    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
+    if (!fs.existsSync(guildDataPath)) {
+        fs.writeFileSync(guildDataPath, JSON.stringify({
+            setting: defaultSettingProfile(channelId),
+            playerdata: {}
+        }), 'utf8');
+    }
+}
+
+const guildUninstall = (guildId) => {
+    if (isSetup(guildId)) {
+        const guildDataPath = path.join(configDirPath, `${guildId}.json`);
+        fs.unlinkSync(guildDataPath);
+    }
+}
+
+const loadGuildFile = (guildId) => {
+    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
+    return JSON.parse(fs.readFileSync(guildDataPath, 'utf-8'));
+}
+
+const writeGuildFile = (guildId, newData) => {
+    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
+    fs.writeFileSync(guildDataPath, JSON.stringify(newData), 'utf8');
+}
+
+const getRoomId = (guildId) => {
+    if (!isSetup(guildId)) return null;
+    else return loadGuildFile(guildId).setting.channelId;
+}
+
+const isInRoom = (guildId, testChannelId) => {
+    if (!isSetup(guildId)) return false;
+    else return (getRoomId(guildId) === testChannelId);
+}
+
+const resetRoomId = (guildId, newChannelId) => {
+    const guildData = loadGuildFile(guildId);
+    guildData.setting.channelId = newChannelId;
+    writeGuildFile(guildId, guildData);
+}
+
+module.exports.isSetup = isSetup;
+module.exports.guildSetup = guildSetup;
+module.exports.guildUninstall = guildUninstall;
+module.exports.loadGuildFile = loadGuildFile;
+module.exports.writeGuildFile = writeGuildFile;
+module.exports.getRoomId = getRoomId;
+module.exports.isInRoom = isInRoom;
+module.exports.resetRoomId = resetRoomId;
+
+// Ingame tasks
+const hasPlayerData = (guildId, userId) => {
+    const guildData = loadGuildFile(guildId);
+    return guildData.playerdata.hasOwnProperty(userId);
+}
+
+const allPlayerList = (guildId) => {
+    let res = []
+    const guildData = loadGuildFile(guildId);
+    for (let key in guildData.playerdata)
+        res.push(key);
+    return res;
+}
+
+const readPlayerScore = (guildId, userId) => {
+    const guildData = loadGuildFile(guildId);
+    return hasPlayerData(guildId, userId) ? guildData.playerdata[userId].score : null;
+}
+
+const readPlayerBoost = (guildId, userId) => {
+    const guildData = loadGuildFile(guildId);
+    return hasPlayerData(guildId, userId) ? guildData.playerdata[userId].auxiliary : 0;
+}
+
+const bulkSavePlayerScore = (guildId, gameResultData) => {
+    // gameResultData MUST follow this pattern
+
+    // gameResultData = {
+    //     win: [..arr_of_usr_id],
+    //     doubleWin: [..arr_of_usr_id],
+    //     lose: [..arr_of_usr_id],
+    //     immune: [..arr_of_usr_id]
+    // }
+
+    const guildData = loadGuildFile(guildId);
+
+    let winPenalty = guildData.setting.score.up;
+    let losePenalty = guildData.setting.score.down;
+
+    gameResultData.win.forEach(userId => {
+        if (hasPlayerData(guildId, userId)) {
+            if (guildData.playerdata[userId].hasOwnProperty("score")) {
+                if (guildData.playerdata[userId].score.length > 0) {
+                    guildData.playerdata[userId].score.push(guildData.playerdata[userId].score.lastValue() + winPenalty);
+                } else {
+                    guildData.playerdata[userId].score.push(0, winPenalty);
+                }
+            } else {
+                guildData.playerdata[userId].score = [0, winPenalty];
+            }
+        } else {
+            guildData.playerdata[userId] = {
+                auxiliary: 0,
+                score: [0, winPenalty]
+            }
+        }
+    });
+
+    gameResultData.doubleWin.forEach(userId => {
+        if (hasPlayerData(guildId, userId)) {
+            if (guildData.playerdata[userId].hasOwnProperty("score")) {
+                if (guildData.playerdata[userId].score.length > 0) {
+                    guildData.playerdata[userId].score.push(guildData.playerdata[userId].score.lastValue() + winPenalty * 2);
+                } else {
+                    guildData.playerdata[userId].score.push(0, winPenalty * 2);
+                }
+            } else {
+                guildData.playerdata[userId].score = [0, winPenalty * 2];
+            }
+        } else {
+            guildData.playerdata[userId] = {
+                auxiliary: 0,
+                score: [0, winPenalty * 2]
+            }
+        }
+    });
+
+    gameResultData.lose.forEach(userId => {
+        if (hasPlayerData(guildId, userId)) {
+            if (guildData.playerdata[userId].hasOwnProperty("score")) {
+                if (guildData.playerdata[userId].score.length > 0) {
+                    guildData.playerdata[userId].score.push(guildData.playerdata[userId].score.lastValue() + losePenalty);
+                } else {
+                    guildData.playerdata[userId].score.push(0, losePenalty);
+                }
+            } else {
+                guildData.playerdata[userId].score = [0, losePenalty];
+            }
+        } else {
+            guildData.playerdata[userId] = {
+                auxiliary: 0,
+                score: [0, losePenalty]
+            }
+        }
+    });
+
+    gameResultData.immune.forEach(userId => {
+        if (hasPlayerData(guildId, userId)) {
+            if (guildData.playerdata[userId].hasOwnProperty("score")) {
+                if (guildData.playerdata[userId].score.length > 0) {
+                    guildData.playerdata[userId].score.push(guildData.playerdata[userId].score.lastValue());
+                } else {
+                    guildData.playerdata[userId].score.push(0, 0);
+                }
+            } else {
+                guildData.playerdata[userId].score = [0, 0];
+            }
+        } else {
+            guildData.playerdata[userId] = {
+                auxiliary: 0,
+                score: [0, 0]
+            }
+        }
+    });
+
+    writeGuildFile(guildId, guildData);
+}
+
+const savePlayerBoost = (guildId, userId, boostId) => {
+    const guildData = loadGuildFile(guildId);
+    guildData.playerdata[userId].auxiliary = boostId;
+    writeGuildFile(guildId, guildData);
+    // 0 : none
+    // 1 : Double Reward
+    // 2 : Immunity
+}
+
+const bulkPlayerReset = (guildId) => {
+    const guildData = loadGuildFile(guildId);
+    guildData.playerdata = {}
+    writeGuildFile(guildId, guildData);
+}
+
+const bulkBoostLoad = (guildId) => {
+    const guildData = loadGuildFile(guildId);
+    const immunity = [], doubleReward = [];
+    for (const [playerId, playerObj] of Object.entries(guildData.playerdata)) {
+        if (playerObj.auxiliary === 2) immunity.push(playerId);
+        if (playerObj.auxiliary === 1) doubleReward.push(playerId);
+    }
+    return {
+        immunity: immunity,
+        doubleReward: doubleReward
+    }
+}
+
+const isRunning = (guildId) => {
+    const guildData = loadGuildFile(guildId);
+    return guildData.setting.running;
+
+}
+
+const guildLock = (guildId) => {
+    const guildData = loadGuildFile(guildId);
+    guildData.setting.running = true;
+    writeGuildFile(guildId, guildData);
+}
+
+const guildUnlock = (guildId) => {
+    const guildData = loadGuildFile(guildId);
+    guildData.setting.running = false;
+    writeGuildFile(guildId, guildData);
+}
+
+const dbReader = () => {
+    return qsDB.results.randomValue();
+}
+
+module.exports.hasPlayerData = hasPlayerData;
+module.exports.allPlayerList = allPlayerList;
+module.exports.readPlayerScore = readPlayerScore;
+module.exports.readPlayerBoost = readPlayerBoost;
+module.exports.bulkSavePlayerScore = bulkSavePlayerScore;
+module.exports.savePlayerBoost = savePlayerBoost;
+module.exports.bulkPlayerReset = bulkPlayerReset;
+module.exports.bulkBoostLoad = bulkBoostLoad;
+module.exports.isRunning = isRunning;
+module.exports.guildLock = guildLock;
+module.exports.guildUnlock = guildUnlock;
+module.exports.dbReader = dbReader;
+
+// Boosting mechanics
+const boostModuleEnabled = (guildId) => {
+    const guildData = loadGuildFile(guildId);
+    return !(guildData.setting.score.boostRate === 0);
+}
+
+const boostModuleToggle = (guildId) => {
+    const guildData = loadGuildFile(guildId);
+    guildData.setting.score.boostRate = (5 - guildData.setting.score.boostRate);
+    writeGuildFile(guildId, guildData);
+}
+
+module.exports.boostModuleEnabled = boostModuleEnabled;
+module.exports.boostModuleToggle = boostModuleToggle;

@@ -19,6 +19,7 @@ module.exports = {
         // Load modules
         require(path.join(dirname, '/modules/codeforces-contest/main.js'));
         require(path.join(dirname, '/modules/word-match/main.js'));
+        require(path.join(dirname, '/modules/multiple-choice/main.js'));
 
         client.user.setPresence({
             activities: [{
