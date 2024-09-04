@@ -6,6 +6,12 @@ const path = require('node:path');
 
 global.dirname = __dirname;
 const dirname = global.dirname;
+const dotenv = require('dotenv');
+
+if (!process.env.TOKENS) {
+	// load config from login.env
+	dotenv.config({ path: "./auth/login.env" });
+}
 
 if (!fs.existsSync(dirname + '/logs')) {
 	fs.mkdirSync(dirname + '/logs', { recursive: true });

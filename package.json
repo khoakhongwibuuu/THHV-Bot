@@ -1,6 +1,7 @@
 {
     "dependencies": {
         "discord.js": "latest",
+        "dotenv": "^16.4.5",
         "fs": "latest",
         "node-fetch": "latest",
         "ping": "latest"
@@ -13,9 +14,9 @@
     "main": "index.js",
     "directories": {},
     "scripts": {
-        "start": "node --env-file=./auth/login.env index.js",
-        "deploy": "node --env-file=./auth/login.env ./deploy.js",
-        "undeploy": "node --env-file=./auth/login.env ./undeploy.js"
+        "start": "node index.js",
+        "deploy": "node ./deploy.js",
+        "undeploy": "node ./undeploy.js"
     },
     "keywords": [],
     "author": "khoa.khong.wibuuu",
