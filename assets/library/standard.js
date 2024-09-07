@@ -62,6 +62,21 @@ String.prototype.firstDigit = function () {
 	return this[0];
 }
 
+String.prototype.keyReverse = function () {
+	let newString = "";
+	for (let i = this.length - 1; i >= 0; i--)
+		newString += this[i];
+	return newString;
+}
+
+String.prototype.encrypt = function () {
+	return this;
+}
+
+String.prototype.decrypt = function () {
+	return this;
+}
+
 Array.prototype.argList = function (mode) {
 	let res = "";
 	this.forEach((e, i, a) => {
@@ -89,20 +104,3 @@ Array.prototype.firstValue = function () {
 Array.prototype.randomValue = function () {
 	return this[trueRnd(0, this.length - 1)];
 }
-
-const clearCache = (sessionId) => {
-	fs.readdir(path.join(dirname, '/logs'), (err, files) => {
-		files.forEach(file => {
-			const filePath = path.join(dirname, 'logs', file);
-			if (file !== `${sessionId}.log`) {
-				fs.unlink(filePath, err => {
-					if (err) {
-						console.error(err);
-					}
-				});
-			}
-		});
-	});
-}
-
-module.exports.clearCache = clearCache;
