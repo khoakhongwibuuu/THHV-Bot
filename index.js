@@ -5,7 +5,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 global.dirname = __dirname;
-const dirname = global.dirname;
 const dotenv = require('dotenv');
 
 if (!process.env.TOKEN) {
