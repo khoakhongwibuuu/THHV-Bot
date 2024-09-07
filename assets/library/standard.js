@@ -30,16 +30,9 @@ module.exports.shuffle = shuffle;
 module.exports.randomEvent = randomEvent;
 module.exports.randomPercent = randomPercent;
 
-String.prototype.logToFile = function () {
-	fs.appendFile(dirname + '/logs/' + global.BotStartTime.replace(/:/g, "") + '.log', this + '\n', (err) => {
-		if (err) throw err;
-	});
-}
-
 String.prototype.logOffline = function () {
 	const content = JSON.stringify(this)
 	console.log(content.substring(1, content.length - 1));
-	// content.substring(1, content.length - 1).logToFile();
 }
 
 String.prototype.URLdecode = function () {

@@ -14,10 +14,6 @@ if (!process.env.TOKEN) {
 	console.info("Loaded config from login.env");
 }
 
-if (!fs.existsSync(dirname + '/logs')) {
-	fs.mkdirSync(dirname + '/logs', { recursive: true });
-}
-
 const Discord = require('discord.js');
 
 const client = new Discord.Client({
