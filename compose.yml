@@ -4,11 +4,14 @@ services:
     volumes:
       - ./logs:/usr/src/bot/logs
       - ./configs:/usr/src/bot/configs
-    #environment:
-    #  - TOKEN=your_token
+
     deploy:
       restart_policy:
         condition: on-failure
         delay: 10s
         max_attempts: 3
-        window: 120s
+        window: 120s    
+    environment:
+      - TOKEN=
+      - CLIENT_ID=
+      - OWNER_ID=
