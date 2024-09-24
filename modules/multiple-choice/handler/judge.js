@@ -30,76 +30,64 @@ const execute = (interaction, responseData, key) => {
         const boostList = mcLib.bulkBoostLoad(interaction.guild.id);
         const doubleRewardList = boostList.doubleReward, immunityList = boostList.immunity;
 
-        Object.keys(responseData).forEach(id => {
-            if (responseData[id] === key) {
-                correct.push(id);
-            } else {
-                incorrect.push(id);
-            }
-        });
+        Object.keys(responseData).forEach(id => { if (responseData[id] === key) correct.push(id); else incorrect.push(id); });
 
         // players that answered incorrectly and DO NOT have Immunity
-        const scoreDecrease = incorrect.filter(e => !immunityList.includes(e));
+        const loseList = incorrect.filter(id => !immunityList.includes(id));
 
         // players that answered incorrectly but have Immunity
-        const scoreIntact = incorrect.filter(e => immunityList.includes(e));
+        const immuneList = incorrect.filter(id => immunityList.includes(id));
 
         // players that answered correctly but DO NOT have Double Rewards
-        const normalCorrect = correct.filter(e => !doubleRewardList.includes(e))
+        const winList = correct.filter(id => !doubleRewardList.includes(id))
 
         // players that answered correctly and have Double Rewards
-        const doubleCorrect = correct.filter(e => doubleRewardList.includes(e));
+        const doubleWinList = correct.filter(id => doubleRewardList.includes(id));
 
         // players that are eligible to receice a BOOST (do NOT have any BOOST)
-        const eligible = correct.filter(e => !doubleRewardList.includes(e) && !immunityList.includes(e));
+        const eligible = correct.filter(id => !doubleRewardList.includes(id) && !immunityList.includes(id));
 
         let Content = `:alarm_clock:  Hết giờ! Đáp án là \`${key}\`\n`;
 
-        if (normalCorrect.length > 0) {
-            Content += `Các người chơi trả lời đúng và nhận được \`${gameSetting.score.up}\` điểm <:orz:699067454671945758>: ${normalCorrect.argList("mention")}\n`;
+        if (winList.length > 0) {
+            Content += `Các người chơi trả lời đúng và nhận được \`${gameSetting.score.up}\` điểm <:orz:699067454671945758>: ${winList.argList("mention")}\n`;
         }
-        if (doubleCorrect.length > 0) {
-            Content += `Các người chơi trả lời đúng và nhận được \`${gameSetting.score.up * 2}\` điểm <:woah:700342674129027112>: ${doubleCorrect.argList("mention")}\n`;
-            mcLib.savePlayerBoost(interaction.guild.id, interaction.user.id, 0);
+        if (doubleWinList.length > 0) {
+            Content += `Các người chơi trả lời đúng và nhận được \`${gameSetting.score.up * 2}\` điểm <:woah:700342674129027112>: ${doubleWinList.argList("mention")}\n`;
         }
-        if (scoreDecrease.length > 0) {
-            Content += `Các người chơi trả lời sai và bị trừ \`${Math.abs(gameSetting.score.down)}\` điểm <:holyfuck:700342674166775870>: ${scoreDecrease.argList("mention")}\n`;
+        if (loseList.length > 0) {
+            Content += `Các người chơi trả lời sai và bị trừ \`${Math.abs(gameSetting.score.down)}\` điểm <:holyfuck:700342674166775870>: ${loseList.argList("mention")}\n`;
         }
-        if (scoreIntact.length > 0) {
-            Content += `Các người chơi trả lời sai và bị mất phép bổ trợ \`Miễn nhiễm\` <:haiyaa:858314284752568322>: ${scoreIntact.argList("mention")}\n`;
-            scoreIntact.forEach(id => {
-                mcLib.savePlayerBoost(interaction.guild.id, id, 0);
-            });
+        if (immuneList.length > 0) {
+            Content += `Các người chơi trả lời sai và bị mất phép bổ trợ \`Miễn nhiễm\` <:haiyaa:858314284752568322>: ${immuneList.argList("mention")}\n`;
         }
         if (!responseData.hasOwnProperty(interaction.user.id)) {
             if (!immunityList.includes(interaction.user.id)) {
                 Content += `<@${interaction.user.id}> lấy bài nhưng không làm, phí phạm tài nguyên. Trừ \`${Math.abs(gameSetting.score.down)}\` điểm <:thinkingcat:700345519398060073>.`;
-                scoreDecrease.push(interaction.user.id);
+                loseList.push(interaction.user.id);
             } else {
                 Content += `<@${interaction.user.id}> lấy bài nhưng không làm, phí phạm tài nguyên. Xóa phép bổ trợ \`Miễn nhiễm\` <:thinkingcat:700345519398060073>.`;
-                mcLib.savePlayerBoost(interaction.guild.id, interaction.user.id, 0);
-                scoreIntact.push(interaction.user.id);
+                immuneList.push(interaction.user.id);
             }
         }
 
-        mcLib.bulkSavePlayerScore(interaction.guild.id, {
-            win: normalCorrect,
-            doubleWin: doubleCorrect,
-            lose: scoreDecrease,
-            immune: scoreIntact
-        });
+        interaction.followUp({ content: Content, ephemeral: false });
 
-        interaction.followUp({
-            content: Content,
-            ephemeral: false
-        });
+        let thisInstancePlayerId = null;
+        let thisInstanceBoostId = 0;
 
         if (eligible.length > 0) {
             // Probability of a player receiving a reward: 10% + 5% per 1 eligible player, Maximum Rate : 75%
-            let luck = generateLuckData(eligible, Math.min(10 + gameSetting.score.boostRate * eligible.length, 75));
-            // let luck = generateLuckData(eligible, 100);
-            if (luck.playerId !== null) {
-                mcLib.savePlayerBoost(interaction.guild.id, luck.playerId, luck.boostId);
+
+            const DEBUG_MODE = false;
+            let luck = (DEBUG_MODE)
+                ? generateLuckData(eligible, 100)
+                : generateLuckData(eligible, Math.min(10 + gameSetting.score.boostRate * eligible.length, 75));
+
+            if (luck.boostId !== 0) {
+                thisInstanceBoostId = luck.boostId;
+                thisInstancePlayerId = luck.playerId;
+
                 interaction.followUp({
                     embeds: [new Discord.EmbedBuilder()
                         .setDescription(`GG <@${luck.playerId}>! Bạn đã nhận được phép bổ trợ ${luck.boostId === 1 ? "\`Nhân đôi phần thưởng\`" : "\`Miễn nhiễm\`"}.\nTác dụng: `
@@ -109,6 +97,17 @@ const execute = (interaction, responseData, key) => {
                 });
             }
         }
+
+        mcLib.bulkSaveInstaceResult(interaction.guild.id, {
+            win: winList,
+            doubleWin: doubleWinList,
+            lose: loseList,
+            immune: immuneList,
+            boostReceiver: {
+                playerId: thisInstancePlayerId,
+                boostId: thisInstanceBoostId
+            }
+        });
 
         mcLib.guildUnlock(interaction.guild.id);
     }

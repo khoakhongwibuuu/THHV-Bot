@@ -30,16 +30,9 @@ module.exports.shuffle = shuffle;
 module.exports.randomEvent = randomEvent;
 module.exports.randomPercent = randomPercent;
 
-String.prototype.logToFile = function () {
-	fs.appendFile(dirname + '/logs/' + global.BotStartTime.replace(/:/g, "") + '.log', this + '\n', (err) => {
-		if (err) throw err;
-	});
-}
-
 String.prototype.logOffline = function () {
 	const content = JSON.stringify(this)
 	console.log(content.substring(1, content.length - 1));
-	// content.substring(1, content.length - 1).logToFile();
 }
 
 String.prototype.URLdecode = function () {
@@ -60,6 +53,29 @@ String.prototype.lastDigit = function () {
 
 String.prototype.firstDigit = function () {
 	return this[0];
+}
+
+String.prototype.keyReverse = function () {
+	let newString = "";
+	for (let i = this.length - 1; i >= 0; i--)
+		newString += this[i];
+	return newString;
+}
+
+String.prototype.encrypt = function () {
+	const that = this.toString().keyReverse();
+	let res = ""
+	for (let i = 0; i < that.length; i++)
+		res += String.fromCharCode(-3 + that.charCodeAt(i));
+	return res;
+}
+
+String.prototype.decrypt = function () {
+	const that = this.toString();
+	let res = ""
+	for (let i = 0; i < that.length; i++)
+		res += String.fromCharCode(3 + that.charCodeAt(i));
+	return res.keyReverse();
 }
 
 Array.prototype.argList = function (mode) {
@@ -89,20 +105,3 @@ Array.prototype.firstValue = function () {
 Array.prototype.randomValue = function () {
 	return this[trueRnd(0, this.length - 1)];
 }
-
-const clearCache = (sessionId) => {
-	fs.readdir(path.join(dirname, '/logs'), (err, files) => {
-		files.forEach(file => {
-			const filePath = path.join(dirname, 'logs', file);
-			if (file !== `${sessionId}.log`) {
-				fs.unlink(filePath, err => {
-					if (err) {
-						console.error(err);
-					}
-				});
-			}
-		});
-	});
-}
-
-module.exports.clearCache = clearCache;

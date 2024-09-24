@@ -5,17 +5,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 global.dirname = __dirname;
-const dirname = global.dirname;
 const dotenv = require('dotenv');
 
 if (!process.env.TOKEN) {
 	// load config from login.env
 	dotenv.config({ path: "./auth/login.env" });
 	console.info("Loaded config from login.env");
-}
-
-if (!fs.existsSync(dirname + '/logs')) {
-	fs.mkdirSync(dirname + '/logs', { recursive: true });
 }
 
 const Discord = require('discord.js');

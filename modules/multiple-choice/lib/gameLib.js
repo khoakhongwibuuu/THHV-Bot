@@ -43,10 +43,8 @@ const isSetup = (guildId) => {
 const guildSetup = (guildId, channelId) => {
     const guildDataPath = path.join(configDirPath, `${guildId}.json`);
     if (!fs.existsSync(guildDataPath)) {
-        fs.writeFileSync(guildDataPath, JSON.stringify({
-            setting: defaultSettingProfile(channelId),
-            playerdata: {}
-        }), 'utf8');
+        const setupData = JSON.stringify({ setting: defaultSettingProfile(channelId), playerdata: {} });
+        fs.writeFileSync(guildDataPath, setupData, 'utf8');
     }
 }
 
@@ -59,12 +57,14 @@ const guildUninstall = (guildId) => {
 
 const loadGuildFile = (guildId) => {
     const guildDataPath = path.join(configDirPath, `${guildId}.json`);
-    return JSON.parse(fs.readFileSync(guildDataPath, 'utf-8'));
+    const rawTextFile = fs.readFileSync(guildDataPath, 'utf-8');
+    return JSON.parse(rawTextFile);
 }
 
 const writeGuildFile = (guildId, newData) => {
     const guildDataPath = path.join(configDirPath, `${guildId}.json`);
-    fs.writeFileSync(guildDataPath, JSON.stringify(newData), 'utf8');
+    const JSONdata = JSON.stringify(newData);
+    fs.writeFileSync(guildDataPath, JSONdata, 'utf8');
 }
 
 const getRoomId = (guildId) => {
@@ -116,14 +116,14 @@ const readPlayerBoost = (guildId, userId) => {
     return hasPlayerData(guildId, userId) ? guildData.playerdata[userId].auxiliary : 0;
 }
 
-const bulkSavePlayerScore = (guildId, gameResultData) => {
+const bulkSaveInstaceResult = (guildId, gameResultData) => {
     // gameResultData MUST follow this pattern
-
     // gameResultData = {
     //     win: [..arr_of_usr_id],
     //     doubleWin: [..arr_of_usr_id],
     //     lose: [..arr_of_usr_id],
     //     immune: [..arr_of_usr_id]
+    //     boostReceiver: {playerId: <PLAYER_ID> (can be a string of number or NULL value),  boostId:<BOOST_ID> (integer value: 0<=BOOST_ID<=2)}
     // }
 
     const guildData = loadGuildFile(guildId);
@@ -151,6 +151,7 @@ const bulkSavePlayerScore = (guildId, gameResultData) => {
     });
 
     gameResultData.doubleWin.forEach(userId => {
+        // THESE PLAYERS WILL LOSE THEIR BOOSTS
         if (hasPlayerData(guildId, userId)) {
             if (guildData.playerdata[userId].hasOwnProperty("score")) {
                 if (guildData.playerdata[userId].score.length > 0) {
@@ -161,6 +162,7 @@ const bulkSavePlayerScore = (guildId, gameResultData) => {
             } else {
                 guildData.playerdata[userId].score = [0, winPenalty * 2];
             }
+            guildData.playerdata[userId].auxiliary = 0;
         } else {
             guildData.playerdata[userId] = {
                 auxiliary: 0,
@@ -189,6 +191,7 @@ const bulkSavePlayerScore = (guildId, gameResultData) => {
     });
 
     gameResultData.immune.forEach(userId => {
+        // THESE PLAYERS WILL LOSE THEIR BOOSTS
         if (hasPlayerData(guildId, userId)) {
             if (guildData.playerdata[userId].hasOwnProperty("score")) {
                 if (guildData.playerdata[userId].score.length > 0) {
@@ -199,6 +202,7 @@ const bulkSavePlayerScore = (guildId, gameResultData) => {
             } else {
                 guildData.playerdata[userId].score = [0, 0];
             }
+            guildData.playerdata[userId].auxiliary = 0;
         } else {
             guildData.playerdata[userId] = {
                 auxiliary: 0,
@@ -207,16 +211,15 @@ const bulkSavePlayerScore = (guildId, gameResultData) => {
         }
     });
 
-    writeGuildFile(guildId, guildData);
-}
+    if (gameResultData.boostReceiver.boostId != 0) {
+        guildData.playerdata[gameResultData.boostReceiver.playerId].auxiliary = gameResultData.boostReceiver.boostId;
+        // boostId EXPLANATION
+        // 0 : none
+        // 1 : Double Reward
+        // 2 : Immunity
+    }
 
-const savePlayerBoost = (guildId, userId, boostId) => {
-    const guildData = loadGuildFile(guildId);
-    guildData.playerdata[userId].auxiliary = boostId;
     writeGuildFile(guildId, guildData);
-    // 0 : none
-    // 1 : Double Reward
-    // 2 : Immunity
 }
 
 const bulkPlayerReset = (guildId) => {
@@ -241,7 +244,6 @@ const bulkBoostLoad = (guildId) => {
 const isRunning = (guildId) => {
     const guildData = loadGuildFile(guildId);
     return guildData.setting.running;
-
 }
 
 const guildLock = (guildId) => {
@@ -264,8 +266,7 @@ module.exports.hasPlayerData = hasPlayerData;
 module.exports.allPlayerList = allPlayerList;
 module.exports.readPlayerScore = readPlayerScore;
 module.exports.readPlayerBoost = readPlayerBoost;
-module.exports.bulkSavePlayerScore = bulkSavePlayerScore;
-module.exports.savePlayerBoost = savePlayerBoost;
+module.exports.bulkSaveInstaceResult = bulkSaveInstaceResult;
 module.exports.bulkPlayerReset = bulkPlayerReset;
 module.exports.bulkBoostLoad = bulkBoostLoad;
 module.exports.isRunning = isRunning;
