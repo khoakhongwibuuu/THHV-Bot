@@ -1,6 +1,14 @@
 const Discord = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
+const dotenv = require('dotenv');
+
+if (!process.env.TOKEN) {
+	// load config from login.env
+	dotenv.config({ path: "./auth/login.env" });
+	console.info("Loaded config from login.env");
+}
+
 global.dirname = __dirname
 
 const commands = [];

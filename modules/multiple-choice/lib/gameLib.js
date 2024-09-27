@@ -36,35 +36,41 @@ const defaultSettingProfile = (channelId) => {
 
 // Root
 const isSetup = (guildId) => {
-    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
+    const guildDataPath = path.join(configDirPath, `${guildId}.data`);
     return fs.existsSync(guildDataPath);
 }
 
 const guildSetup = (guildId, channelId) => {
-    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
+    const guildDataPath = path.join(configDirPath, `${guildId}.data`);
     if (!fs.existsSync(guildDataPath)) {
         const setupData = JSON.stringify({ setting: defaultSettingProfile(channelId), playerdata: {} });
-        fs.writeFileSync(guildDataPath, setupData, 'utf8');
+        fs.writeFileSync(guildDataPath, (setupData.encrypt()), 'utf8');
     }
 }
 
 const guildUninstall = (guildId) => {
     if (isSetup(guildId)) {
-        const guildDataPath = path.join(configDirPath, `${guildId}.json`);
+        const guildDataPath = path.join(configDirPath, `${guildId}.data`);
         fs.unlinkSync(guildDataPath);
     }
 }
 
-const loadGuildFile = (guildId) => {
-    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
+const loadRawGuildFile = (guildId) => {
+    const guildDataPath = path.join(configDirPath, `${guildId}.data`);
     const rawTextFile = fs.readFileSync(guildDataPath, 'utf-8');
-    return JSON.parse(rawTextFile);
+    return rawTextFile;
+}
+
+const loadGuildFile = (guildId) => {
+    // const guildDataPath = path.join(configDirPath, `${guildId}.data`);
+    // const rawTextFile = fs.readFileSync(guildDataPath, 'utf-8');
+    return JSON.parse(loadRawGuildFile(guildId).decrypt());
 }
 
 const writeGuildFile = (guildId, newData) => {
-    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
+    const guildDataPath = path.join(configDirPath, `${guildId}.data`);
     const JSONdata = JSON.stringify(newData);
-    fs.writeFileSync(guildDataPath, JSONdata, 'utf8');
+    fs.writeFileSync(guildDataPath, (JSONdata.encrypt()), 'utf8');
 }
 
 const getRoomId = (guildId) => {
@@ -86,6 +92,7 @@ const resetRoomId = (guildId, newChannelId) => {
 module.exports.isSetup = isSetup;
 module.exports.guildSetup = guildSetup;
 module.exports.guildUninstall = guildUninstall;
+module.exports.loadRawGuildFile = loadRawGuildFile;
 module.exports.loadGuildFile = loadGuildFile;
 module.exports.writeGuildFile = writeGuildFile;
 module.exports.getRoomId = getRoomId;

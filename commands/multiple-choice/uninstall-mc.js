@@ -38,6 +38,10 @@ module.exports = {
             interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại phòng chơi <#${mcLib.getRoomId(interaction.guild.id)}>`, ephemeral: true });
             return;
         }
+        if (mcLib.isRunning(interaction.guild.id)) {
+            interaction.reply({ content: '⚠️ Bạn không được phép sử dụng lệnh này khi có lượt chơi đang diễn ra. Vui lòng chờ lượt chơi đó hoàn tất.', ephemeral: true });
+            return;
+        }
         const sentEmbed = new Discord.EmbedBuilder();
 
         let content = "⚠️ **Bạn đang xóa dữ liệu Trivia game của server này. Bạn chắc chứ?**\n";

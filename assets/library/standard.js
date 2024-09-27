@@ -63,11 +63,13 @@ String.prototype.keyReverse = function () {
 }
 
 String.prototype.encrypt = function () {
-	return (btoa(btoa(btoa(this.toString().keyReverse()))));
+	// return (btoa(btoa(btoa(this.toString().keyReverse()))));
+	return this.toString();
 }
 
 String.prototype.decrypt = function () {
-	return (atob(atob(atob(this.toString())))).keyReverse();
+	// return (atob(atob(atob(this.toString())))).keyReverse();
+	return this.toString();
 }
 
 Array.prototype.argList = function (mode) {

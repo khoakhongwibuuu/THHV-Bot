@@ -1,0 +1,45 @@
+// Packages
+const fs = require('fs');
+const path = require('path');
+const Discord = require('discord.js');
+
+// Universal
+const dirname = global.dirname;
+const stdlib = global.stdlib;
+const discordAPI = global.discordAPI;
+
+// Module Specified
+const mcLib = require(path.join(dirname, 'modules/multiple-choice/lib/gameLib.js'));
+
+module.exports = {
+    data: new Discord.SlashCommandBuilder()
+        .setName('mc-export')
+        .setDescription('[Moderators Only] - Export this server game data.')
+    ,
+    async execute(interaction) {
+        if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+            interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
+            return;
+        }
+        if (!mcLib.isSetup(interaction.guild.id)) {
+            interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
+            return;
+        }
+        if (interaction.channel.id !== mcLib.getRoomId(interaction.guild.id)) {
+            interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại phòng chơi <#${mcLib.getRoomId(interaction.guild.id)}>`, ephemeral: true });
+            return;
+        }
+        if (mcLib.isRunning(interaction.guild.id)) {
+            interaction.reply({ content: '⚠️ Bạn không được phép sử dụng lệnh này khi có lượt chơi đang diễn ra. Vui lòng chờ lượt chơi đó hoàn tất.', ephemeral: true });
+            return;
+        }
+        const dat = mcLib.loadRawGuildFile(interaction.guild.id);
+        interaction.reply({
+            // content: `<@${interaction.user.id}>: đã buộc dừng lượt chơi.`,
+            embeds: [new Discord.EmbedBuilder()
+                .setDescription(`\`\`\`${dat}\`\`\``)
+            ],
+            ephemeral: true
+        });
+    },
+};
