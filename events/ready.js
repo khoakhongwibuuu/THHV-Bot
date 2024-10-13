@@ -20,6 +20,7 @@ module.exports = {
         require(path.join(dirname, '/modules/codeforces-contest/main.js'));
         require(path.join(dirname, '/modules/word-match/main.js'));
         require(path.join(dirname, '/modules/multiple-choice/main.js'));
+        require(path.join(dirname, '/modules/auto-reactor/main.js'));
 
         client.user.setPresence({
             activities: [{
