@@ -68,9 +68,29 @@ const handleInput = (msg) => {
     }
 }
 
+const handleReaction = (reaction, user) => {
+    if (isInRoom(reaction.message.guild.id, reaction.message.channel.id)) {
+        const guildData = loadGuildFile(reaction.message.guild.id);
+        // Fetch the message if it's a partial
+        if (reaction.partial) reaction.fetch();
+
+        // Check if the emoji is ✅ or ❌
+        if (reaction.emoji.name !== guildData.upvoteToken && reaction.emoji.name !== guildData.downvoteToken) return;
+
+        // Get all reactions to the message
+        const userReactions = reaction.message.reactions.cache.filter(r => r.users.cache.has(user.id));
+
+        // If the user has already reacted with another emoji, remove the current reaction
+        for (const r of userReactions.values())
+            if (r.emoji.name !== reaction.emoji.name)
+                r.users.remove(user.id);
+    }
+}
+
 module.exports.isSetup = isSetup;
 module.exports.loadGuildFile = loadGuildFile;
 module.exports.guildSetup = guildSetup;
 module.exports.guildReset = guildReset;
 
 module.exports.handleInput = handleInput;
+module.exports.handleReaction = handleReaction;

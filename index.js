@@ -30,6 +30,11 @@ const client = new Discord.Client({
 		Discord.GatewayIntentBits.DirectMessageReactions,
 		Discord.GatewayIntentBits.DirectMessageTyping
 	],
+	partials: [
+		Discord.Partials.Message,
+		Discord.Partials.Reaction,
+		Discord.Partials.User
+	]
 });
 global.client = client;
 
