@@ -74,7 +74,7 @@ const handleReaction = (reaction, user) => {
         // Fetch the message if it's a partial
         if (reaction.partial) reaction.fetch();
 
-        // Check if the emoji is ✅ or ❌
+        // Check if the emoji is equivalent to registered server emoji token
         if (reaction.emoji.name !== guildData.upvoteToken && reaction.emoji.name !== guildData.downvoteToken) return;
 
         // Get all reactions to the message
