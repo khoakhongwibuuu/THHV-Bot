@@ -55,7 +55,7 @@ module.exports = {
 
         reactLib.guildSetup(interaction.guild.id, interaction.channel.id, upvoteToken, downvoteToken);
         interaction.reply({
-            content: `Notification channel has been set at <#${interaction.channel.id}>.`
+            content: `Voting channel has been set at <#${interaction.channel.id}>.`
                 + `\nI will use ${upvoteToken} for upvoting and ${downvoteToken} for downvoting.`,
             ephemeral: true
         });

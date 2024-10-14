@@ -8,7 +8,7 @@ const stdlib = global.stdlib;
 const discordAPI = global.discordAPI;
 
 // Module based
-const qsDB = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/multiple-choice/database/processed.jsonbase.min.json'), 'utf-8'));
+const qsDB = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/multiple-choice/database/processed.database.min.json'), 'utf-8'));
 const configDirPath = path.join(dirname, "modules/multiple-choice/config");
 
 // Configuration
