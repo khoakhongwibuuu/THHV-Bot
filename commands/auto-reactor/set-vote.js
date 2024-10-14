@@ -14,7 +14,6 @@ const reactLib = require(path.join(dirname, 'modules/auto-reactor/lib/reactLib.j
 const isValidToken = (token) => {
     const customEmojiPattern = /^<:[^\s]+:\d+>$/;
     const builtinEmojiPattern = /^(\p{Emoji})$/u;
-    console.log(customEmojiPattern.test(token), builtinEmojiPattern.test(token));
     return (customEmojiPattern.test(token) || builtinEmojiPattern.test(token));
 }
 
