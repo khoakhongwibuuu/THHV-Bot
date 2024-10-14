@@ -8,7 +8,7 @@ const stdlib = global.stdlib;
 const discordAPI = global.discordAPI;
 
 // Module based
-const qsDB = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/multiple-choice/database/processed.database.min.json'), 'utf-8'));
+const qsDB = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/multiple-choice/database/processed.jsonbase.min.json'), 'utf-8'));
 const configDirPath = path.join(dirname, "modules/multiple-choice/config");
 
 // Configuration
@@ -36,12 +36,12 @@ const defaultSettingProfile = (channelId) => {
 
 // Root
 const isSetup = (guildId) => {
-    const guildDataPath = path.join(configDirPath, `${guildId}.data`);
+    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
     return fs.existsSync(guildDataPath);
 }
 
 const guildSetup = (guildId, channelId) => {
-    const guildDataPath = path.join(configDirPath, `${guildId}.data`);
+    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
     if (!fs.existsSync(guildDataPath)) {
         const setupData = JSON.stringify({ setting: defaultSettingProfile(channelId), playerdata: {} });
         fs.writeFileSync(guildDataPath, (setupData.encrypt()), 'utf8');
@@ -50,25 +50,25 @@ const guildSetup = (guildId, channelId) => {
 
 const guildUninstall = (guildId) => {
     if (isSetup(guildId)) {
-        const guildDataPath = path.join(configDirPath, `${guildId}.data`);
+        const guildDataPath = path.join(configDirPath, `${guildId}.json`);
         fs.unlinkSync(guildDataPath);
     }
 }
 
 const loadRawGuildFile = (guildId) => {
-    const guildDataPath = path.join(configDirPath, `${guildId}.data`);
+    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
     const rawTextFile = fs.readFileSync(guildDataPath, 'utf-8');
     return rawTextFile;
 }
 
 const loadGuildFile = (guildId) => {
-    // const guildDataPath = path.join(configDirPath, `${guildId}.data`);
+    // const guildDataPath = path.join(configDirPath, `${guildId}.json`);
     // const rawTextFile = fs.readFileSync(guildDataPath, 'utf-8');
     return JSON.parse(loadRawGuildFile(guildId).decrypt());
 }
 
 const writeGuildFile = (guildId, newData) => {
-    const guildDataPath = path.join(configDirPath, `${guildId}.data`);
+    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
     const JSONdata = JSON.stringify(newData);
     fs.writeFileSync(guildDataPath, (JSONdata.encrypt()), 'utf8');
 }
