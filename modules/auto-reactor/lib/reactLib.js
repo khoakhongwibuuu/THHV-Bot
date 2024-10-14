@@ -62,28 +62,34 @@ const handleInput = (msg) => {
     if (isInRoom(msg.guild.id, msg.channel.id)) {
         if (isPrefix(msg.content, "suggest") || isPrefix(msg.content, "vote")) {
             let guildData = loadGuildFile(msg.guild.id);
-            msg.react(guildData.upvoteToken);
-            msg.react(guildData.downvoteToken);
+            try {
+                msg.react(guildData.upvoteToken);
+                msg.react(guildData.downvoteToken);
+
+                // Create a reaction collector to ensure only one vote per user
+                const filter = (reaction, user) => {
+                    return [guildData.upvoteToken, guildData.downvoteToken].includes(reaction.emoji.name) && !user.bot;
+                };
+
+                const collector = msg.createReactionCollector({ filter, dispose: true });
+
+                collector.on('collect', (reaction, user) => {
+                    // Remove the other reaction if the user reacted to both
+                    const otherReaction = reaction.emoji.name === guildData.upvoteToken ? guildData.downvoteToken : guildData.upvoteToken;
+                    const userReactions = msg.reactions.cache.get(otherReaction);
+                    if (userReactions && userReactions.users.cache.has(user.id)) {
+                        userReactions.users.remove(user.id);
+                    }
+                });
+
+                collector.on('remove', (reaction, user) => {
+
+                });
+
+            } catch (error) {
+
+            }
         }
-    }
-}
-
-const handleReaction = (reaction, user) => {
-    if (isInRoom(reaction.message.guild.id, reaction.message.channel.id)) {
-        const guildData = loadGuildFile(reaction.message.guild.id);
-        // Fetch the message if it's a partial
-        if (reaction.partial) reaction.fetch();
-
-        // Check if the emoji is equivalent to registered server emoji token
-        if (reaction.emoji.name !== guildData.upvoteToken && reaction.emoji.name !== guildData.downvoteToken) return;
-
-        // Get all reactions to the message
-        const userReactions = reaction.message.reactions.cache.filter(r => r.users.cache.has(user.id));
-
-        // If the user has already reacted with another emoji, remove the current reaction
-        for (const r of userReactions.values())
-            if (r.emoji.name !== reaction.emoji.name)
-                r.users.remove(user.id);
     }
 }
 
@@ -93,4 +99,4 @@ module.exports.guildSetup = guildSetup;
 module.exports.guildReset = guildReset;
 
 module.exports.handleInput = handleInput;
-module.exports.handleReaction = handleReaction;
+// module.exports.handleReaction = handleReaction;
