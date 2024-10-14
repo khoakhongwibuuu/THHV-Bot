@@ -16,7 +16,10 @@ if (!fs.existsSync(configPath)) {
 }
 
 const mcLib = require("./lib/gameLib");
-client.guilds.cache.filter(guild => mcLib.isSetup(guild.id)).forEach(guild => mcLib.guildUnlock(guild.id));
+client.guilds.cache.filter(guild => mcLib.isSetup(guild.id)).forEach(guild => {
+    mcLib.guildUnlock(guild.id);
+    mcLib.updateOutdatedFiles(guild.id);
+});
 
 
 (`[${new Date().toISOString()}] [SUCCESS] Client: loaded multipleChoice module successfully!`).logOffline();

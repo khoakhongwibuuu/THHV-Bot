@@ -12,6 +12,9 @@ const qsDB = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/multiple-cho
 const configDirPath = path.join(dirname, "modules/multiple-choice/config");
 
 // Configuration
+
+const LATEST_DATABASE_VERSION = 1;
+
 const defaultSettingProfile = (channelId) => {
     return {
         running: false,
@@ -43,7 +46,12 @@ const isSetup = (guildId) => {
 const guildSetup = (guildId, channelId) => {
     const guildDataPath = path.join(configDirPath, `${guildId}.json`);
     if (!fs.existsSync(guildDataPath)) {
-        const setupData = JSON.stringify({ setting: defaultSettingProfile(channelId), playerdata: {} });
+        const setupData = JSON.stringify({
+            version: LATEST_DATABASE_VERSION,
+            dateCreated: new Date().getTime(),
+            setting: defaultSettingProfile(channelId),
+            playerdata: {}
+        });
         fs.writeFileSync(guildDataPath, (setupData.encrypt()), 'utf8');
     }
 }
@@ -98,6 +106,28 @@ module.exports.writeGuildFile = writeGuildFile;
 module.exports.getRoomId = getRoomId;
 module.exports.isInRoom = isInRoom;
 module.exports.resetRoomId = resetRoomId;
+
+// updating tasks
+
+const getConfigVersion = (guildData) => {
+    if (!guildData.hasOwnProperty("version")) return 0;
+    else return guildData.version;
+}
+
+const updateOutdatedFiles = (guildId) => {
+    const guildData = loadGuildFile(guildId);
+    if (getConfigVersion(guildData) < LATEST_DATABASE_VERSION) {
+        (`[${new Date().toISOString()}] [INFO] Updating ${guildId}'s MultipleChoice configuration file.`).logOffline();
+        guildData.version = LATEST_DATABASE_VERSION;
+
+        if (!guildData.hasOwnProperty("dateCreated")) // For version 1: Add created timestamp
+            guildData.dateCreated = new Date().getTime();
+
+        writeGuildFile(guildId, guildData);
+    }
+}
+
+module.exports.updateOutdatedFiles = updateOutdatedFiles;
 
 // Ingame tasks
 const hasPlayerData = (guildId, userId) => {
