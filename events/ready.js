@@ -37,7 +37,7 @@ module.exports = {
         // Set client presence
         client.user.setPresence({
             activities: [{
-                name: 'Bot đang thử nghiệm.',
+                name: 'credit khoa06, david0403.',
                 type: Discord.ActivityType.Playing
             }],
             status: 'online'
