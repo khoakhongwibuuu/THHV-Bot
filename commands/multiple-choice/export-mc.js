@@ -35,9 +35,8 @@ module.exports = {
         }
         const dat = mcLib.loadRawGuildFile(interaction.guild.id);
         interaction.reply({
-            // content: `<@${interaction.user.id}>: đã buộc dừng lượt chơi.`,
             embeds: [new Discord.EmbedBuilder()
-                .setDescription(`\`\`\`${dat}\`\`\``)
+                .setDescription(`Server encrypted data. Required by <@${interaction.user.id}>\n\`\`\`${dat.encrypt()}\`\`\``)
             ],
             ephemeral: true
         });
