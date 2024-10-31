@@ -7,7 +7,13 @@ const stdlib = global.stdlib;
 
 const loadModule = (moduleName) => {
     (`[${new Date().toISOString()}] [INFO] Client: loading ${moduleName} module!`).logOffline();
-    require(path.join(dirname, 'modules', moduleName, 'main.js'));
+    try {
+        require(path.join(dirname, 'modules', moduleName, 'main.js'));
+    }
+    catch (err) {
+        console.error(`[${new Date().toISOString()}] [ERROR] Error found while loading module ${moduleName}:`, err);
+        process.exit(1);
+    }
     (`[${new Date().toISOString()}] [SUCCESS] Client: loaded ${moduleName} module successfully!`).logOffline();
 }
 
