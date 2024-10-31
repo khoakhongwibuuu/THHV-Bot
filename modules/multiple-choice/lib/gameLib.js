@@ -52,7 +52,7 @@ const guildSetup = (guildId, channelId) => {
             setting: defaultSettingProfile(channelId),
             playerdata: {}
         });
-        fs.writeFileSync(guildDataPath, (setupData.encrypt()), 'utf8');
+        fs.writeFileSync(guildDataPath, (setupData), 'utf8');
     }
 }
 
@@ -72,13 +72,13 @@ const loadRawGuildFile = (guildId) => {
 const loadGuildFile = (guildId) => {
     // const guildDataPath = path.join(configDirPath, `${guildId}.json`);
     // const rawTextFile = fs.readFileSync(guildDataPath, 'utf-8');
-    return JSON.parse(loadRawGuildFile(guildId).decrypt());
+    return JSON.parse(loadRawGuildFile(guildId));
 }
 
 const writeGuildFile = (guildId, newData) => {
     const guildDataPath = path.join(configDirPath, `${guildId}.json`);
     const JSONdata = JSON.stringify(newData);
-    fs.writeFileSync(guildDataPath, (JSONdata.encrypt()), 'utf8');
+    fs.writeFileSync(guildDataPath, (JSONdata), 'utf8');
 }
 
 const getRoomId = (guildId) => {
