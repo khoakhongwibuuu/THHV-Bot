@@ -43,11 +43,6 @@ const guildReset = (guildId) => {
     }
 }
 
-const getRoomId = (guildId) => {
-    if (!isSetup(guildId)) return null;
-    else return loadGuildFile(guildId).channelId;
-}
-
 const isInRoom = (guildId, channelId) => {
     if (!isSetup(guildId)) return false;
     let guildData = loadGuildFile(guildId);
@@ -56,6 +51,26 @@ const isInRoom = (guildId, channelId) => {
 
 const isPrefix = (str, prefix) => {
     return str.toLowerCase().startsWith(prefix.toLowerCase());
+}
+
+const getTokenName = (token) => {
+    const start = token.indexOf(':') + 1;
+    const end = token.lastIndexOf(':');
+
+    if (start >= 0 && end > start) {
+        return token.slice(start, end);
+    }
+    return token;
+}
+
+const getTokenId = (token) => {
+    const start = token.lastIndexOf(':') + 1;
+    const end = token.lastIndexOf('>');
+
+    if (start >= 0 && end > start) {
+        return token.slice(start, end);
+    }
+    return token;
 }
 
 const handleInput = (msg) => {
@@ -68,15 +83,19 @@ const handleInput = (msg) => {
 
                 // Create a reaction collector to ensure only one vote per user
                 const filter = (reaction, user) => {
-                    return [guildData.upvoteToken, guildData.downvoteToken].includes(reaction.emoji.name) && !user.bot;
+                    return [getTokenName(guildData.upvoteToken), getTokenName(guildData.downvoteToken)].includes(reaction.emoji.name)
+                        && !user.bot;
                 };
 
                 const collector = msg.createReactionCollector({ filter, dispose: true });
 
                 collector.on('collect', (reaction, user) => {
-                    // Remove the other reaction if the user reacted to both
-                    const otherReaction = reaction.emoji.name === guildData.upvoteToken ? guildData.downvoteToken : guildData.upvoteToken;
-                    const userReactions = msg.reactions.cache.get(otherReaction);
+                    // Get the Id of the oppose token
+                    const otherTokenId = reaction.emoji.name === getTokenName(guildData.upvoteToken)
+                        ? getTokenId(guildData.downvoteToken)
+                        : getTokenId(guildData.upvoteToken);
+
+                    const userReactions = msg.reactions.cache.get(otherTokenId);
                     if (userReactions && userReactions.users.cache.has(user.id)) {
                         userReactions.users.remove(user.id);
                     }
@@ -99,4 +118,3 @@ module.exports.guildSetup = guildSetup;
 module.exports.guildReset = guildReset;
 
 module.exports.handleInput = handleInput;
-// module.exports.handleReaction = handleReaction;
