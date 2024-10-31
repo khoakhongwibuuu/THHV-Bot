@@ -10,6 +10,11 @@ module.exports = {
 		if (!interaction.isChatInputCommand()) return;
 		const command = interaction.client.commands.get(interaction.commandName);
 		if (!command) {
+			if (interaction.replied || interaction.deferred) {
+				await interaction.followUp({ content: 'This command is under development!', ephemeral: true });
+			} else {
+				await interaction.reply({ content: 'This command is under development!', ephemeral: true });
+			}
 			console.error(`No command matching ${interaction.commandName} was found.`);
 			return;
 		}
