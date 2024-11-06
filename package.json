@@ -16,7 +16,8 @@
     "scripts": {
         "start": "node index.js",
         "deploy": "node ./deploy.js",
-        "undeploy": "node ./undeploy.js"
+        "undeploy": "node ./undeploy.js",
+        "package-install": "npm i"
     },
     "keywords": [],
     "author": "khoa.khong.wibuuu",
