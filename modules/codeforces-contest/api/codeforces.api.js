@@ -23,7 +23,7 @@ const debugMode = false;
 const demandHours = 24;
 
 // API link
-const CODEFORCES_API = 'http://codeforces.com/api/contest.list'
+const CODEFORCES_CONTEST_API = 'http://codeforces.com/api/contest.list'
 
 const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => {
 	// Create Embed
@@ -61,7 +61,7 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		if (!Persist[domain][guild.id][hours]) Persist[domain][guild.id][hours] = [];
 		return Persist[domain][guild.id][hours].indexOf(id) < 0;
 	});
-	
+
 	notifiable.forEach(guild => {
 		if (!Persist.ready[guild.id]) return;
 
@@ -82,7 +82,7 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 
 const clock = () => {
 	console.log(`[${new Date().toISOString()}] [INFO] Client: start connecting to codeforces.com.`);
-	fetch(CODEFORCES_API)
+	fetch(CODEFORCES_CONTEST_API)
 		.then(response => {
 			const contentType = response.headers.get('content-type');
 			return (contentType && contentType.includes('application/json')) ? response.json() : response.text();
