@@ -23,6 +23,14 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
+        if (interaction.channel.type === Discord.ChannelType.DM || interaction.channel.type === Discord.ChannelType.GroupDM) {
+            interaction.reply({
+                content: "⚠️ Direct Message notification is not available. This feature is being developed.",
+                ephemeral: true
+            });
+            return;
+        }
+
         if (discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
             const Persist = cfLib.loadPersist();
             Persist.channel[interaction.guild.id] = interaction.channel.id;

@@ -23,6 +23,14 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
+        if (interaction.channel.type === Discord.ChannelType.DM || interaction.channel.type === Discord.ChannelType.GroupDM) {
+            interaction.reply({
+                content: "⚠️ This command cannot be used in Direct Messages.",
+                ephemeral: true
+            });
+            return;
+        }
+        
         if (!wordLib.isSetup(interaction.guild.id)) {
             interaction.reply({ content: "🔍 Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;

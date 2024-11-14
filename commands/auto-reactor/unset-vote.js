@@ -18,6 +18,14 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
+        if (interaction.channel.type === Discord.ChannelType.DM || interaction.channel.type === Discord.ChannelType.GroupDM) {
+            interaction.reply({
+                content: "⚠️ This command cannot be used in Direct Messages.",
+                ephemeral: true
+            });
+            return;
+        }
+        
         if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
             interaction.reply({
                 content: "🚫 You do not have permission to run this command.",
