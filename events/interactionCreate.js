@@ -19,7 +19,11 @@ module.exports = {
 			return;
 		}
 		try {
-			await (`[${new Date().toISOString()}] [COMMAND] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: /${command.data.name}`).logOffline();
+			if (interaction.channel.type !== Discord.ChannelType.DM && interaction.channel.type !== Discord.ChannelType.GroupDM) {
+				await (`[${new Date().toISOString()}] [COMMAND] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: /${command.data.name}`).logOffline();
+			} else {
+				await (`[${new Date().toISOString()}] [COMMAND] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: /${command.data.name}`).logOffline();
+			}
 			await command.execute(interaction);
 		} catch (error) {
 			console.error(error);
