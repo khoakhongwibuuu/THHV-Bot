@@ -24,6 +24,7 @@ module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-uninstall')
         .setDescription('[Moderators Only] - Delete this server MultipleChoice game profile.')
+        .setDMPermission(false)
     ,
     async execute(interaction) {
         if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {

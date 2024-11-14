@@ -15,6 +15,7 @@ module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('wm-setup')
         .setDescription('[Moderators Only] - Set WordMatch game at this channel.')
+        .setDMPermission(false)
     ,
     async execute(interaction) {
         if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {

@@ -15,6 +15,7 @@ module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-setup')
         .setDescription('[Moderators Only] - Create a server profile and set MultipleChoice game room at this channel.')
+        .setDMPermission(false)
     ,
     async execute(interaction) {
         if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {

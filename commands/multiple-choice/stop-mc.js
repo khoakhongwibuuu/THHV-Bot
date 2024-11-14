@@ -15,6 +15,7 @@ module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-stop')
         .setDescription('[Moderators Only] - Force stop an instance.')
+        .setDMPermission(false)
     ,
     async execute(interaction) {
         if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {

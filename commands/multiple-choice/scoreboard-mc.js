@@ -20,6 +20,7 @@ module.exports = {
                 .setDescription("The number of players to be displayed.")
                 .setRequired(false)
         )
+        .setDMPermission(false)
     ,
     async execute(interaction) {
         if (!mcLib.isSetup(interaction.guild.id)) {

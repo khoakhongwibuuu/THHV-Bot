@@ -6,7 +6,9 @@ const discordAPI = global.discordAPI;
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('shutdown')
-        .setDescription('[Admins Only] - Turn off the bot.'),
+        .setDescription('[Admins Only] - Turn off the bot.')
+        .setDMPermission(false)
+    ,
     async execute(interaction) {
         if (process.env.OWNER_ID === interaction.user.id || discordAPI.isAdmin(interaction.guild.id, interaction.user.id)) {
             interaction.reply({

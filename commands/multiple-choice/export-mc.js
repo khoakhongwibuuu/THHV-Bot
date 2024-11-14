@@ -15,6 +15,7 @@ module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-export')
         .setDescription('[Moderators Only] - Export this server game data.')
+        .setDMPermission(false)
     ,
     async execute(interaction) {
         if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {

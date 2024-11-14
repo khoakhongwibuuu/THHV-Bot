@@ -20,6 +20,7 @@ module.exports = {
                 .setDescription("Member whose score you want to view")
                 .setRequired(false)
         )
+        .setDMPermission(false)
     ,
     async execute(interaction) {
         if (!wordLib.isSetup(interaction.guild.id)) {

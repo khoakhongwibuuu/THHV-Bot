@@ -31,6 +31,7 @@ module.exports = {
                 .setDescription("The token of downvoting emoji if you want to use custom emoji.")
                 .setRequired(false)
         )
+        .setDMPermission(false)
     ,
     async execute(interaction) {
         if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {

@@ -20,6 +20,7 @@ module.exports = {
                 .setDescription("The role to be notified.")
                 .setRequired(false)
         )
+        .setDMPermission(false)
     ,
     async execute(interaction) {
         if (discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {

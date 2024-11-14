@@ -20,6 +20,7 @@ module.exports = {
                 .setDescription("Delete all player scores?")
                 .setRequired(true)
         )
+        .setDMPermission(false)
     ,
     async execute(interaction) {
         if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {

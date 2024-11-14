@@ -67,6 +67,7 @@ module.exports = {
                 .setDescription("Member whose statistics you want to view")
                 .setRequired(false)
         )
+        .setDMPermission(false)
     ,
     async execute(interaction) {
         if (!mcLib.isSetup(interaction.guild.id)) {
