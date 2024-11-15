@@ -50,12 +50,12 @@ module.exports.GuildChannel = GuildChannel;
 
 const isAdmin = (guildId, userId) => {
     const member = GuildMember(guildId, userId);
-    return member.permissions.has(Discord.PermissionsBitField.Flags.Administrator);
+    return (member) ? member.permissions.has(Discord.PermissionsBitField.Flags.Administrator) : false;
 }
 
 const isModerator = (guildId, userId) => {
     const member = GuildMember(guildId, userId);
-    return member.permissions.has(Discord.PermissionsBitField.Flags.ManageChannels)
+    return (member) ? member.permissions.has(Discord.PermissionsBitField.Flags.ManageChannels)
         || member.permissions.has(Discord.PermissionsBitField.Flags.ManageWebhooks)
         || member.permissions.has(Discord.PermissionsBitField.Flags.ManageGuild)
         || member.permissions.has(Discord.PermissionsBitField.Flags.ManageMessages)
@@ -63,7 +63,7 @@ const isModerator = (guildId, userId) => {
         || member.permissions.has(Discord.PermissionsBitField.Flags.KickMembers)
         || member.permissions.has(Discord.PermissionsBitField.Flags.BanMembers)
         || member.permissions.has(Discord.PermissionsBitField.Flags.ModerateMembers)
-        ;
+        : false;
 }
 
 module.exports.isAdmin = isAdmin;
