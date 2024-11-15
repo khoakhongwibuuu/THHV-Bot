@@ -7,6 +7,11 @@ const Guild = (id) => {
     return (e) ? e : null;
 }
 
+const User = (id) => {
+    const e = client.users.cache.get(id);
+    return (e) ? e : null;
+}
+
 const GuildMember = (guildId, memberId) => {
     const e = Guild(guildId).members.cache.get(memberId);
     return (e) ? e : null;
@@ -23,6 +28,7 @@ const GuildChannel = (guildId, channelId) => {
 }
 
 module.exports.Guild = Guild;
+module.exports.User = User;
 module.exports.GuildMember = GuildMember;
 module.exports.GuildRole = GuildRole;
 module.exports.GuildChannel = GuildChannel;

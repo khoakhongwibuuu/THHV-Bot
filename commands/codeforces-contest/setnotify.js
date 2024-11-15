@@ -28,25 +28,26 @@ module.exports = {
                 ephemeral: true
             });
             return;
-        }
-
-        if (discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
-            const Persist = cfLib.loadPersist();
-            Persist.channel[interaction.guild.id] = interaction.channel.id;
-            Persist.ready[interaction.guild.id] = true;
-            const notifier = interaction.options.getRole('role') ?? { id: "" };
-            Persist.role[interaction.guild.id] = notifier.id;
-            cfLib.savePersist(Persist);
-
-            interaction.reply({
-                content: `Notification channel has been set at <#${interaction.channel.id}>. I will notify${(notifier.id != "") ? ` members this role <@&${notifier.id}>` : ""} \`24\` hours before a contest.`,
-                ephemeral: true
-            });
         } else {
-            interaction.reply({
-                content: "🚫 You do not have permission to run this command.",
-                ephemeral: true
-            });
+            if (discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+                const Persist = cfLib.loadPersist();
+                Persist.channel[interaction.guild.id] = interaction.channel.id;
+                Persist.ready[interaction.guild.id] = true;
+                const notifier = interaction.options.getRole('role') ?? { id: "" };
+                Persist.role[interaction.guild.id] = notifier.id;
+                cfLib.savePersist(Persist);
+
+                interaction.reply({
+                    content: `Notification channel has been set at <#${interaction.channel.id}>. I will notify${(notifier.id != "") ? ` members this role <@&${notifier.id}>` : ""} \`24\` hours before a contest.`,
+                    ephemeral: true
+                });
+            } else {
+                interaction.reply({
+                    content: "🚫 You do not have permission to run this command.",
+                    ephemeral: true
+                });
+            }
         }
+
     },
 };
