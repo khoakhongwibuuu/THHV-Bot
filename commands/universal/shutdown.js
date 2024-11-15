@@ -7,7 +7,6 @@ module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('shutdown')
         .setDescription('[Hosts Only] - Remotely turn off the bot.')
-        .setDMPermission(false)
     ,
     async execute(interaction) {
         if (process.env.OWNER_ID === interaction.user.id) {
