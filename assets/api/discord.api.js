@@ -3,28 +3,43 @@ const client = global.client;
 
 // Fetching
 const Guild = (id) => {
-    const e = client.guilds.cache.get(id)
-    return (e) ? e : null;
+    const guildEntity = client.guilds.cache.get(id)
+    return (guildEntity) ? guildEntity : null;
 }
 
 const User = (id) => {
-    const e = client.users.cache.get(id);
-    return (e) ? e : null;
+    const userEntity = client.users.cache.get(id);
+    return (userEntity) ? userEntity : null;
 }
 
 const GuildMember = (guildId, memberId) => {
-    const e = Guild(guildId).members.cache.get(memberId);
-    return (e) ? e : null;
+    const guildEntity = Guild(guildId);
+    if (guildEntity) {
+        const guildMemberEntity = guildEntity.members.cache.get(memberId);
+        return (guildMemberEntity) ? guildMemberEntity : null;
+    } else {
+        return null;
+    }
 }
 
 const GuildRole = (guildId, roleId) => {
-    const e = Guild(guildId).roles.cache.get(roleId);
-    return (e) ? e : null;
+    const guildEntity = Guild(guildId);
+    if (guildEntity) {
+        const guildRoleEntity = guildEntity.roles.cache.get(roleId);
+        return (guildRoleEntity) ? guildRoleEntity : null;
+    } else {
+        return null;
+    }
 }
 
 const GuildChannel = (guildId, channelId) => {
-    const e = Guild(guildId).channels.cache.get(channelId);
-    return (e) ? e : null;
+    const guildEntity = Guild(guildId);
+    if (guildEntity) {
+        const guildChannelEntity = guildEntity.channels.cache.get(channelId);
+        return (guildChannelEntity) ? guildChannelEntity : null;
+    } else {
+        return null;
+    }
 }
 
 module.exports.Guild = Guild;
