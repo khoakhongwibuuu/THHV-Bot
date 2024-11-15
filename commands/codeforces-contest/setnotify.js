@@ -20,7 +20,6 @@ module.exports = {
                 .setDescription("The role to be notified.")
                 .setRequired(false)
         )
-        .setDMPermission(false)
     ,
     async execute(interaction) {
         if (interaction.channel.type === Discord.ChannelType.DM || interaction.channel.type === Discord.ChannelType.GroupDM) {
