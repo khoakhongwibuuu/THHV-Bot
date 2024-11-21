@@ -16,14 +16,6 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (interaction.channel.type === Discord.ChannelType.DM || interaction.channel.type === Discord.ChannelType.GroupDM) {
-            interaction.reply({
-                content: "⚠️ This command cannot be used in Direct Messages.",
-                ephemeral: true
-            });
-            return;
-        }
-        
         if (!mcLib.isSetup(interaction.guild.id)) {
             interaction.reply({ content: '⚠️ Phòng chơi chưa được cài đặt trên server này. Vui lòng sử dụng `/mc-setup` để đặt phòng chơi.', ephemeral: true });
             return;

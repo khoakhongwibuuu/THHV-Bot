@@ -20,34 +20,26 @@ module.exports = {
                 .setDescription("The role to be notified.")
                 .setRequired(false)
         )
+        .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (interaction.channel.type === Discord.ChannelType.DM || interaction.channel.type === Discord.ChannelType.GroupDM) {
+        if (discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+            const Persist = cfLib.loadPersist();
+            Persist.channel[interaction.guild.id] = interaction.channel.id;
+            Persist.ready[interaction.guild.id] = true;
+            const notifier = interaction.options.getRole('role') ?? { id: "" };
+            Persist.role[interaction.guild.id] = notifier.id;
+            cfLib.savePersist(Persist);
+
             interaction.reply({
-                content: "⚠️ Direct Message notification is not available. This feature is being developed.",
+                content: `Notification channel has been set at <#${interaction.channel.id}>. I will notify${(notifier.id != "") ? ` members this role <@&${notifier.id}>` : ""} \`24\` hours before a contest.`,
                 ephemeral: true
             });
-            return;
         } else {
-            if (discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
-                const Persist = cfLib.loadPersist();
-                Persist.channel[interaction.guild.id] = interaction.channel.id;
-                Persist.ready[interaction.guild.id] = true;
-                const notifier = interaction.options.getRole('role') ?? { id: "" };
-                Persist.role[interaction.guild.id] = notifier.id;
-                cfLib.savePersist(Persist);
-
-                interaction.reply({
-                    content: `Notification channel has been set at <#${interaction.channel.id}>. I will notify${(notifier.id != "") ? ` members this role <@&${notifier.id}>` : ""} \`24\` hours before a contest.`,
-                    ephemeral: true
-                });
-            } else {
-                interaction.reply({
-                    content: "🚫 You do not have permission to run this command.",
-                    ephemeral: true
-                });
-            }
+            interaction.reply({
+                content: "🚫 You do not have permission to run this command.",
+                ephemeral: true
+            });
         }
-
     },
 };
