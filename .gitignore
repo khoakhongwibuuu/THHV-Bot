@@ -3,6 +3,8 @@ node_modules/*
 cache/*
 logs/*
 auth/*
+utils/data.json
+utils/rawInput.txt
 *.exe
 _raw/
 _test
