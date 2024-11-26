@@ -14,7 +14,11 @@ String.prototype.decrypt = function () {
     return (atob(atob(atob(this.toString())))).keyReverse();
 }
 
-const rawInput = fs.readFileSync("./utils/rawInput.txt", 'utf-8');
-const decryptedData = rawInput.decrypt()
-console.log("Raw input decrypted. Writing to file data.json");
-fs.writeFileSync("./utils/data.json", JSON.stringify(JSON.parse(decryptedData), null, 4), 'utf-8');
+try {
+    const rawInput = fs.readFileSync("./utils/rawInput.txt", 'utf-8');
+    const decryptedData = rawInput.decrypt()
+    console.log("Raw input decrypted. Writing to file data.json");
+    fs.writeFileSync("./utils/data.json", JSON.stringify(JSON.parse(decryptedData), null, 4), 'utf-8');
+} catch (err) {
+    console.error("File rawInput.txt not found!");
+}
