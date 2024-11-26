@@ -7,7 +7,7 @@ const stdlib = global.stdlib;
 const discordAPI = global.discordAPI;
 
 // Module Specified
-const codeforcesLib = require(path.join(dirname, 'modules/multiple-choice/lib/gameLib.js'));
+const codeforcesLib = require(path.join(dirname, 'modules/codeforces-utils/lib/codeforcesLib.js'));
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -16,6 +16,7 @@ module.exports = {
         .setDMPermission(true)
     ,
     async execute(interaction) {
-
+        const contestData = await codeforcesLib.getData(`https://codeforces.com/api/contest.list`);
+        const futureList = contestData.filter(contest => contest.phase === 'BEFORE');
     },
 };

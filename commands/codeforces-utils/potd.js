@@ -7,7 +7,7 @@ const stdlib = global.stdlib;
 const discordAPI = global.discordAPI;
 
 // Module Specified
-const codeforcesLib = require(path.join(dirname, 'modules/multiple-choice/lib/gameLib.js'));
+const codeforcesLib = require(path.join(dirname, 'modules/codeforces-utils/lib/codeforcesLib.js'));
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -15,12 +15,12 @@ module.exports = {
         .setDescription('Recommend a Problem of The Day.')
         .setDMPermission(true)
         .addIntegerOption(option =>
-            option.setName("RatingFrom")
+            option.setName("rating-from")
                 .setDescription("Minimum rating of the problem. Should not below 0.")
                 .setRequired(true)
         )
         .addIntegerOption(option =>
-            option.setName("RatingTo")
+            option.setName("rating-to")
                 .setDescription("Maximum rating of the problem. Should not exceed 3500.")
                 .setRequired(true)
         )
