@@ -3,6 +3,7 @@ node_modules/*
 cache/*
 logs/*
 auth/*
+.ideas/*
 utils/data.json
 utils/rawInput.txt
 *.exe
