@@ -11,12 +11,17 @@ const codeforcesLib = require(path.join(dirname, 'modules/multiple-choice/lib/ga
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
-        .setName('cf-handle')
-        .setDescription('Search user by handle in Codeforces.')
+        .setName('cf-potd')
+        .setDescription('Recommend a Problem of The Day.')
         .setDMPermission(true)
-        .addStringOption(option =>
-            option.setName("handle")
-                .setDescription("Handle of user, split by \';\'.")
+        .addIntegerOption(option =>
+            option.setName("RatingFrom")
+                .setDescription("Minimum rating of the problem. Should not below 0.")
+                .setRequired(true)
+        )
+        .addIntegerOption(option =>
+            option.setName("RatingTo")
+                .setDescription("Maximum rating of the problem. Should not exceed 3500.")
                 .setRequired(true)
         )
     ,
