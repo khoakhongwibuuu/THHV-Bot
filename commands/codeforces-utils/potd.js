@@ -24,10 +24,16 @@ module.exports = {
                 .setDescription("Maximum rating of the problem. Should not exceed 3500.")
                 .setRequired(true)
         )
+        .addStringOption(option =>
+            option.setName("tags")
+                .setDescription("Tags to be filtered, split by semicolons. E.g. dp;two pointers;greedy")
+                .setRequired(false)
+        )
     ,
     async execute(interaction) {
-        const minRating = interaction.options.getValue("rating-from");
-        const maxRating = interaction.options.getValue("rating-to");
+        let minRating = interaction.options.getInteger("rating-from");
+        let maxRating = interaction.options.getInteger("rating-to");
+        const tags = interaction.options.getString("tags") ?? "";
 
         // Input validation
         if (minRating > maxRating)
@@ -35,6 +41,21 @@ module.exports = {
         minRating = Math.max(0, minRating);
         maxRating = Math.min(3500, maxRating);
 
-        
+        const problemSet = await codeforcesLib.getData(`https://codeforces.com/api/problemset.problems?tags=${tags}`);
+        const filteredProblemList = problemSet.problems.filter(prob => prob.rating >= minRating && prob.rating <= maxRating);
+
+        console.log(filteredProblemList);
+        if (filteredProblemList.length === 0) {
+            interaction.reply({
+                content: "No contests matching criteria found.",
+                ephemeral: true
+            });
+        } else {
+            const chosenProblem = filteredProblemList.randomValue();
+            // interaction.reply({
+            //     content: `[${chosenProblem.name}](https://codeforces.com/problemset/problem/${chosenProblem.contestId}/${chosenProblem.index})`,
+            //     ephemeral: false
+            // });
+        }
     },
 };
