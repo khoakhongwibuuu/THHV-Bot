@@ -26,6 +26,15 @@ module.exports = {
         )
     ,
     async execute(interaction) {
+        const minRating = interaction.options.getValue("rating-from");
+        const maxRating = interaction.options.getValue("rating-to");
 
+        // Input validation
+        if (minRating > maxRating)
+            [minRating, maxRating] = [maxRating, minRating];
+        minRating = Math.max(0, minRating);
+        maxRating = Math.min(3500, maxRating);
+
+        
     },
 };
