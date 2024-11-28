@@ -20,7 +20,7 @@ const clockInterval = 5;
 const debugMode = false;
 
 // notify contest 24h before it starts
-const demandHours = 24;
+const demandHours = 48;
 
 // API link
 const CODEFORCES_CONTEST_API = 'http://codeforces.com/api/contest.list'
@@ -68,8 +68,8 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		// Deliver
 		discordAPI.GuildChannel(guild.id, Persist.channel[guild.id]).send({
 			content: (Persist.role[guild.id] === "")
-				? "Upcoming contest announced!"
-				: `<@&${Persist.role[guild.id]}>, upcoming contest announced!`,
+				? "A contest is open for registration!"
+				: `<@&${Persist.role[guild.id]}>, a contest is open for registration!`,
 			embeds: [embed],
 			components: [row]
 		});

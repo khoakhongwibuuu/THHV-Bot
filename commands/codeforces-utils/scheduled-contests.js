@@ -18,5 +18,17 @@ module.exports = {
     async execute(interaction) {
         const contestData = await codeforcesLib.getData(`https://codeforces.com/api/contest.list`);
         const futureList = contestData.filter(contest => contest.phase === 'BEFORE');
+
+        interaction.reply(
+            (futureList.length === 0)
+                ? "There is no scheduled contests."
+                : `Found ${futureList} scheduled contest${futureList.length > 1 ? "s" : ""}.`
+        );
+
+        list.forEach(contest => {
+            const startTime = new Date(parseInt(contest.startTimeSeconds) * 1000);
+
+        });
+
     },
 };

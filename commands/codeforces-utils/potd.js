@@ -44,18 +44,34 @@ module.exports = {
         const problemSet = await codeforcesLib.getData(`https://codeforces.com/api/problemset.problems?tags=${tags}`);
         const filteredProblemList = problemSet.problems.filter(prob => prob.rating >= minRating && prob.rating <= maxRating);
 
-        console.log(filteredProblemList);
         if (filteredProblemList.length === 0) {
             interaction.reply({
                 content: "No contests matching criteria found.",
                 ephemeral: true
             });
-        } else {
-            const chosenProblem = filteredProblemList.randomValue();
-            // interaction.reply({
-            //     content: `[${chosenProblem.name}](https://codeforces.com/problemset/problem/${chosenProblem.contestId}/${chosenProblem.index})`,
-            //     ephemeral: false
-            // });
+            return;
         }
+
+        const chosenProblem = filteredProblemList.randomValue();
+        const chosenProblemURL = `https://codeforces.com/problemset/problem/${chosenProblem.contestId}/${chosenProblem.index}`;
+        const chosenProblemTags = `\`${chosenProblem.tags.join("`, `")}\``;
+
+        const webviewbtn = new Discord.ButtonBuilder()
+            .setLabel('View detail')
+            .setURL(chosenProblemURL)
+            .setStyle(Discord.ButtonStyle.Link);
+
+        const row = new Discord.ActionRowBuilder()
+            .addComponents(webviewbtn);
+
+        interaction.reply({
+            embeds: [new Discord.EmbedBuilder()
+                .setTitle(chosenProblem.name)
+                .setURL(chosenProblemURL)
+                .setDescription(`**Rating:** ${chosenProblem.rating}\n**Tags:** ${chosenProblemTags}`)
+            ],
+            components: [row]
+        });
+
     },
 };
