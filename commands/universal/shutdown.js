@@ -15,7 +15,7 @@ module.exports = {
                 ephemeral: true
             });
 
-            (`[${new Date().toISOString()}] [WARNING] Bot was shut down manually by ${interaction.user.id} (${interaction.user.username})`).logOffline();
+            console.log(`[${new Date().toISOString()}] [WARNING] Bot was shut down manually by ${interaction.user.id} (${interaction.user.username})`);
             setTimeout(() => process.exit(1), 1500);
         } else {
             interaction.reply({

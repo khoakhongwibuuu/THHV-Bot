@@ -15,14 +15,14 @@ module.exports = {
 			} else {
 				await interaction.reply({ content: 'This command is under development!', ephemeral: true });
 			}
-			console.error(`No command matching ${interaction.commandName} was found.`);
+			console.log(`No command matching ${interaction.commandName} was found.`);
 			return;
 		}
 		try {
 			if (interaction.channel.type !== Discord.ChannelType.DM && interaction.channel.type !== Discord.ChannelType.GroupDM) {
-				await (`[${new Date().toISOString()}] [COMMAND] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: /${command.data.name}`).logOffline();
+				console.log(`[${new Date().toISOString()}] [COMMAND] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: /${command.data.name}`);
 			} else {
-				await (`[${new Date().toISOString()}] [COMMAND] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: /${command.data.name}`).logOffline();
+				console.log(`[${new Date().toISOString()}] [COMMAND] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: /${command.data.name}`);
 			}
 			await command.execute(interaction);
 		} catch (error) {

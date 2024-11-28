@@ -30,11 +30,6 @@ module.exports.shuffle = shuffle;
 module.exports.randomEvent = randomEvent;
 module.exports.randomPercent = randomPercent;
 
-String.prototype.logOffline = function () {
-	const content = JSON.stringify(this)
-	console.log(content.substring(1, content.length - 1));
-}
-
 String.prototype.URLdecode = function () {
 	return decodeURIComponent(this);
 }

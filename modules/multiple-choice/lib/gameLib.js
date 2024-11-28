@@ -117,7 +117,7 @@ const getConfigVersion = (guildData) => {
 const updateOutdatedFiles = (guildId) => {
     const guildData = loadGuildFile(guildId);
     if (getConfigVersion(guildData) < LATEST_DATABASE_VERSION) {
-        (`[${new Date().toISOString()}] [INFO] Updating ${guildId}'s MultipleChoice configuration file.`).logOffline();
+        console.log(`[${new Date().toISOString()}] [INFO] Updating ${guildId}'s MultipleChoice configuration file.`);
         guildData.version = LATEST_DATABASE_VERSION;
 
         if (!guildData.hasOwnProperty("dateCreated")) // For version 1: Add created timestamp

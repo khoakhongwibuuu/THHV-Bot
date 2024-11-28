@@ -6,7 +6,7 @@ const dirname = global.dirname;
 const stdlib = global.stdlib;
 
 const loadModule = (moduleName) => {
-    (`[${new Date().toISOString()}] [INFO] Client: loading ${moduleName} module!`).logOffline();
+    console.log(`[${new Date().toISOString()}] [INFO] Client: loading ${moduleName} module!`);
     try {
         require(path.join(dirname, 'modules', moduleName, 'main.js'));
     }
@@ -14,7 +14,7 @@ const loadModule = (moduleName) => {
         console.error(`[${new Date().toISOString()}] [ERROR] Error found while loading module ${moduleName}:`, err);
         process.exit(1);
     }
-    (`[${new Date().toISOString()}] [SUCCESS] Client: loaded ${moduleName} module successfully!`).logOffline();
+    console.log(`[${new Date().toISOString()}] [SUCCESS] Client: loaded ${moduleName} module successfully!`);
 }
 
 module.exports = {
@@ -22,12 +22,12 @@ module.exports = {
     once: true,
     async execute(client) {
         if (process.env.OWNER_ID === "") {
-            (`[${new Date().toISOString()}] [ERROR] You have NOT provide the Bot owner ID in auth/login.key. This BOT will be automatically turned off.`).logOffline();
+            console.log(`[${new Date().toISOString()}] [ERROR] You have NOT provide the Bot owner ID in auth/login.key. This BOT will be automatically turned off.`);
             process.exit(1);
         }
 
         // Login success event
-        (`[${new Date().toISOString()}] [SUCCESS] Ready! Logged in as ${client.user.tag}`).logOffline();
+        console.log(`[${new Date().toISOString()}] [SUCCESS] Ready! Logged in as ${client.user.tag}`);
 
         // Load modules
         fs.readdir(path.join(dirname, "modules"), { withFileTypes: true }, (err, files) => {
