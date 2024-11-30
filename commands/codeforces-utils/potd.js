@@ -31,7 +31,7 @@ module.exports = {
         )
     ,
     async execute(interaction) {
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ ephemeral: false });
         let minRating = interaction.options.getInteger("rating-from");
         let maxRating = interaction.options.getInteger("rating-to");
         const tags = interaction.options.getString("tags") ?? "";
@@ -65,7 +65,7 @@ module.exports = {
         const row = new Discord.ActionRowBuilder()
             .addComponents(webviewbtn);
 
-        interaction.reply({
+        interaction.editReply({
             embeds: [new Discord.EmbedBuilder()
                 .setTitle(chosenProblem.name)
                 .setURL(chosenProblemURL)

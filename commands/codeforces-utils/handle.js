@@ -22,7 +22,7 @@ module.exports = {
     ,
     async execute(interaction) {
         await interaction.deferReply({ ephemeral: true });
-        await interaction.reply({ content: 'This command is under development!', ephemeral: true });
+        await interaction.editReply({ content: 'This command is under development!', ephemeral: true });
         return;
         const handle = interaction.options.getString("handle");
         const statusData = await codeforcesLib.fetchData(`https://codeforces.com/api/user.status?handle=${handle}`);
