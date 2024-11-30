@@ -17,7 +17,7 @@ if (!fs.existsSync(persistPath)) {
         ready: {},
         channel: {},
         role: {}
-    }));
+    }), 'utf-8');
 }
 
 require(path.join(global.dirname, 'modules/codeforces-contest/api/codeforces.api.js')).exec();

@@ -16,7 +16,7 @@ module.exports = {
         .setDMPermission(true)
     ,
     async execute(interaction) {
-        const contestData = await codeforcesLib.getData(`https://codeforces.com/api/contest.list`);
+        const contestData = await codeforcesLib.fetchData(`https://codeforces.com/api/contest.list`);
         const futureList = contestData.filter(contest => contest.phase === 'BEFORE');
 
         interaction.reply(

@@ -7,26 +7,95 @@ const dirname = global.dirname;
 const stdlib = global.stdlib;
 const discordAPI = global.discordAPI;
 
-const getData = async (API_LINK) => {
-    try {
-        const response = await fetch(API_LINK);
-        const contentType = response.headers.get('content-type');
+const CACHE_DIR = path.join(global.dirname, 'modules/codeforces-utils/cache');
+const CACHE_DURATION = 1000 * 3600 * 6;
 
-        const data = contentType && contentType.includes('application/json')
+const fetchData = async (apiLink) => {
+    try {
+        const response = await fetch(apiLink);
+        const contentType = response.headers.get('content-type');
+        const data = contentType.includes('application/json')
             ? await response.json()
             : await response.text();
 
         if (typeof data === 'object' && data.status === 'OK') {
             return data.result;
-        } else {
-            console.log(`Unable to connect to Codeforces. Please try again in a few minutes.`);
-            return null;
         }
+        console.error('Invalid response from Codeforces API.');
+        return null;
     } catch (err) {
-        console.log(`Unable to connect to Codeforces. Please try again in a few minutes.`);
-        console.log(err);
+        console.error('Error fetching data from Codeforces API:', err.message);
         return null;
     }
 };
 
-module.exports.getData = getData;
+const cacheExists = async (cacheName) => {
+    try {
+        fs.access(path.join(CACHE_DIR, `${cacheName}.tmp`));
+        return true;
+    } catch {
+        return false;
+    }
+};
+
+const readCache = async (cacheName) => {
+    try {
+        const filePath = path.join(CACHE_DIR, `${cacheName}.tmp`);
+        const content = fs.readFileSync(filePath, 'utf-8');
+        return JSON.parse(content);
+    } catch (err) {
+        return null;
+    }
+};
+
+const writeCache = async (cacheName, cacheData) => {
+    try {
+        const filePath = path.join(CACHE_DIR, `${cacheName}.tmp`);
+        const jsonData = JSON.stringify(cacheData);
+        fs.writeFileSync(filePath, jsonData, 'utf-8');
+    } catch (err) {
+        console.error('Error writing to cache:', err.message);
+    }
+};
+
+const getCacheUpdateTime = async (cacheName) => {
+    const cacheData = await readCache(cacheName);
+    return cacheData?.dateModified || null;
+};
+
+const updateCache = async (apiLink, cacheName) => {
+    const freshData = await fetchData(apiLink);
+    if (freshData) {
+        const cacheData = {
+            status: "OK",
+            dateModified: new Date().getTime(),
+            response: freshData
+        };
+        await writeCache(cacheName, cacheData);
+    }
+};
+
+const initCache = async (apiLink, cacheName, refreshInterval = CACHE_DURATION) => {
+    if (!cacheExists()) {
+        await writeCache(cacheName, {});
+    }
+
+    const lastUpdateTime = await getCacheUpdateTime(cacheName);
+    const now = new Date().getTime();
+
+    if (!lastUpdateTime || now - lastUpdateTime > refreshInterval) {
+        await updateCache(apiLink, cacheName);
+    }
+
+    setInterval(async () => {
+        await updateCache(apiLink, cacheName);
+    }, refreshInterval);
+};
+
+module.exports = {
+    initCache,
+    readCache,
+    writeCache,
+    updateCache,
+    fetchData
+};

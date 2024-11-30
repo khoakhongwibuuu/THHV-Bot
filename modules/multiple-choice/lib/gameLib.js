@@ -52,7 +52,7 @@ const guildSetup = (guildId, channelId) => {
             setting: defaultSettingProfile(channelId),
             playerdata: {}
         });
-        fs.writeFileSync(guildDataPath, (setupData), 'utf8');
+        fs.writeFileSync(guildDataPath, (setupData), 'utf-8');
     }
 }
 

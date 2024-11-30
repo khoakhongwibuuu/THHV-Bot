@@ -41,7 +41,7 @@ module.exports = {
         minRating = Math.max(0, minRating);
         maxRating = Math.min(3500, maxRating);
 
-        const problemSet = await codeforcesLib.getData(`https://codeforces.com/api/problemset.problems?tags=${tags}`);
+        const problemSet = await codeforcesLib.fetchData(`https://codeforces.com/api/problemset.problems?tags=${tags}`);
         const filteredProblemList = problemSet.problems.filter(prob => prob.rating >= minRating && prob.rating <= maxRating);
 
         if (filteredProblemList.length === 0) {

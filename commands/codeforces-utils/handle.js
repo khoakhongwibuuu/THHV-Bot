@@ -22,7 +22,7 @@ module.exports = {
     ,
     async execute(interaction) {
         const handle = interaction.options.getString("handle");
-        const statusData = await codeforcesLib.getData(`https://codeforces.com/api/user.status?handle=${handle}`);
-        const infoData = await codeforcesLib.getData(`https://codeforces.com/api/user.info?handles=${handle}`);
+        const statusData = await codeforcesLib.fetchData(`https://codeforces.com/api/user.status?handle=${handle}`);
+        const infoData = await codeforcesLib.fetchData(`https://codeforces.com/api/user.info?handles=${handle}`);
     },
 };
