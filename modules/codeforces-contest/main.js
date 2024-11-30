@@ -16,7 +16,8 @@ if (!fs.existsSync(persistPath)) {
     fs.writeFileSync(persistPath, JSON.stringify({
         ready: {},
         channel: {},
-        role: {}
+        role: {},
+        forum: {}
     }), 'utf-8');
 }
 

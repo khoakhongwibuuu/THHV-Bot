@@ -20,7 +20,7 @@ const clockInterval = 5;
 const debugMode = false;
 
 // notify contest 24h before it starts
-const demandHours = 48;
+const demandHours = 24;
 
 // API link
 const CODEFORCES_CONTEST_API = 'http://codeforces.com/api/contest.list'
@@ -51,10 +51,6 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		.setURL(contesturl)
 		.setStyle(Discord.ButtonStyle.Link);
 
-	// Create action row from buttons
-	const row = new Discord.ActionRowBuilder()
-		.addComponents(webviewbtn, registerbtn);
-
 	const notifiable = client.guilds.cache.filter(guild => {
 		if (!Persist[domain]) Persist[domain] = {};
 		if (!Persist[domain][guild.id]) Persist[domain][guild.id] = {};
@@ -62,19 +58,46 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		return Persist[domain][guild.id][hours].indexOf(id) < 0;
 	});
 
-	notifiable.forEach(guild => {
+	notifiable.forEach(async guild => {
 		if (!Persist.ready[guild.id]) return;
+		let post = null;
 
-		// Deliver
+		if (Persist.forum[guild.id] !== "") {
+			const forumChannel = discordAPI.GuildChannel(guild.id, Persist.forum[guild.id]);
+			post = await forumChannel.threads.create({
+				name: name,
+				message: {
+					content: contesturl
+				},
+				appiedTags: []
+			});
+		}
+
+		let componentsRows = [];
+		if (Persist.forum[guild.id] === "") {
+			componentsRows.push(
+				new Discord.ActionRowBuilder()
+					.addComponents(webviewbtn, registerbtn)
+			);
+		} else {
+			const discussionbtn = new Discord.ButtonBuilder()
+				.setLabel('View discussion')
+				.setURL(post.url)
+				.setStyle(Discord.ButtonStyle.Link);
+			componentsRows.push(
+				new Discord.ActionRowBuilder()
+					.addComponents(webviewbtn, registerbtn, discussionbtn)
+			);
+		}
+
 		discordAPI.GuildChannel(guild.id, Persist.channel[guild.id]).send({
 			content: (Persist.role[guild.id] === "")
 				? "A contest is open for registration!"
 				: `<@&${Persist.role[guild.id]}>, a contest is open for registration!`,
 			embeds: [embed],
-			components: [row]
+			components: componentsRows
 		});
 
-		// save Persist
 		Persist[domain][guild.id][hours].push(id);
 		cfLib.savePersist(Persist);
 	});
