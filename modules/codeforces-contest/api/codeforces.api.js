@@ -62,7 +62,7 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		if (!Persist.ready[guild.id]) return;
 		let post = null;
 
-		if (Persist.forum[guild.id] !== "") {
+		if (Persist.forum[guild.id] !== "" && Persist.forum[guild.id]) {
 			const forumChannel = discordAPI.GuildChannel(guild.id, Persist.forum[guild.id]);
 			post = await forumChannel.threads.create({
 				name: name,
@@ -74,7 +74,7 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		}
 
 		let componentsRows = [];
-		if (Persist.forum[guild.id] === "") {
+		if (Persist.forum[guild.id] === "" || !Persist.forum[guild.id]) {
 			componentsRows.push(
 				new Discord.ActionRowBuilder()
 					.addComponents(webviewbtn, registerbtn)
