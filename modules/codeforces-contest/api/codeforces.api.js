@@ -67,7 +67,7 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 			post = await forumChannel.threads.create({
 				name: name,
 				message: {
-					content: contesturl
+					content: `Alo alo! Contest [${name}](${contesturl}) sẽ bắt đầu vào <t:${startTime / 1000}:R> nhé!\n`
 				},
 				appiedTags: []
 			});
