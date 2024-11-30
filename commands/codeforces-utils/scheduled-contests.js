@@ -16,6 +16,7 @@ module.exports = {
         .setDMPermission(true)
     ,
     async execute(interaction) {
+        await interaction.deferReply({ ephemeral: true });
         await interaction.reply({ content: 'This command is under development!', ephemeral: true });
         return;
         const contestData = await codeforcesLib.fetchData(`https://codeforces.com/api/contest.list`);

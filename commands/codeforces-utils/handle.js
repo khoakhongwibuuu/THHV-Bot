@@ -21,6 +21,7 @@ module.exports = {
         )
     ,
     async execute(interaction) {
+        await interaction.deferReply({ ephemeral: true });
         await interaction.reply({ content: 'This command is under development!', ephemeral: true });
         return;
         const handle = interaction.options.getString("handle");

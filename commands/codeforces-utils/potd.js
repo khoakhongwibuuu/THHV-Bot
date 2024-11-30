@@ -31,6 +31,7 @@ module.exports = {
         )
     ,
     async execute(interaction) {
+        await interaction.deferReply({ ephemeral: true });
         let minRating = interaction.options.getInteger("rating-from");
         let maxRating = interaction.options.getInteger("rating-to");
         const tags = interaction.options.getString("tags") ?? "";
