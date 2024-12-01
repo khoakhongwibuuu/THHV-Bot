@@ -64,6 +64,7 @@ const getCacheUpdateTime = async (cacheName) => {
 };
 
 const updateCache = async (apiLink, cacheName) => {
+    console.log(`[${new Date().toISOString()}] [INFO] Client: updating ${cacheName} database.`);
     const freshData = await fetchData(apiLink);
     if (freshData) {
         const cacheData = {
@@ -72,11 +73,14 @@ const updateCache = async (apiLink, cacheName) => {
             response: freshData
         };
         await writeCache(cacheName, cacheData);
+        console.log(`[${new Date().toISOString()}] [SUCCESS] Client: updated ${cacheName} database successfully.`);
+    } else {
+        console.error(`[${new Date().toISOString()}] [ERROR] Invalid data. Try updating ${cacheName} database again in ${CACHE_DURATION / 1000 / 3600} hours.`);
     }
 };
 
 const initCache = async (apiLink, cacheName, refreshInterval = CACHE_DURATION) => {
-    if (!cacheExists()) {
+    if (!cacheExists(cacheName)) {
         await writeCache(cacheName, {});
     }
 
@@ -97,5 +101,6 @@ module.exports = {
     readCache,
     writeCache,
     updateCache,
+    cacheExists,
     fetchData
 };
