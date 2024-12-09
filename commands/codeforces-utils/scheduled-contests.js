@@ -16,22 +16,31 @@ module.exports = {
         .setDMPermission(true)
     ,
     async execute(interaction) {
-        await interaction.deferReply({ ephemeral: true });
-        await interaction.editReply({ content: 'This command is under development!', ephemeral: true });
-        return;
+        await interaction.deferReply({ ephemeral: false });
         const contestData = await codeforcesLib.fetchData(`https://codeforces.com/api/contest.list`);
         const futureList = contestData.filter(contest => contest.phase === 'BEFORE');
 
-        interaction.reply(
-            (futureList.length === 0)
-                ? "There is no scheduled contests."
-                : `Found ${futureList} scheduled contest${futureList.length > 1 ? "s" : ""}.`
-        );
+        if (futureList.length === 0) {
+            await interaction.editReply("There is no scheduled contests at the moment.");
+            return;
+        }
 
-        list.forEach(contest => {
-            const startTime = new Date(parseInt(contest.startTimeSeconds) * 1000);
+        const sentEmbed = new Discord.EmbedBuilder()
+            .setDescription(`Found ${futureList.length} scheduled contest${futureList.length > 1 ? "s" : ""}.`)
+            .setTimestamp()
 
+        futureList.forEach(contest => {
+            let contestDetail = `Type: ${contest.type}`
+                + `\nLink: [${contest.name}](https://codeforces.com/contests/${contest.id})`
+                + `\nStart time: <t:${contest.startTimeSeconds}:F> (<t:${contest.startTimeSeconds}:R>)`
+                ;
+
+            sentEmbed.addFields(
+                { name: contest.name, value: contestDetail }
+            )
         });
+
+        await interaction.followUp({ embeds: [sentEmbed] });
 
     },
 };

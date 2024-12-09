@@ -46,7 +46,7 @@ module.exports = {
         const filteredProblemList = problemSet.problems.filter(prob => prob.rating >= minRating && prob.rating <= maxRating);
 
         if (filteredProblemList.length === 0) {
-            interaction.reply({
+            await interaction.reply({
                 content: "No contests matching criteria found.",
                 ephemeral: true
             });
@@ -65,7 +65,7 @@ module.exports = {
         const row = new Discord.ActionRowBuilder()
             .addComponents(webviewbtn);
 
-        interaction.editReply({
+        await interaction.editReply({
             embeds: [new Discord.EmbedBuilder()
                 .setTitle(chosenProblem.name)
                 .setURL(chosenProblemURL)
