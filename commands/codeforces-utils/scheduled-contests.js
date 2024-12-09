@@ -26,17 +26,17 @@ module.exports = {
         }
 
         const sentEmbed = new Discord.EmbedBuilder()
-            .setDescription(`Found ${futureList.length} scheduled contest${futureList.length > 1 ? "s" : ""}.`)
+            .setTitle(`**Found ${futureList.length} scheduled contest${futureList.length > 1 ? "s" : ""}.**`)
             .setTimestamp()
 
+        futureList.reverse();
         futureList.forEach(contest => {
-            let contestDetail = `Type: ${contest.type}`
-                + `\nLink: [${contest.name}](https://codeforces.com/contests/${contest.id})`
-                + `\nStart time: <t:${contest.startTimeSeconds}:F> (<t:${contest.startTimeSeconds}:R>)`
+            let contestDetail = `Link: [${contest.name}](https://codeforces.com/contests/${contest.id})\n`
+                + `Start time: <t:${contest.startTimeSeconds}:F> (<t:${contest.startTimeSeconds}:R>)`
                 ;
 
             sentEmbed.addFields(
-                { name: contest.name, value: contestDetail }
+                { name: `**${contest.name}**`, value: contestDetail }
             )
         });
 
