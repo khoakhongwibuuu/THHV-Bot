@@ -47,7 +47,7 @@ module.exports = {
 
         if (filteredProblemList.length === 0) {
             await interaction.reply({
-                content: "No contests matching criteria found.",
+                content: "No contests matching criteria were found.",
                 ephemeral: true
             });
             return;
