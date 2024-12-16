@@ -37,7 +37,7 @@ module.exports = {
                 ;
 
             sentEmbed.addFields(
-                { name: `**${contest.name}**`, value: contestDetail }
+                { name: `**👩🏻‍💻 ${contest.name}**`, value: contestDetail }
             )
         });
 

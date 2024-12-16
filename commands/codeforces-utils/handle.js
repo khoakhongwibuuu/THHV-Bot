@@ -48,7 +48,7 @@ module.exports = {
             return;
         }
 
-        const submissionData = await codeforcesLib.fetchData(`https://codeforces.com/api/user.status?handle=${handle}`);
+        const submissionData = await codeforcesLib.fetchData(`https://codeforces.com/api/user.status?handle=${infoData[0].handle}`);
         const solved = solvedCount(submissionData);
 
         const rank = infoData[0].rank ?? "Unknown";
@@ -59,8 +59,8 @@ module.exports = {
 
         const sentEmbed = new Discord.EmbedBuilder()
             .setColor(0x0099FF)
-            .setTitle(handle)
-            .setURL(`https://codeforces.com/profile/${handle}`)
+            .setTitle(infoData[0].handle)
+            .setURL(`https://codeforces.com/profile/${infoData[0].handle}`)
             .setThumbnail(infoData[0].avatar)
             .setDescription(`📅 Date joined codeforces: <t:${infoData[0].registrationTimeSeconds}:F>`
                 + `\n⏰ Last online time:       <t:${infoData[0].lastOnlineTimeSeconds}:F>`

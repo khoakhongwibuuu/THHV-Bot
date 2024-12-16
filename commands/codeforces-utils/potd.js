@@ -71,6 +71,7 @@ module.exports = {
                 .setURL(chosenProblemURL)
                 .setColor(0x0099FF)
                 .setDescription(`**Rating:** ${chosenProblem.rating}\n**Tags:** ${chosenProblemTags}`)
+                .setTimestamp()
             ],
             components: [row]
         });
