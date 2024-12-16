@@ -45,18 +45,15 @@ module.exports = {
             .setTitle(handle)
             .setURL(`https://codeforces.com/profile/${handle}`)
             .setThumbnail(infoData[0].avatar)
+            .setDescription(`📅 Date joined codeforces: <t:${infoData[0].registrationTimeSeconds}:F>`
+                +         `\n⏰ Last online time:       <t:${infoData[0].lastOnlineTimeSeconds}:F>`
+            )
             .addFields(
-                { name: 'Rank', value: rank, inline: true },
-                { name: 'Max rank', value: maxRank, inline: true },
-                { name: '\u200B', value: '\u200B' },
-                { name: 'Rating', value: rating.toString(), inline: true },
-                { name: 'Max rating', value: maxRating.toString(), inline: true },
-                { name: '\u200B', value: '\u200B' },
+                { name: 'Rank', value: `\`\`\`${rank}\`\`\`` },
+                { name: 'Max Rank', value: `\`\`\`${maxRank}\`\`\`` },
+                { name: 'Rating/Max rating', value: `\`\`\`${rating}/${maxRating}\`\`\`` },
             )
             .setTimestamp()
-
-        if (infoData[0].hasOwnProperty("firstName") && infoData[0].hasOwnProperty("lastName"))
-            sentEmbed.setDescription(`Info of ${infoData[0].firstName} ${infoData[0].lastName}`)
 
         await interaction.editReply({ embeds: [sentEmbed], ephemeral: false });
     },
