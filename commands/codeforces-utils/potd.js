@@ -69,6 +69,7 @@ module.exports = {
             embeds: [new Discord.EmbedBuilder()
                 .setTitle(chosenProblem.name)
                 .setURL(chosenProblemURL)
+                .setColor(0x0099FF)
                 .setDescription(`**Rating:** ${chosenProblem.rating}\n**Tags:** ${chosenProblemTags}`)
             ],
             components: [row]

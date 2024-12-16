@@ -27,6 +27,7 @@ module.exports = {
 
         const sentEmbed = new Discord.EmbedBuilder()
             .setTitle(`**Found ${futureList.length} scheduled contest${futureList.length > 1 ? "s" : ""}.**`)
+            .setColor(0x0099FF)
             .setTimestamp()
 
         futureList.reverse();
