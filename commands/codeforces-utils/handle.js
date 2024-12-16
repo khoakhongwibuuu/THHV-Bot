@@ -23,6 +23,11 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply({ ephemeral: false });
         const handle = interaction.options.getString("handle");
+        if (handle.includes(";")) {
+            await interaction.editReply({ content: 'This command does not support multiple handles.', ephemeral: false });
+            return;
+        }
+
         const infoData = await codeforcesLib.fetchData(`https://codeforces.com/api/user.info?handles=${handle}`);
         if (!infoData) {
             await interaction.editReply({ content: 'No user with given handle is found.', ephemeral: false });
