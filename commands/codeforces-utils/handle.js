@@ -9,6 +9,20 @@ const discordAPI = global.discordAPI;
 // Module Specified
 const codeforcesLib = require(path.join(dirname, 'modules/codeforces-utils/lib/codeforcesLib.js'));
 
+const solvedCount = (data) => {
+    const solvedProblems = new Set();
+
+    data.forEach(submission => {
+        if (submission.verdict === 'OK') {
+            const problem = submission.problem;
+            const problemKey = `${problem.contestId}-${problem.index}`;
+            solvedProblems.add(problemKey);
+        }
+    });
+
+    return solvedProblems.size;
+}
+
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('cf-handle')
@@ -34,6 +48,9 @@ module.exports = {
             return;
         }
 
+        const submissionData = await codeforcesLib.fetchData(`https://codeforces.com/api/user.status?handle=${handle}`);
+        const solved = solvedCount(submissionData);
+
         const rank = infoData[0].rank ?? "Unknown";
         const maxRank = infoData[0].maxRank ?? "Unknown";
 
@@ -46,12 +63,13 @@ module.exports = {
             .setURL(`https://codeforces.com/profile/${handle}`)
             .setThumbnail(infoData[0].avatar)
             .setDescription(`📅 Date joined codeforces: <t:${infoData[0].registrationTimeSeconds}:F>`
-                +         `\n⏰ Last online time:       <t:${infoData[0].lastOnlineTimeSeconds}:F>`
+                + `\n⏰ Last online time:       <t:${infoData[0].lastOnlineTimeSeconds}:F>`
             )
             .addFields(
                 { name: 'Rank', value: `\`\`\`${rank}\`\`\`` },
                 { name: 'Max Rank', value: `\`\`\`${maxRank}\`\`\`` },
-                { name: 'Rating/Max rating', value: `\`\`\`${rating}/${maxRating}\`\`\`` },
+                { name: 'Problems solved', value: `\`\`\`${solved}\`\`\``, inline: true },
+                { name: 'Rating/Max rating', value: `\`\`\`${rating}/${maxRating}\`\`\``, inline: true },
             )
             .setTimestamp()
 
