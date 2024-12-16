@@ -96,11 +96,21 @@ const initCache = async (apiLink, cacheName, refreshInterval = CACHE_DURATION) =
     }, refreshInterval);
 };
 
+const offlineFetch = async (apiLink, cacheName) => {
+    const data = await readCache(cacheName);
+    if (!data) {
+        return await fetchData(apiLink);
+    } else {
+        return data.result;
+    }
+};
+
 module.exports = {
     initCache,
     readCache,
     writeCache,
     updateCache,
     cacheExists,
-    fetchData
+    fetchData,
+    offlineFetch
 };
