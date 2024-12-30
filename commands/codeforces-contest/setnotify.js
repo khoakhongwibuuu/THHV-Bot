@@ -47,15 +47,17 @@ module.exports = {
 
         // Validate: if the chosen channel is a Forum
         const testChannel = discordAPI.GuildChannel(interaction.guild.id, forumChannel.id);
-        if (testChannel.type !== Discord.ChannelType.GuildForum) {
-            interaction.reply({
-                content: "⚠️ You have not provided a valid Forum channel. Please try again.",
-                ephemeral: true
-            });
-            return;
-        }
+        if (testChannel) {
+            if (testChannel.type !== Discord.ChannelType.GuildForum) {
+                interaction.reply({
+                    content: "⚠️ You have not provided a valid Forum channel. Please try again.",
+                    ephemeral: true
+                });
+                return;
+            }
 
-        Persist.forum[interaction.guild.id] = forumChannel.id;
+            Persist.forum[interaction.guild.id] = forumChannel.id;
+        }
         cfLib.savePersist(Persist);
 
         interaction.reply({
