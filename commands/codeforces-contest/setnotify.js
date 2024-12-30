@@ -56,8 +56,9 @@ module.exports = {
                 return;
             }
 
-            Persist.forum[interaction.guild.id] = forumChannel.id;
         }
+        
+        Persist.forum[interaction.guild.id] = forumChannel.id;
         cfLib.savePersist(Persist);
 
         interaction.reply({

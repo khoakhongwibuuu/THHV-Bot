@@ -74,7 +74,7 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		}
 
 		let componentsRows = [];
-		if (Persist.forum[guild.id] === "" || !Persist.forum[guild.id]) {
+		if (!Persist.forum[guild.id] || Persist.forum[guild.id] === "") {
 			componentsRows.push(
 				new Discord.ActionRowBuilder()
 					.addComponents(webviewbtn, registerbtn)
@@ -91,7 +91,7 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		}
 
 		discordAPI.GuildChannel(guild.id, Persist.channel[guild.id]).send({
-			content: (Persist.role[guild.id] === "")
+			content: (!Persist.role[guild.id] || Persist.role[guild.id] === "")
 				? "A contest is open for registration!"
 				: `<@&${Persist.role[guild.id]}>, a contest is open for registration!`,
 			embeds: [embed],
