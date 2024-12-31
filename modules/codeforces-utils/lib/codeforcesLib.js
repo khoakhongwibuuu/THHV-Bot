@@ -9,6 +9,7 @@ const discordAPI = global.discordAPI;
 
 const CACHE_DIR = path.join(global.dirname, 'modules/codeforces-utils/cache');
 const CACHE_DURATION = 1000 * 3600 * 6;
+// const CACHE_DURATION = 1000 * 10;
 
 const fetchData = async (apiLink) => {
     try {
@@ -64,7 +65,7 @@ const getCacheUpdateTime = async (cacheName) => {
 };
 
 const updateCache = async (apiLink, cacheName) => {
-    console.log(`[${new Date().toISOString()}] [INFO] Client: updating ${cacheName} database.`);
+    console.log(`[${new Date().toISOString()}] [INFO] Client: found outdated ${cacheName} database. Try updating.`);
     const freshData = await fetchData(apiLink);
     if (freshData) {
         const cacheData = {
@@ -73,7 +74,7 @@ const updateCache = async (apiLink, cacheName) => {
             response: freshData
         };
         await writeCache(cacheName, cacheData);
-        console.log(`[${new Date().toISOString()}] [SUCCESS] Client: updated ${cacheName} database successfully.`);
+        console.log(`[${new Date().toISOString()}] [SUCCESS] Client: updated ${cacheName} database successfully. Next database update will occur in ${CACHE_DURATION / 1000 / 3600} hours.`);
     } else {
         console.error(`[${new Date().toISOString()}] [ERROR] Invalid data. Try updating ${cacheName} database again in ${CACHE_DURATION / 1000 / 3600} hours.`);
     }

@@ -26,31 +26,6 @@ const demandHours = 24;
 const CODEFORCES_CONTEST_API = 'http://codeforces.com/api/contest.list'
 
 const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => {
-	// Create Embed
-	const embed = new Discord.EmbedBuilder()
-		.setAuthor({
-			name: client.user.username,
-			iconURL: client.user.displayAvatarURL()
-		})
-		.setTitle(name)
-		.setURL(contesturl)
-		.setDescription(`Contest starts <t:${startTime / 1000}:F> (<t:${startTime / 1000}:R>)`)
-		.setFooter({
-			text: `${domain} | This message was sent at`
-		})
-		.setTimestamp();
-
-	// Create buttons
-	const registerbtn = new Discord.ButtonBuilder()
-		.setLabel('Register')
-		.setURL(registerurl)
-		.setStyle(Discord.ButtonStyle.Link);
-
-	const webviewbtn = new Discord.ButtonBuilder()
-		.setLabel('View detail')
-		.setURL(contesturl)
-		.setStyle(Discord.ButtonStyle.Link);
-
 	const notifiable = client.guilds.cache.filter(guild => {
 		if (!Persist[domain]) Persist[domain] = {};
 		if (!Persist[domain][guild.id]) Persist[domain][guild.id] = {};
@@ -58,53 +33,59 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		return Persist[domain][guild.id][hours].indexOf(id) < 0;
 	});
 
-	notifiable.forEach(async guild => {
-		if (!Persist.ready[guild.id]) return;
-		let post = null;
+	if (notifiable.length > 0) {
+		// Create Embed
+		const embed = new Discord.EmbedBuilder()
+			.setAuthor({
+				name: client.user.username,
+				iconURL: client.user.displayAvatarURL()
+			})
+			.setTitle(name)
+			.setURL(contesturl)
+			.setDescription(`Contest starts <t:${startTime / 1000}:F> (<t:${startTime / 1000}:R>)`)
+			.setFooter({
+				text: `${domain} | This message was sent at`
+			})
+			.setTimestamp();
 
-		if (Persist.forum[guild.id] !== "" && Persist.forum[guild.id]) {
-			const forumChannel = discordAPI.GuildChannel(guild.id, Persist.forum[guild.id]);
-			post = await forumChannel.threads.create({
-				name: name,
-				message: {
-					content: `Alo alo! Contest [${name}](${contesturl}) sẽ bắt đầu vào <t:${startTime / 1000}:R> nhé!\n`
-				},
-				appiedTags: []
+		// Create buttons
+		const registerbtn = new Discord.ButtonBuilder()
+			.setLabel('Register')
+			.setURL(registerurl)
+			.setStyle(Discord.ButtonStyle.Link);
+
+		const webviewbtn = new Discord.ButtonBuilder()
+			.setLabel('View detail')
+			.setURL(contesturl)
+			.setStyle(Discord.ButtonStyle.Link);
+
+		// Create buttons rows
+		const componentsRows = new Discord.ActionRowBuilder()
+			.addComponents(webviewbtn, registerbtn);
+
+		notifiable.forEach(async guild => {
+			if (!Persist.ready[guild.id]) return;
+
+			await discordAPI.GuildChannel(guild.id, Persist.channel[guild.id]).send({
+				content: (!Persist.role[guild.id] || Persist.role[guild.id] === "")
+					? "A contest is open for registration!"
+					: `<@&${Persist.role[guild.id]}>, a contest is open for registration!`,
+				embeds: [embed],
+				components: [componentsRows]
 			});
-		}
 
-		let componentsRows = [];
-		if (!Persist.forum[guild.id] || Persist.forum[guild.id] === "") {
-			componentsRows.push(
-				new Discord.ActionRowBuilder()
-					.addComponents(webviewbtn, registerbtn)
-			);
-		} else {
-			const discussionbtn = new Discord.ButtonBuilder()
-				.setLabel('View discussion')
-				.setURL(post.url)
-				.setStyle(Discord.ButtonStyle.Link);
-			componentsRows.push(
-				new Discord.ActionRowBuilder()
-					.addComponents(webviewbtn, registerbtn, discussionbtn)
-			);
-		}
-
-		discordAPI.GuildChannel(guild.id, Persist.channel[guild.id]).send({
-			content: (!Persist.role[guild.id] || Persist.role[guild.id] === "")
-				? "A contest is open for registration!"
-				: `<@&${Persist.role[guild.id]}>, a contest is open for registration!`,
-			embeds: [embed],
-			components: componentsRows
+			Persist[domain][guild.id][hours].push(id);
+			cfLib.savePersist(Persist);
 		});
+	}
+}
 
-		Persist[domain][guild.id][hours].push(id);
-		cfLib.savePersist(Persist);
-	});
+const discuss = (domain, id, name, contesturl) => {
+
 }
 
 const clock = () => {
-	console.log(`[${new Date().toISOString()}] [INFO] Client: start connecting to codeforces.com.`);
+	console.log(`[${new Date().toISOString()}] [INFO] Client: start connecting to codeforces API.`);
 	fetch(CODEFORCES_CONTEST_API)
 		.then(response => {
 			const contentType = response.headers.get('content-type');
@@ -113,10 +94,10 @@ const clock = () => {
 		.then(response => {
 			if (typeof response === 'object') {
 				if (response.status === 'OK') {
-					const list = response.result.filter(contest => contest.phase === 'BEFORE');
-					console.log(`[${new Date().toISOString()}] [SUCCESS] Client: connected successfully. Found ${list.length} scheduled contests.`);
+					console.log(`[${new Date().toISOString()}] [SUCCESS] Client: connected to API successfully.`);
 
-					list.forEach(contest => {
+					const before = response.result.filter(contest => contest.phase === 'BEFORE');
+					before.forEach(contest => {
 						const startTime = new Date(parseInt(contest.startTimeSeconds) * 1000);
 						const rtime = -contest.relativeTimeSeconds;
 						if (rtime <= demandHours * 3600) {
@@ -126,6 +107,15 @@ const clock = () => {
 								startTime, demandHours);
 						}
 					});
+
+					const finished = response.result.filter(contest =>
+						contest.phase === 'FINISHED'
+						&& contest.relativeTimeSeconds - contest.durationSeconds >= 0
+						&& contest.relativeTimeSeconds - contest.durationSeconds <= 60 * clockInterval - 1
+					);
+					// console.log(finished);
+
+
 				} else {
 					console.log(`[${new Date().toISOString()}] [WARN] Client: server is busy. Try connecting again in ${clockInterval} minutes.`);
 				}
