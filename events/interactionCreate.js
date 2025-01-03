@@ -19,7 +19,7 @@ module.exports = {
 				return;
 			}
 			try {
-				if (interaction.channel.type !== Discord.ChannelType.DM && interaction.channel.type !== Discord.ChannelType.GroupDM) {
+				if (interaction.guildId) {
 					console.log(`[${new Date().toISOString()}] [COMMAND] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: /${command.data.name}`);
 				} else {
 					console.log(`[${new Date().toISOString()}] [COMMAND] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: /${command.data.name}`);
@@ -35,7 +35,7 @@ module.exports = {
 			}
 		}
 		if (interaction.isModalSubmit()) {
-			
+
 		}
 
 	},
