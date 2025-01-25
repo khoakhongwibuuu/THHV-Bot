@@ -17,13 +17,34 @@ const Persist = cfLib.loadPersist();
 const clockInterval = 5;
 
 // Debugging settings
-const debugMode = false;
+const debugMode = true;
 
 // notify contest 24h before it starts
 const demandHours = 24;
 
 // API link
 const CODEFORCES_CONTEST_API = 'http://codeforces.com/api/contest.list'
+
+// Fetcher
+const fetchData = async (apiLink) => {
+	try {
+		const response = await fetch(apiLink);
+		const contentType = response.headers.get('content-type');
+		const data = contentType.includes('application/json')
+			? await response.json()
+			: await response.text();
+
+		if (typeof data === 'object' && data.status === 'OK') {
+			return data.result;
+		}
+		console.log(`[${new Date().toISOString()}] [WARN] Client: invalid data. Try connecting again in ${clockInterval} minutes.`);
+		return null;
+	} catch (err) {
+		console.log(`[${new Date().toISOString()}] [WARN] Client: host unreachable. Try connecting again in ${clockInterval} minutes.`);
+		console.error(err);
+		return null;
+	}
+}
 
 const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => {
 	const notifiable = client.guilds.cache.filter(guild => {
@@ -80,53 +101,23 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 	}
 }
 
-const discuss = (domain, id, name, contesturl) => {
+const clock = async () => {
+	const contestList = await fetchData(CODEFORCES_CONTEST_API);
+	if (contestList) {
+		const currentTime = new Date().getTime();
 
-}
-
-const clock = () => {
-	console.log(`[${new Date().toISOString()}] [INFO] Client: start connecting to codeforces API.`);
-	fetch(CODEFORCES_CONTEST_API)
-		.then(response => {
-			const contentType = response.headers.get('content-type');
-			return (contentType && contentType.includes('application/json')) ? response.json() : response.text();
-		})
-		.then(response => {
-			if (typeof response === 'object') {
-				if (response.status === 'OK') {
-					console.log(`[${new Date().toISOString()}] [SUCCESS] Client: connected to API successfully.`);
-
-					const before = response.result.filter(contest => contest.phase === 'BEFORE');
-					before.forEach(contest => {
-						const startTime = new Date(parseInt(contest.startTimeSeconds) * 1000);
-						const rtime = -contest.relativeTimeSeconds;
-						if (rtime <= demandHours * 3600) {
-							notify("codeforces.com", contest.id, contest.name,
-								`https://codeforces.com/contests/${contest.id}`,
-								`https://codeforces.com/contestRegistration/${contest.id}`,
-								startTime, demandHours);
-						}
-					});
-
-					const finished = response.result.filter(contest =>
-						contest.phase === 'FINISHED'
-						&& contest.relativeTimeSeconds - contest.durationSeconds >= 0
-						&& contest.relativeTimeSeconds - contest.durationSeconds <= 60 * clockInterval - 1
-					);
-					// console.log(finished);
-
-
-				} else {
-					console.log(`[${new Date().toISOString()}] [WARN] Client: server is busy. Try connecting again in ${clockInterval} minutes.`);
-				}
-			} else {
-				console.log(`[${new Date().toISOString()}] [WARN] Client: invalid data. Try connecting again in ${clockInterval} minutes.`);
+		const before = contestList.filter(contest => contest.phase === 'BEFORE');
+		before.forEach(contest => {
+			const startTime = parseInt(contest.startTimeSeconds) * 1000;
+			const rtime = startTime - currentTime;
+			if (rtime <= demandHours * 3600 * 1000) {
+				notify("codeforces.com", contest.id, contest.name,
+					`https://codeforces.com/contests/${contest.id}`,
+					`https://codeforces.com/contestRegistration/${contest.id}`,
+					startTime, demandHours);
 			}
-		})
-		.catch(err => {
-			console.log(`[${new Date().toISOString()}] [WARN] Client: host unreachable. Try connecting again in ${clockInterval} minutes.`);
-			console.log(err);
-		})
+		});
+	}
 	setTimeout(clock, 1000 * 60 * clockInterval - new Date().getMilliseconds());
 }
 
