@@ -36,4 +36,6 @@ const execute = (interaction, questionBlock) => {
             correctKey, content, "multiple", ETA);
 }
 
-module.exports.execute = execute;
+module.exports = {
+    execute
+}

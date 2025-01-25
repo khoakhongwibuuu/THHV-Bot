@@ -113,4 +113,6 @@ const execute = (interaction, responseData, key) => {
     }
 }
 
-module.exports.execute = execute;
+module.exports = {
+    execute
+}

@@ -73,7 +73,7 @@ for (const file of eventFiles) {
 }
 
 client.on('error', (err) => {
-	console.log(`[${new Date().toISOString()}] [WARNING] Error occured. Please review.`);
+	console.log(`[${new Date().toISOString()}] [WARN] Error occured. Please review.`);
 	console.error(err);
 });
 
@@ -84,7 +84,7 @@ process.on('uncaughtException', (err) => {
 });
 
 process.on('unhandledRejection', (err) => {
-	console.log(`[${new Date().toISOString()}] [WARN] The bot was automatically shut down by unhandled rejection.`);
+	console.log(`[${new Date().toISOString()}] [ERROR] The bot was automatically shut down by unhandled rejection.`);
 	console.error(err);
 	setTimeout(() => process.exit(1), 1000);
 });

@@ -11,10 +11,9 @@ const discordAPI = global.discordAPI;
 
 // Module Specified
 const cfLib = global.cfLib;
-const Persist = cfLib.loadPersist();
 
 // Clock setting: connect to codeforces.com after every 5 minutes
-const clockInterval = 5;
+const clockInterval = 0.1;
 
 // Debugging settings
 const debugMode = true;
@@ -47,14 +46,27 @@ const fetchData = async (apiLink) => {
 }
 
 const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => {
-	const notifiable = client.guilds.cache.filter(guild => {
+	const Persist = cfLib.loadPersist();
+	if (Persist === -1) {
+		cfLib.wipePersist();
+		throw new Error("Found corrupted persist file. Please restart the BOT.");
+	}
+	if (Persist === 0) {
+		throw new Error("Persist file is inaccessible. Please restart the BOT.");
+	}
+	const joinedGuilds = client.guilds.cache.map(guild => guild.id);
+	const notifiable = joinedGuilds.filter(guildId => {
 		if (!Persist[domain]) Persist[domain] = {};
-		if (!Persist[domain][guild.id]) Persist[domain][guild.id] = {};
-		if (!Persist[domain][guild.id][hours]) Persist[domain][guild.id][hours] = [];
-		return Persist[domain][guild.id][hours].indexOf(id) < 0;
+		if (!Persist[domain][guildId]) Persist[domain][guildId] = {};
+		if (!Persist[domain][guildId][hours]) Persist[domain][guildId][hours] = [];
+		return Persist[domain][guildId][hours].indexOf(id) < 0
+			&& Persist.ready[guildId]
+			&& Persist.channel.hasOwnProperty(guildId);
 	});
 
-	if (notifiable.length > 0) {
+	console.log(`[${new Date().toISOString()}] [INFO] Client: found ${notifiable.length} servers to notify.`);
+
+	if (notifiable.length) {
 		// Create Embed
 		const embed = new Discord.EmbedBuilder()
 			.setAuthor({
@@ -84,32 +96,34 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		const componentsRows = new Discord.ActionRowBuilder()
 			.addComponents(webviewbtn, registerbtn);
 
-		notifiable.forEach(async guild => {
-			if (!Persist.ready[guild.id]) return;
-
-			await discordAPI.GuildChannel(guild.id, Persist.channel[guild.id]).send({
-				content: (!Persist.role[guild.id] || Persist.role[guild.id] === "")
+		notifiable.forEach(async guildId => {
+			await discordAPI.GuildChannel(guildId, Persist.channel[guildId]).send({
+				content: (!Persist.role[guildId] || Persist.role[guildId] === "")
 					? "A contest is open for registration!"
-					: `<@&${Persist.role[guild.id]}>, a contest is open for registration!`,
+					: `<@&${Persist.role[guildId]}>, a contest is open for registration!`,
 				embeds: [embed],
 				components: [componentsRows]
 			});
 
-			Persist[domain][guild.id][hours].push(id);
+			Persist[domain][guildId][hours].push(id);
 			cfLib.savePersist(Persist);
 		});
 	}
 }
 
 const clock = async () => {
+	console.log(`[${new Date().toISOString()}] [INFO] Client: start connecting to codeforces API.`);
 	const contestList = await fetchData(CODEFORCES_CONTEST_API);
 	if (contestList) {
 		const currentTime = new Date().getTime();
 
 		const before = contestList.filter(contest => contest.phase === 'BEFORE');
+		console.log(`[${new Date().toISOString()}] [SUCCESS] Client: connected successfully. Found ${before.length} scheduled contests.`);
+
 		before.forEach(contest => {
 			const startTime = parseInt(contest.startTimeSeconds) * 1000;
 			const rtime = startTime - currentTime;
+
 			if (rtime <= demandHours * 3600 * 1000) {
 				notify("codeforces.com", contest.id, contest.name,
 					`https://codeforces.com/contests/${contest.id}`,
@@ -153,9 +167,11 @@ const exec = () => {
 		console.log(`[${new Date().toISOString()}] [INFO] Client: the clock will start in ${delay.m}m-${delay.s}s-${delay.ms}ms.`);
 		setTimeout(clock, delay.m * 60 * 1000 + delay.s * 1000 + delay.ms);
 	} else {
-		console.log(`[${new Date().toISOString()}] [INFO] Client: the clock will start in ${0}m-${3}s-${0}ms.`);
-		setTimeout(clock, 3000);
+		console.log(`[${new Date().toISOString()}] [INFO] Client: the clock will start in ${0}m-${1}s-${0}ms.`);
+		setTimeout(clock, 1000);
 	}
 }
 
-module.exports.exec = exec;
+module.exports = {
+	exec
+}

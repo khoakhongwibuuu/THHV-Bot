@@ -20,11 +20,6 @@ module.exports = {
                 .setDescription("The role to be notified.")
                 .setRequired(false)
         )
-        .addChannelOption(option =>
-            option.setName("forum-channel")
-                .setDescription("If set, a post will be created in this forum channel about the contest.")
-                .setRequired(false)
-        )
         .setDMPermission(false)
     ,
     async execute(interaction) {
@@ -39,7 +34,7 @@ module.exports = {
         const Persist = cfLib.loadPersist();
         Persist.channel[interaction.guild.id] = interaction.channel.id;
         Persist.ready[interaction.guild.id] = true;
-        
+
         const roleNotified = interaction.options.getRole('role') ?? { id: "" };
         Persist.role[interaction.guild.id] = roleNotified.id;
 

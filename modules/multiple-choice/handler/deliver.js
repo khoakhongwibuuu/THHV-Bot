@@ -116,4 +116,6 @@ const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {
     });
 }
 
-module.exports.execute = execute;
+module.exports = {
+    execute
+}

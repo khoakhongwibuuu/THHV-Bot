@@ -22,4 +22,6 @@ const execute = (interaction, questionBlock) => {
             correctKey, `> ${questionBlock.question.URLdecode()}`, "boolean", ETA);
 }
 
-module.exports.execute = execute;
+module.exports = {
+    execute
+}
