@@ -13,10 +13,10 @@ const discordAPI = global.discordAPI;
 const cfLib = global.cfLib;
 
 // Clock setting: connect to codeforces.com after every 5 minutes
-const clockInterval = 0.1;
+const clockInterval = 5;
 
 // Debugging settings
-const debugMode = true;
+const debugMode = false;
 
 // notify contest 24h before it starts
 const demandHours = 24;
