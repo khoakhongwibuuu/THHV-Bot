@@ -1,10 +1,9 @@
 const BotStartTime = new Date().toISOString();
 global.BotStartTime = BotStartTime;
-
-const fs = require('node:fs');
-const path = require('node:path');
-
 global.dirname = __dirname;
+
+const fs = require('fs');
+const path = require('path');
 const dotenv = require('dotenv');
 
 if (!process.env.TOKEN) {
@@ -94,7 +93,6 @@ if (process.env.TOKEN != "")
 		client.login(process.env.TOKEN);
 	} catch (error) {
 		console.error(error);
-		console.log(`Your token is {${process.env.TOKEN}}`);
 	}
 else
 	console.log("Please provide a token.")

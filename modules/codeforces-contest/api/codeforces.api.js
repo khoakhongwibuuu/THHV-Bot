@@ -24,6 +24,9 @@ const demandHours = 24;
 // API link
 const CODEFORCES_CONTEST_API = 'http://codeforces.com/api/contest.list'
 
+// fetch marker
+let firstFetch = 0;
+
 // Fetcher
 const fetchData = async (apiLink) => {
 	try {
@@ -63,8 +66,6 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 			&& Persist.ready[guildId]
 			&& Persist.channel.hasOwnProperty(guildId);
 	});
-
-	console.log(`[${new Date().toISOString()}] [INFO] Client: found ${notifiable.length} servers to notify.`);
 
 	if (notifiable.length) {
 		// Create Embed
@@ -112,13 +113,15 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 }
 
 const clock = async () => {
-	console.log(`[${new Date().toISOString()}] [INFO] Client: start connecting to codeforces API.`);
+	if (!firstFetch) {
+		console.log(`[${new Date().toISOString()}] [INFO] Client: the clock has started.`);
+		firstFetch++;
+	}
+
 	const contestList = await fetchData(CODEFORCES_CONTEST_API);
 	if (contestList) {
 		const currentTime = new Date().getTime();
-
 		const before = contestList.filter(contest => contest.phase === 'BEFORE');
-		console.log(`[${new Date().toISOString()}] [SUCCESS] Client: connected successfully. Found ${before.length} scheduled contests.`);
 
 		before.forEach(contest => {
 			const startTime = parseInt(contest.startTimeSeconds) * 1000;
