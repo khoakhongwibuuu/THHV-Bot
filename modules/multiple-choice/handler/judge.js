@@ -17,6 +17,14 @@ const generateLuckData = (eligiblePlayer, rndRate) => {
     }
 }
 
+const emojiTable = Object.freeze({
+    up: '<:002_cute:1341258059296538677>',
+    down: '<:sad_cat:1341256932589178911>',
+    double: '<:umaru_cool:1341256937676865587>',
+    immunity: '<:saitama_ok:1341257184960450572>',
+    skipped: '<:surprised_pikachu:1341256950536605717>'
+});
+
 const execute = (interaction, responseData, key) => {
     const gameSetting = mcLib.loadGuildFile(interaction.guild.id).setting;
 
@@ -50,23 +58,23 @@ const execute = (interaction, responseData, key) => {
         let Content = `:alarm_clock:  Hết giờ! Đáp án là \`${key}\`\n`;
 
         if (winList.length > 0) {
-            Content += `Các người chơi trả lời đúng và nhận được \`${gameSetting.score.up}\` điểm <:orz:699067454671945758>: ${winList.argList("mention")}\n`;
+            Content += `Các người chơi trả lời đúng và nhận được \`${gameSetting.score.up}\` điểm ${emojiTable.up}: ${winList.argList("mention")}\n`;
         }
         if (doubleWinList.length > 0) {
-            Content += `Các người chơi trả lời đúng và nhận được \`${gameSetting.score.up * 2}\` điểm <:woah:700342674129027112>: ${doubleWinList.argList("mention")}\n`;
+            Content += `Các người chơi trả lời đúng và nhận được \`${gameSetting.score.up * 2}\` điểm ${emojiTable.double}: ${doubleWinList.argList("mention")}\n`;
         }
         if (loseList.length > 0) {
-            Content += `Các người chơi trả lời sai và bị trừ \`${Math.abs(gameSetting.score.down)}\` điểm <:holyfuck:700342674166775870>: ${loseList.argList("mention")}\n`;
+            Content += `Các người chơi trả lời sai và bị trừ \`${Math.abs(gameSetting.score.down)}\` điểm ${emojiTable.down}: ${loseList.argList("mention")}\n`;
         }
         if (immuneList.length > 0) {
-            Content += `Các người chơi trả lời sai và bị mất phép bổ trợ \`Miễn nhiễm\` <:haiyaa:858314284752568322>: ${immuneList.argList("mention")}\n`;
+            Content += `Các người chơi trả lời sai và bị mất phép bổ trợ \`Miễn nhiễm\` ${emojiTable.immunity}: ${immuneList.argList("mention")}\n`;
         }
         if (!responseData.hasOwnProperty(interaction.user.id)) {
             if (!immunityList.includes(interaction.user.id)) {
-                Content += `<@${interaction.user.id}> lấy bài nhưng không làm, phí phạm tài nguyên. Trừ \`${Math.abs(gameSetting.score.down)}\` điểm <:thinkingcat:700345519398060073>.`;
+                Content += `<@${interaction.user.id}> lấy bài nhưng không làm, phí phạm tài nguyên. Trừ \`${Math.abs(gameSetting.score.down)}\` điểm ${emojiTable.skipped}.`;
                 loseList.push(interaction.user.id);
             } else {
-                Content += `<@${interaction.user.id}> lấy bài nhưng không làm, phí phạm tài nguyên. Xóa phép bổ trợ \`Miễn nhiễm\` <:thinkingcat:700345519398060073>.`;
+                Content += `<@${interaction.user.id}> lấy bài nhưng không làm, phí phạm tài nguyên. Xóa phép bổ trợ \`Miễn nhiễm\` ${emojiTable.skipped}.`;
                 immuneList.push(interaction.user.id);
             }
         }
@@ -91,7 +99,7 @@ const execute = (interaction, responseData, key) => {
                 interaction.followUp({
                     embeds: [new Discord.EmbedBuilder()
                         .setDescription(`GG <@${luck.playerId}>! Bạn đã nhận được phép bổ trợ ${luck.boostId === 1 ? "\`Nhân đôi phần thưởng\`" : "\`Miễn nhiễm\`"}.\nTác dụng: `
-                            + ((luck.boostId === 1) ? `Nhân đôi số điểm thưởng khi bạn trả lời đúng. <:pinkUwU:1269159930645053483>` : `Bảo vệ bạn khỏi 1 lượt bị trừ điểm. <:no_u:855441146167820340>`)
+                            + ((luck.boostId === 1) ? `Nhân đôi số điểm thưởng khi bạn trả lời đúng.` : `Bảo vệ bạn khỏi 1 lượt bị trừ điểm.`)
                         )
                     ]
                 });
