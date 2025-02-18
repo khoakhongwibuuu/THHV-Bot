@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const aes256 = require('node:aes256');
+const aes256 = require('aes256');
 
 const dirname = global.dirname;
 
@@ -26,13 +26,26 @@ const randomPercent = (offset) => {
 	return Math.random() * 100 < offset;
 }
 
+const simple_encrypt = (DATA, ENCRYPTION_KEY) => {
+	const cipher = aes256.createCipher(ENCRYPTION_KEY);
+	const data = cipher.encrypt(DATA);
+	return data;
+}
+
+const simple_decrypt = (DATA, DECRYPTION_KEY) => {
+	const cipher = aes256.createCipher(DECRYPTION_KEY);
+	const data = cipher.decrypt(DATA);
+	return data;
+}
 
 
 module.exports = {
 	trueRnd,
 	shuffle,
 	randomEvent,
-	randomPercent
+	randomPercent,
+	simple_encrypt,
+	simple_encrypt
 };
 
 String.prototype.URLdecode = function () {
