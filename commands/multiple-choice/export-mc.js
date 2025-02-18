@@ -35,9 +35,10 @@ module.exports = {
             return;
         }
         const dat = mcLib.loadRawGuildFile(interaction.guild.id);
+        const sentText = null;
         interaction.reply({
             embeds: [new Discord.EmbedBuilder()
-                .setDescription(`Server encrypted data. Required by <@${interaction.user.id}>\n\`\`\`${dat.encrypt()}\`\`\``)
+                .setDescription(`Server encrypted data. Required by <@${interaction.user.id}>\n\`\`\`${sentText}\`\`\``)
             ],
             ephemeral: true
         });

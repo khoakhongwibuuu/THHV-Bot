@@ -74,10 +74,6 @@ module.exports = {
             interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
-        if (interaction.channel.id !== mcLib.getRoomId(interaction.guild.id)) {
-            interaction.reply({ content: `Vui lòng sử dụng lệnh tại phòng chơi <#${mcLib.getRoomId(interaction.guild.id)}>`, ephemeral: true });
-            return;
-        }
         const target = interaction.options.getUser('member') ?? interaction.user;
         const targetScore = mcLib.readPlayerScore(interaction.guildId, target.id);
         const targetAux = mcLib.readPlayerBoost(interaction.guildId, target.id);
@@ -96,6 +92,6 @@ module.exports = {
                 { name: "Phép bổ trợ hiện có", value: `\`\`\`${targetStat.boost}\`\`\``, inline: false }
             )
             .setTimestamp()
-        interaction.reply({ embeds: [sentEmbed], ephemeral: false });
+        interaction.reply({ embeds: [sentEmbed], ephemeral: !mcLib.isInRoom(interaction.guild.id, interaction.channel.id) });
     },
 };

@@ -46,13 +46,8 @@ module.exports = {
         const sentEmbed = new Discord.EmbedBuilder();
         sentEmbed.setTitle(`Danh sách ${lim} người chơi có điểm wordMatch cao nhất server.`);
         sentEmbed.setFooter({ text: `Đang hiển thị ${lim} trong tổng số ${sortedEntries.length} người chơi đã ghi điểm.` });
-        topList.forEach((v, k) => {
-            content += `* <@${k}> : \`${v} điểm\`.\n`
-        });
+        topList.forEach((v, k) => { content += `* <@${k}> : \`${v} điểm\`.\n` });
         sentEmbed.setDescription(content);
-        interaction.reply({
-            embeds: [sentEmbed],
-            ephemeral: !wordLib.isInRoom(interaction.guild.id, interaction.channel.id)
-        });
+        interaction.reply({ embeds: [sentEmbed], ephemeral: !wordLib.isInRoom(interaction.guild.id, interaction.channel.id) });
     },
 };
