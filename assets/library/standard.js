@@ -1,5 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const aes256 = require('node:aes256');
 
 const dirname = global.dirname;
 
@@ -25,10 +26,14 @@ const randomPercent = (offset) => {
 	return Math.random() * 100 < offset;
 }
 
-module.exports.trueRnd = trueRnd;
-module.exports.shuffle = shuffle;
-module.exports.randomEvent = randomEvent;
-module.exports.randomPercent = randomPercent;
+
+
+module.exports = {
+	trueRnd,
+	shuffle,
+	randomEvent,
+	randomPercent
+};
 
 String.prototype.URLdecode = function () {
 	return decodeURIComponent(this);
@@ -55,16 +60,6 @@ String.prototype.keyReverse = function () {
 	for (let i = this.length - 1; i >= 0; i--)
 		newString += this[i];
 	return newString;
-}
-
-String.prototype.encrypt = function () {
-	return (btoa(btoa(btoa(this.toString().keyReverse()))));
-	// return this.toString();
-}
-
-String.prototype.decrypt = function () {
-	return (atob(atob(atob(this.toString())))).keyReverse();
-	// return this.toString();
 }
 
 Array.prototype.argList = function (mode) {
