@@ -11,17 +11,6 @@ const discordAPI = global.discordAPI;
 const dict = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/word-match/database/default.dict.min.json'), 'utf-8'));
 
 // Configuration
-const defaultSettingProfile = (channelId) => {
-    return {
-        channelId: channelId,
-        recentUser: null,
-        recentWord: null,
-        recentSentTime: 0,
-        playerScore: {},
-        used: {}
-    }
-}
-
 const emojiTable = Object.freeze({
     ok: '<:wm_ok:1277623512651141141>',
     not_ok: '<:wm_not_ok:1277623510780481687>'
@@ -46,7 +35,14 @@ const writeGuildFile = (guildId, newData) => {
 const guildSetup = (guildId, channelId) => {
     const guildDataPath = path.join(dirname, 'modules/word-match/config', `${guildId}.json`);
     if (!fs.existsSync(guildDataPath)) {
-        fs.writeFileSync(guildDataPath, JSON.stringify(defaultSettingProfile(channelId)), 'utf8');
+        fs.writeFileSync(guildDataPath, JSON.stringify({
+            channelId: channelId,
+            recentUser: null,
+            recentWord: null,
+            recentSentTime: 0,
+            playerScore: {},
+            used: {}
+        }), 'utf8');
     }
 }
 
