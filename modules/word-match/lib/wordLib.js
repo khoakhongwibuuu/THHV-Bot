@@ -22,6 +22,11 @@ const defaultSettingProfile = (channelId) => {
     }
 }
 
+const emojiTable = Object.freeze({
+    ok: '<:wm_ok:1277623512651141141>',
+    not_ok: '<:wm_not_ok:1277623510780481687>'
+});
+
 // Functions
 const isSetup = (guildId) => {
     const guildDataPath = path.join(dirname, 'modules/word-match/config', `${guildId}.json`);
@@ -65,14 +70,12 @@ const isInRoom = (guildId, testChannelId) => {
     else return (getRoomId(guildId) === testChannelId);
 }
 
-const modifyPlayerScore = (guildId, playerId, offset) => {
-    const guildData = loadGuildFile(guildId);
+const modifyPlayerScore = (guildId, playerId, offset, guildData) => {
     if (!guildData.playerScore.hasOwnProperty(playerId)) {
         guildData.playerScore[playerId] = [0, offset];
     } else {
         guildData.playerScore[playerId].push(guildData.playerScore[playerId].lastValue() + offset);
     }
-    return guildData;
 }
 
 const getUserScore = (guildId, playerId) => {
@@ -89,47 +92,47 @@ const handleInput = (msg) => {
         let guildData = loadGuildFile(msg.guild.id);
         if (msg.author.id === guildData.recentUser) {
             msg.reply("Bạn đã nối từ trước đó. Trừ 2 điểm.");
-            msg.react("<:wm_not_ok:1277623510780481687>");
-            guildData = modifyPlayerScore(msg.guild.id, msg.author.id, -2);
+            msg.react(emojiTable.not_ok);
+            modifyPlayerScore(msg.guild.id, msg.author.id, -2, guildData);
             writeGuildFile(msg.guild.id, guildData);
             return;
         }
         if (msg.createdTimestamp - guildData.recentSentTime < 3000) {
             msg.reply("Bạn sử dụng bot hơi nhanh rồi, hãy chậm lại. Trừ 3 điểm.");
             msg.react("⏳");
-            guildData = modifyPlayerScore(msg.guild.id, msg.author.id, -3);
+            modifyPlayerScore(msg.guild.id, msg.author.id, -3, guildData);
             writeGuildFile(msg.guild.id, guildData);
             return;
         }
         if (guildData.recentSentTime !== 0 && msg.content.toLowerCase().firstDigit() !== guildData.recentWord) {
             msg.reply(`Từ mới phải bắt đầu bằng \`${guildData.recentWord}\`. Trừ 3 điểm.`);
-            msg.react("<:wm_not_ok:1277623510780481687>");
-            guildData = modifyPlayerScore(msg.guild.id, msg.author.id, -3);
+            msg.react(emojiTable.not_ok);
+            modifyPlayerScore(msg.guild.id, msg.author.id, -3, guildData);
             writeGuildFile(msg.guild.id, guildData);
             return;
         }
         if (!dict.hasOwnProperty(msg.content.toLowerCase())) {
             msg.reply(`Từ \`${msg.content.toLowerCase()}\` không tồn tại trong từ điển. Trừ 3 điểm.`);
-            msg.react("<:wm_not_ok:1277623510780481687>");
-            guildData = modifyPlayerScore(msg.guild.id, msg.author.id, -3);
+            msg.react(emojiTable.not_ok);
+            modifyPlayerScore(msg.guild.id, msg.author.id, -3, guildData);
             writeGuildFile(msg.guild.id, guildData);
             return;
         }
         if (guildData.used.hasOwnProperty(msg.content.toLowerCase())) {
             msg.reply(`Từ \`${msg.content.toLowerCase()}\` đã được nối. Trừ 2 điểm.`);
-            msg.react("<:wm_not_ok:1277623510780481687>");
-            guildData = modifyPlayerScore(msg.guild.id, msg.author.id, -2);
+            msg.react(emojiTable.not_ok);
+            modifyPlayerScore(msg.guild.id, msg.author.id, -2, guildData);
             writeGuildFile(msg.guild.id, guildData);
             return;
         }
 
-        guildData = modifyPlayerScore(msg.guild.id, msg.author.id, 2);
+        modifyPlayerScore(msg.guild.id, msg.author.id, 2, guildData);
         guildData.used[msg.content.toLowerCase()] = 1;
         guildData.recentWord = msg.content.toLowerCase().lastDigit();
         guildData.recentSentTime = msg.createdTimestamp;
         guildData.recentUser = msg.author.id;
 
-        msg.react("<:wm_ok:1277623512651141141>");
+        msg.react(emojiTable.ok);
         writeGuildFile(msg.guild.id, guildData);
     }
 }
