@@ -1,11 +1,11 @@
 {
     "dependencies": {
+        "aes256": "latest",
         "discord.js": "latest",
-        "dotenv": "^16.4.5",
+        "dotenv": "latest",
         "fs": "latest",
         "node-fetch": "latest",
-        "ping": "latest",
-        "aes256": "latest"
+        "ping": "latest"
     },
     "devDependencies": {
         "eslint": "^8.55.0"
