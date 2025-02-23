@@ -38,7 +38,7 @@ module.exports = {
         const sentText = null;
         interaction.reply({
             embeds: [new Discord.EmbedBuilder()
-                .setDescription(`Server encrypted data. Required by <@${interaction.user.id}>\n\`\`\`${sentText}\`\`\``)
+                .setDescription(`Server encrypted data. Required by <@${interaction.user.id}>\n\`\`\`${dat}\`\`\``)
             ],
             ephemeral: true
         });
