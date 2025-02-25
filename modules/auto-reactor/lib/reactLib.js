@@ -47,6 +47,10 @@ module.exports = {
         }
         listenMessage[guildId][messageId] = 1;
     },
+    isListened(guildId, messageId) {
+        if (!listenMessage[guildId]) return false;
+        return listenMessage.hasOwnProperty(messageId);
+    },
     removeMessage(guildId, messageId) {
         if (listenMessage[guildId]) {
             delete listenMessage[guildId][messageId];
