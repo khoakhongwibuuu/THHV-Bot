@@ -42,12 +42,6 @@ const GuildChannel = (guildId, channelId) => {
     }
 }
 
-module.exports.Guild = Guild;
-module.exports.User = User;
-module.exports.GuildMember = GuildMember;
-module.exports.GuildRole = GuildRole;
-module.exports.GuildChannel = GuildChannel;
-
 const isAdmin = (guildId, userId) => {
     const member = GuildMember(guildId, userId);
     return (member) ? member.permissions.has(Discord.PermissionsBitField.Flags.Administrator) : false;
@@ -66,5 +60,12 @@ const isModerator = (guildId, userId) => {
         : false;
 }
 
-module.exports.isAdmin = isAdmin;
-module.exports.isModerator = isModerator;
+module.exports = {
+    Guild,
+    User,
+    GuildMember,
+    GuildRole,
+    GuildChannel,
+    isAdmin,
+    isModerator
+}

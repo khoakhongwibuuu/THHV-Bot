@@ -38,7 +38,6 @@ const simple_decrypt = (DATA, DECRYPTION_KEY) => {
 	return data;
 }
 
-
 module.exports = {
 	trueRnd,
 	shuffle,
@@ -46,7 +45,7 @@ module.exports = {
 	randomPercent,
 	simple_encrypt,
 	simple_encrypt
-};
+}
 
 String.prototype.URLdecode = function () {
 	return decodeURIComponent(this);
