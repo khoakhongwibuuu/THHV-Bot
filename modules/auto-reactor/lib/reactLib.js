@@ -7,18 +7,6 @@ const dirname = global.dirname;
 const stdlib = global.stdlib;
 const discordAPI = global.discordAPI;
 
-// Configuration
-const defaultSettingProfile = (channelId, upvoteToken, downvoteToken) => {
-    return {
-        // Auto reactor will not be triggered OUTSIDE this channel
-        channelId: channelId,
-
-        // UPVOTE and DOWNVOTE token
-        upvoteToken: upvoteToken,
-        downvoteToken: downvoteToken
-    }
-}
-
 // Functions
 const isSetup = (guildId) => {
     const guildDataPath = path.join(dirname, 'modules/auto-reactor/config', `${guildId}.json`);
@@ -30,17 +18,9 @@ const loadGuildFile = (guildId) => {
     return JSON.parse(fs.readFileSync(guildDataPath, 'utf-8'));
 }
 
-const guildSetup = (guildId, channelId, upvoteToken, downvoteToken) => {
+const writeGuildFile = (guildId, newData) => {
     const guildDataPath = path.join(dirname, 'modules/auto-reactor/config', `${guildId}.json`);
-    // allow override in installed guilds
-    fs.writeFileSync(guildDataPath, JSON.stringify(defaultSettingProfile(channelId, upvoteToken, downvoteToken)), 'utf8');
-}
-
-const guildReset = (guildId) => {
-    if (isSetup(guildId)) {
-        const guildDataPath = path.join(dirname, 'modules/auto-reactor/config', `${guildId}.json`);
-        fs.unlinkSync(guildDataPath);
-    }
+    fs.writeFileSync(guildDataPath, JSON.stringify(newData), 'utf8');
 }
 
 const isInRoom = (guildId, channelId) => {
@@ -53,68 +33,85 @@ const isPrefix = (str, prefix) => {
     return str.toLowerCase().startsWith(prefix.toLowerCase());
 }
 
-const getTokenName = (token) => {
-    const start = token.indexOf(':') + 1;
-    const end = token.lastIndexOf(':');
+let listenMessage = {};
+// global.listenMessage = listenMessage;
 
-    if (start >= 0 && end > start) {
-        return token.slice(start, end);
-    }
-    return token;
-}
+module.exports = {
+    isSetup,
+    loadGuildFile,
+    isInRoom,
+    isPrefix,
+    addMessage(guildId, messageId) {
+        if (!listenMessage[guildId]) {
+            listenMessage[guildId] = {};
+        }
+        listenMessage[guildId][messageId] = 1;
+    },
+    removeMessage(guildId, messageId) {
+        if (listenMessage[guildId]) {
+            delete listenMessage[guildId][messageId];
+            if (Object.keys(listenMessage[guildId]).length === 0) {
+                delete listenMessage[guildId];
+            }
+        }
+    },
+    guildSetup(guildId, channelId, upvoteToken, downvoteToken) {
+        const guildDataPath = path.join(dirname, 'modules/auto-reactor/config', `${guildId}.json`);
+        // allow override in installed guilds
+        fs.writeFileSync(guildDataPath, JSON.stringify({
+            // Auto reactor will not be triggered OUTSIDE this channel
+            channelId: channelId,
 
-const getTokenId = (token) => {
-    const start = token.lastIndexOf(':') + 1;
-    const end = token.lastIndexOf('>');
+            // UPVOTE and DOWNVOTE token
+            upvoteToken: upvoteToken,
+            downvoteToken: downvoteToken,
 
-    if (start >= 0 && end > start) {
-        return token.slice(start, end);
-    }
-    return token;
-}
+            // keep listened message consistent after bot shutdown
+            listenMessage: {}
+        }), 'utf8');
+    },
+    guildReset(guildId) {
+        if (isSetup(guildId)) {
+            const guildDataPath = path.join(dirname, 'modules/auto-reactor/config', `${guildId}.json`);
+            fs.unlinkSync(guildDataPath);
+        }
+    },
+    getTokenName(token) {
+        const start = token.indexOf(':') + 1;
+        const end = token.lastIndexOf(':');
 
-const handleInput = (msg) => {
-    if (isInRoom(msg.guild.id, msg.channel.id)) {
-        if (isPrefix(msg.content, "suggest") || isPrefix(msg.content, "vote")) {
-            let guildData = loadGuildFile(msg.guild.id);
-            try {
-                msg.react(guildData.upvoteToken);
-                msg.react(guildData.downvoteToken);
+        if (start >= 0 && end > start) {
+            return token.slice(start, end);
+        }
+        return token;
+    },
+    getTokenId(token) {
+        const start = token.lastIndexOf(':') + 1;
+        const end = token.lastIndexOf('>');
 
-                // Create a reaction collector to ensure only one vote per user
-                const filter = (reaction, user) => {
-                    return [getTokenName(guildData.upvoteToken), getTokenName(guildData.downvoteToken)].includes(reaction.emoji.name)
-                        && !user.bot;
-                };
+        if (start >= 0 && end > start) {
+            return token.slice(start, end);
+        }
+        return token;
+    },
+    initialiseInput(msg) {
+        if (isInRoom(msg.guild.id, msg.channel.id)) {
+            if (isPrefix(msg.content, "suggest") || isPrefix(msg.content, "vote")) {
+                let guildData = loadGuildFile(msg.guild.id);
+                try {
+                    msg.react(guildData.upvoteToken);
+                    msg.react(guildData.downvoteToken);
 
-                const collector = msg.createReactionCollector({ filter, dispose: true });
+                    // Store listening message ID in Disk
+                    guildData.listenMessage[msg.id] = 1;
+                    writeGuildFile(msg.guild.id, guildData);
 
-                collector.on('collect', (reaction, user) => {
-                    // Get the Id of the oppose token
-                    const otherTokenId = reaction.emoji.name === getTokenName(guildData.upvoteToken)
-                        ? getTokenId(guildData.downvoteToken)
-                        : getTokenId(guildData.upvoteToken);
-
-                    const userReactions = msg.reactions.cache.get(otherTokenId);
-                    if (userReactions && userReactions.users.cache.has(user.id)) {
-                        userReactions.users.remove(user.id);
-                    }
-                });
-
-                collector.on('remove', (reaction, user) => {
-
-                });
-
-            } catch (error) {
-
+                    // Store listening message ID in RAM
+                    listenMessage[msg.guild.id][msg.id] = 1;
+                } catch (error) {
+                    console.error(error);
+                }
             }
         }
     }
 }
-
-module.exports.isSetup = isSetup;
-module.exports.loadGuildFile = loadGuildFile;
-module.exports.guildSetup = guildSetup;
-module.exports.guildReset = guildReset;
-
-module.exports.handleInput = handleInput;

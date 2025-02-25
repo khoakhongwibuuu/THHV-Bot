@@ -10,7 +10,6 @@ module.exports = {
 		if (msg.author.bot || msg.system || msg.tts) return;
 		if (!msg.content.hasWhiteSpace() && msg.content.englishOnly())
 			require(path.join(dirname, 'modules/word-match/lib/wordLib.js')).handleInput(msg);
-		require(path.join(dirname, 'modules/auto-reactor/lib/reactLib.js')).handleInput(msg);
-		// console.log(msg.content);
+		require(path.join(dirname, 'modules/auto-reactor/lib/reactLib.js')).initialiseInput(msg);
 	},
 };
