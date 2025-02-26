@@ -27,7 +27,7 @@ module.exports = {
         }
         if (!reactLib.isSetup(interaction.guild.id)) {
             interaction.reply({
-                content: "⚠️ Voting feature has not been enabled at this channel.",
+                content: "⚠️ Voting feature has not been enabled at this server.",
                 ephemeral: true
             });
             return;
