@@ -128,7 +128,12 @@ const handleInput = (msg) => {
         guildData.recentSentTime = msg.createdTimestamp;
         guildData.recentUser = msg.author.id;
 
-        msg.react(emojiTable.ok);
+        try {
+            msg.react(emojiTable.ok);
+        } catch (error) {
+            console.error(error);
+        }
+
         writeGuildFile(msg.guild.id, guildData);
     }
 }
