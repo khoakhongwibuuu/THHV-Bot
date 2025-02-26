@@ -111,9 +111,18 @@ const removeMessage = (msg) => {
             guildData.listenMessage[messageId] = null;
             delete guildData.listenMessage[messageId];
             writeGuildFile(guildId, guildData);
-            console.log(listenMessage);
         }
     }
+}
+
+const flushGuild = (guildId) => {
+    if (listenMessage[guildId]) {
+        listenMessage[guildId] = null;
+        delete listenMessage[guildId];
+    }
+    let guildData = loadGuildFile(guildId);
+    guildData.listenMessage = {};
+    writeGuildFile(guildId, guildData);
 }
 
 const initialiseInput = (msg) => {
@@ -133,7 +142,6 @@ const initialiseInput = (msg) => {
                 // Store listening message ID in configuration file
                 guildData.listenMessage[msg.id] = 1;
                 writeGuildFile(msg.guild.id, guildData);
-                console.log(listenMessage);
             } catch (error) {
                 console.error(error);
             }
@@ -146,12 +154,13 @@ module.exports = {
     loadGuildFile,
     isInRoom,
     isPrefix,
-    isListened,
-    addMessage,
-    removeMessage,
     guildSetup,
     guildReset,
     getTokenName,
     getTokenId,
+    isListened,
+    addMessage,
+    removeMessage,
+    flushGuild,
     initialiseInput
 }

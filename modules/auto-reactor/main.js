@@ -13,7 +13,8 @@ const guildFiles = fs.readdirSync(configPath).filter(file => file.endsWith('json
 for (const guildFile of guildFiles) {
     const guildId = guildFile.slice(0, guildFile.lastIndexOf('.')) || guildFile;
     const guildData = reactLib.loadGuildFile(guildId);
-    Object.entries(guildData.listenMessage).forEach(messageId => {
-        reactLib.addMessage(guildId, messageId[0]);
+    Object.keys(guildData.listenMessage).forEach(messageId => {
+        global.discordAPI.
+        reactLib.addMessage(guildId, messageId);
     });
 }
