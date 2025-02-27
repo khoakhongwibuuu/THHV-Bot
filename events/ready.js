@@ -2,13 +2,10 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
-const dirname = global.dirname;
-const stdlib = global.stdlib;
-
 const loadModule = (moduleName) => {
     console.log(`[${new Date().toISOString()}] [INFO] Client: loading ${moduleName} module!`);
     try {
-        require(path.join(dirname, 'modules', moduleName, 'main.js'));
+        require(path.join(global.dirname, 'modules', moduleName, 'main.js'));
     }
     catch (err) {
         console.error(`[${new Date().toISOString()}] [ERROR] Error found while loading module ${moduleName}:`, err);
@@ -30,10 +27,10 @@ module.exports = {
         console.log(`[${new Date().toISOString()}] [SUCCESS] Ready! Logged in as ${client.user.tag}`);
 
         // Load modules
-        fs.readdir(path.join(dirname, "modules"), { withFileTypes: true }, (err, files) => {
+        fs.readdir(path.join(global.dirname, "modules"), { withFileTypes: true }, (err, files) => {
             files.forEach(file => {
                 if (file.isDirectory()) {
-                    fs.access(path.join(dirname, "modules", file.name, "main.js"), fs.constants.F_OK, (err) => {
+                    fs.access(path.join(global.dirname, "modules", file.name, "main.js"), fs.constants.F_OK, (err) => {
                         if (!err) { loadModule(file.name); }
                     });
                 }

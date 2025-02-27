@@ -1,13 +1,8 @@
 const path = require('path');
 const Discord = require('discord.js');
 
-// Universal
-const dirname = global.dirname;
-const stdlib = global.stdlib;
-const discordAPI = global.discordAPI;
-
 // Module Specified
-const mcLib = require(path.join(dirname, 'modules/multiple-choice/lib/gameLib.js'));
+const mcLib = require(path.join(global.dirname, 'modules/multiple-choice/lib/gameLib.js'));
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -30,6 +25,6 @@ module.exports = {
         }
         mcLib.guildLock(interaction.guild.id);
         const questionBlock = mcLib.dbReader();
-        require(path.join(dirname, "modules/multiple-choice/handler", questionBlock.type)).execute(interaction, questionBlock);
+        require(path.join(global.dirname, "modules/multiple-choice/handler", questionBlock.type)).execute(interaction, questionBlock);
     },
 };

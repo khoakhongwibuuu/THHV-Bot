@@ -1,16 +1,9 @@
 // Packages
-const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-// Universal
-const dirname = global.dirname;
-const stdlib = global.stdlib;
-const discordAPI = global.discordAPI;
-
-const persistPath = path.join(dirname, 'modules/codeforces-contest/config/persist.json');
-
 // Persist Controller
+const persistPath = path.join(global.dirname, 'modules/codeforces-contest/config/persist.json');
 const loadPersist = () => {
     if (!fs.existsSync(persistPath))
         return 0;

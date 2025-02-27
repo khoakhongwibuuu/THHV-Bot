@@ -1,14 +1,13 @@
 const Discord = require('discord.js');
-const client = global.client;
 
 // Fetching
 const Guild = (id) => {
-    const guildEntity = client.guilds.cache.get(id)
+    const guildEntity = global.client.guilds.cache.get(id)
     return (guildEntity) ? guildEntity : null;
 }
 
 const User = (id) => {
-    const userEntity = client.users.cache.get(id);
+    const userEntity = global.client.users.cache.get(id);
     return (userEntity) ? userEntity : null;
 }
 

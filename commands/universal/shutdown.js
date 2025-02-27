@@ -1,7 +1,4 @@
 const Discord = require('discord.js');
-const dirname = global.dirname;
-const stdlib = global.stdlib;
-const discordAPI = global.discordAPI;
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()

@@ -2,13 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// Universal
-const dirname = global.dirname;
-const stdlib = global.stdlib;
-const discordAPI = global.discordAPI;
-
 // Module based
-const dict = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/word-match/database/default.dict.min.json'), 'utf-8'));
+const dict = JSON.parse(fs.readFileSync(path.join(global.dirname, 'modules/word-match/database/default.dict.min.json'), 'utf-8'));
 
 // Configuration
 const emojiTable = Object.freeze({
@@ -18,22 +13,22 @@ const emojiTable = Object.freeze({
 
 // Functions
 const isSetup = (guildId) => {
-    const guildDataPath = path.join(dirname, 'modules/word-match/config', `${guildId}.json`);
+    const guildDataPath = path.join(global.dirname, 'modules/word-match/config', `${guildId}.json`);
     return fs.existsSync(guildDataPath);
 }
 
 const loadGuildFile = (guildId) => {
-    const guildDataPath = path.join(dirname, 'modules/word-match/config', `${guildId}.json`);
+    const guildDataPath = path.join(global.dirname, 'modules/word-match/config', `${guildId}.json`);
     return JSON.parse(fs.readFileSync(guildDataPath, 'utf-8'));
 }
 
 const writeGuildFile = (guildId, newData) => {
-    const guildDataPath = path.join(dirname, 'modules/word-match/config', `${guildId}.json`);
+    const guildDataPath = path.join(global.dirname, 'modules/word-match/config', `${guildId}.json`);
     fs.writeFileSync(guildDataPath, JSON.stringify(newData), 'utf8');
 }
 
 const guildSetup = (guildId, channelId) => {
-    const guildDataPath = path.join(dirname, 'modules/word-match/config', `${guildId}.json`);
+    const guildDataPath = path.join(global.dirname, 'modules/word-match/config', `${guildId}.json`);
     if (!fs.existsSync(guildDataPath)) {
         fs.writeFileSync(guildDataPath, JSON.stringify({
             channelId: channelId,

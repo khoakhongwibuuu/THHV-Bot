@@ -3,12 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const Discord = require('discord.js');
 
-// Universal
-const client = global.client;
-const stdlib = global.stdlib;
-const dirname = global.dirname;
-const discordAPI = global.discordAPI;
-
 // Module Specified
 const cfLib = global.cfLib;
 
@@ -57,7 +51,7 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 	if (Persist === 0) {
 		throw new Error("Persist file is inaccessible. Please restart the BOT.");
 	}
-	const joinedGuilds = client.guilds.cache.map(guild => guild.id);
+	const joinedGuilds = global.client.guilds.cache.map(guild => guild.id);
 	const notifiable = joinedGuilds.filter(guildId => {
 		if (!Persist[domain]) Persist[domain] = {};
 		if (!Persist[domain][guildId]) Persist[domain][guildId] = {};
@@ -71,8 +65,8 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 		// Create Embed
 		const embed = new Discord.EmbedBuilder()
 			.setAuthor({
-				name: client.user.username,
-				iconURL: client.user.displayAvatarURL()
+				name: global.client.user.username,
+				iconURL: global.client.user.displayAvatarURL()
 			})
 			.setTitle(name)
 			.setURL(contesturl)
@@ -98,7 +92,7 @@ const notify = (domain, id, name, contesturl, registerurl, startTime, hours) => 
 			.addComponents(webviewbtn, registerbtn);
 
 		notifiable.forEach(async guildId => {
-			await discordAPI.GuildChannel(guildId, Persist.channel[guildId]).send({
+			await global.discordAPI.GuildChannel(guildId, Persist.channel[guildId]).send({
 				content: (!Persist.role[guildId] || Persist.role[guildId] === "")
 					? "A contest is open for registration!"
 					: `<@&${Persist.role[guildId]}>, a contest is open for registration!`,

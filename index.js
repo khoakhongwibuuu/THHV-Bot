@@ -2,8 +2,8 @@ const BotStartTime = new Date().toISOString();
 global.BotStartTime = BotStartTime;
 global.dirname = __dirname;
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 const dotenv = require('dotenv');
 
 if (!process.env.TOKEN) {

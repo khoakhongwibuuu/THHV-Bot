@@ -3,13 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const Discord = require('discord.js');
 
-// Universal
-const dirname = global.dirname;
-const stdlib = global.stdlib;
-const discordAPI = global.discordAPI;
-
 // Module Specified
-const wordLib = require(path.join(dirname, 'modules/word-match/lib/wordLib.js'));
+const wordLib = require(path.join(global.dirname, 'modules/word-match/lib/wordLib.js'));
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()

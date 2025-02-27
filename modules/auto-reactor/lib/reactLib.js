@@ -2,24 +2,19 @@
 const fs = require('fs');
 const path = require('path');
 
-// Universal
-const dirname = global.dirname;
-const stdlib = global.stdlib;
-const discordAPI = global.discordAPI;
-
 // Functions
 const isSetup = (guildId) => {
-    const guildDataPath = path.join(dirname, 'modules/auto-reactor/config', `${guildId}.json`);
+    const guildDataPath = path.join(global.dirname, 'modules/auto-reactor/config', `${guildId}.json`);
     return fs.existsSync(guildDataPath);
 }
 
 const loadGuildFile = (guildId) => {
-    const guildDataPath = path.join(dirname, 'modules/auto-reactor/config', `${guildId}.json`);
+    const guildDataPath = path.join(global.dirname, 'modules/auto-reactor/config', `${guildId}.json`);
     return JSON.parse(fs.readFileSync(guildDataPath, 'utf-8'));
 }
 
 const writeGuildFile = (guildId, newData) => {
-    const guildDataPath = path.join(dirname, 'modules/auto-reactor/config', `${guildId}.json`);
+    const guildDataPath = path.join(global.dirname, 'modules/auto-reactor/config', `${guildId}.json`);
     fs.writeFileSync(guildDataPath, JSON.stringify(newData), 'utf8');
 }
 
@@ -34,7 +29,7 @@ const isPrefix = (str, prefix) => {
 }
 
 const guildSetup = (guildId, channelId, upvoteToken, downvoteToken) => {
-    const guildDataPath = path.join(dirname, 'modules/auto-reactor/config', `${guildId}.json`);
+    const guildDataPath = path.join(global.dirname, 'modules/auto-reactor/config', `${guildId}.json`);
     // allow override in installed guilds
     fs.writeFileSync(guildDataPath, JSON.stringify({
         // Auto reactor will not be triggered OUTSIDE this channel
@@ -51,7 +46,7 @@ const guildSetup = (guildId, channelId, upvoteToken, downvoteToken) => {
 
 const guildReset = (guildId) => {
     if (isSetup(guildId)) {
-        const guildDataPath = path.join(dirname, 'modules/auto-reactor/config', `${guildId}.json`);
+        const guildDataPath = path.join(global.dirname, 'modules/auto-reactor/config', `${guildId}.json`);
         fs.unlinkSync(guildDataPath);
     }
 }

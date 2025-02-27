@@ -1,9 +1,6 @@
 const Discord = require('discord.js');
 const path = require('path');
 
-const dirname = global.dirname;
-const stdlib = global.stdlib;
-
 module.exports = {
 	name: Discord.Events.InteractionCreate,
 	async execute(interaction) {

@@ -1,13 +1,8 @@
 const path = require('path');
 const Discord = require('discord.js');
 
-// Universal
-const dirname = global.dirname;
-const stdlib = global.stdlib;
-const discordAPI = global.discordAPI;
-
 // Module Specified
-const codeforcesLib = require(path.join(dirname, 'modules/codeforces-utils/lib/codeforcesLib.js'));
+const codeforcesLib = require(path.join(global.dirname, 'modules/codeforces-utils/lib/codeforcesLib.js'));
 
 const solvedCount = (data) => {
     const solvedProblems = new Set();

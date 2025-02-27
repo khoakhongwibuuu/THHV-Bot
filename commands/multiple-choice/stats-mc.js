@@ -3,13 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const Discord = require('discord.js');
 
-// Universal
-const dirname = global.dirname;
-const stdlib = global.stdlib;
-const discordAPI = global.discordAPI;
-
 // Module Specified
-const mcLib = require(path.join(dirname, 'modules/multiple-choice/lib/gameLib.js'));
+const mcLib = require(path.join(global.dirname, 'modules/multiple-choice/lib/gameLib.js'));
 
 const statBuilder = (playerId, playerScore, playerAux) => {
     if (playerScore === null) {

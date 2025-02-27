@@ -3,13 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const Discord = require('discord.js');
 
-// Universal
-const dirname = global.dirname;
-const stdlib = global.stdlib;
-const discordAPI = global.discordAPI;
-
 // Module Specified
-const cfLib = require(path.join(dirname, 'modules/codeforces-contest/lib/cf.js'));
+const cfLib = require(path.join(global.dirname, 'modules/codeforces-contest/lib/cf.js'));
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -23,7 +18,7 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+        if (!global.discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
             interaction.reply({
                 content: "🚫 You do not have permission to run this command.",
                 ephemeral: true

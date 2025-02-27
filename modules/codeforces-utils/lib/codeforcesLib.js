@@ -2,11 +2,6 @@
 const fs = require('fs');
 const path = require('path');
 
-// Universal
-const dirname = global.dirname;
-const stdlib = global.stdlib;
-const discordAPI = global.discordAPI;
-
 const CACHE_DIR = path.join(global.dirname, 'modules/codeforces-utils/cache');
 const CACHE_DURATION = 1000 * 3600 * 6;
 // const CACHE_DURATION = 1000 * 10;

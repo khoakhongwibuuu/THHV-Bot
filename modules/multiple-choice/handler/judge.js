@@ -1,19 +1,14 @@
 const path = require('path');
 const Discord = require('discord.js');
 
-// Universal
-const dirname = global.dirname;
-const stdlib = global.stdlib;
-const discordAPI = global.discordAPI;
-
 // Module Specified
-const mcLib = require(path.join(dirname, 'modules/multiple-choice/lib/gameLib.js'));
+const mcLib = require(path.join(global.dirname, 'modules/multiple-choice/lib/gameLib.js'));
 
 const generateLuckData = (eligiblePlayer, rndRate) => {
-    const rateMet = stdlib.randomPercent(rndRate);
+    const rateMet = global.stdlib.randomPercent(rndRate);
     return {
         playerId: (rateMet) ? eligiblePlayer.randomValue() : null,
-        boostId: (rateMet) ? stdlib.trueRnd(0, 1) + 1 : 0
+        boostId: (rateMet) ? global.stdlib.trueRnd(0, 1) + 1 : 0
     }
 }
 

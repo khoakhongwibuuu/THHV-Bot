@@ -3,8 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Deliver Module Based Libraries
-const cfLib = require('./lib/cf.js');
-global.cfLib = cfLib;
+global.cfLib = require('./lib/cf.js');
 
 const configPath = path.join(global.dirname, 'modules/codeforces-contest/config');
 if (!fs.existsSync(configPath)) {

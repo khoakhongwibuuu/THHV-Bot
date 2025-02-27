@@ -2,8 +2,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 const aes256 = require('aes256');
 
-const dirname = global.dirname;
-
 const trueRnd = (l, h) => {
 	return l + Math.floor(Math.random() * (h - l + 1));
 }

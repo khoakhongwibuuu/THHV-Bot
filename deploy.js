@@ -9,8 +9,6 @@ if (!process.env.TOKEN) {
 	console.info("Loaded config from login.env");
 }
 
-global.dirname = __dirname
-
 const commands = [];
 
 const foldersPath = path.join(__dirname, 'commands');
