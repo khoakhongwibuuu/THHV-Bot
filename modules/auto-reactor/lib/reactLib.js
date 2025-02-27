@@ -20,7 +20,7 @@ const loadGuildFile = (guildId) => {
 
 const writeGuildFile = (guildId, newData) => {
     const guildDataPath = path.join(dirname, 'modules/auto-reactor/config', `${guildId}.json`);
-    fs.writeFileSync(guildDataPath, JSON.stringify(newData, null, 4), 'utf8');
+    fs.writeFileSync(guildDataPath, JSON.stringify(newData), 'utf8');
 }
 
 const isInRoom = (guildId, channelId) => {

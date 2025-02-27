@@ -12,8 +12,8 @@ const dict = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/word-match/d
 
 // Configuration
 const emojiTable = Object.freeze({
-    ok: '<:wm_ok:1277623512651141141>',
-    not_ok: '<:wm_not_ok:1277623510780481687>'
+    ok: '✅',
+    not_ok: '❌'
 });
 
 // Functions
