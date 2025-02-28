@@ -21,7 +21,7 @@ const writeGuildFile = (guildId, newData) => fs.writeFileSync(getGuildFilePath(g
 const isInRoom = (guildId, channelId) => {
     const guildData = loadGuildFile(guildId);
     return guildData ? guildData.channelId === channelId : false;
-};
+}
 
 // Check if a string starts with a specific prefix (case insensitive)
 const isPrefix = (str, prefix) => str.toLowerCase().startsWith(prefix.toLowerCase());
@@ -35,13 +35,13 @@ const guildSetup = (guildId, channelId, upvoteToken, downvoteToken) => {
         downvoteToken,
         listenMessage: {}
     });
-};
+}
 
 // Reset guild configuration
 const guildReset = (guildId) => {
     delete listenMessage[guildId];
     if (isSetup(guildId)) fs.unlinkSync(getGuildFilePath(guildId));
-};
+}
 
 // Extract token name from custom emoji format
 const getTokenName = (token) => {
@@ -73,7 +73,7 @@ const isListened = (guildId, messageId) => listenMessage[guildId]?.hasOwnPropert
 const addMessage = (guildId, messageId) => {
     listenMessage[guildId] ??= {};
     listenMessage[guildId][messageId] = 1;
-};
+}
 
 // Remove a tracked message
 const removeMessage = (msg) => {
@@ -91,7 +91,7 @@ const removeMessage = (msg) => {
             writeGuildFile(guild.id, guildData);
         }
     }
-};
+}
 
 // Flush all tracked messages for a guild
 const flushGuild = (guildId) => {
@@ -102,7 +102,7 @@ const flushGuild = (guildId) => {
         guildData.listenMessage = {};
         writeGuildFile(guildId, guildData);
     }
-};
+}
 
 // Initialize auto-reactions on a message
 const initialiseInput = (msg) => {
@@ -122,7 +122,7 @@ const initialiseInput = (msg) => {
     } catch (error) {
         console.error(error);
     }
-};
+}
 
 // Handle reaction events & prevent double-voting
 const handleReaction = async (reaction, user) => {
@@ -149,7 +149,7 @@ const handleReaction = async (reaction, user) => {
     } catch (error) {
         console.error(error);
     }
-};
+}
 
 module.exports = {
     isSetup,
