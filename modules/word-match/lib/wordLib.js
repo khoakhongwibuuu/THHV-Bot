@@ -18,9 +18,16 @@ const isSetup = (guildId) => {
     return fs.existsSync(guildDataPath);
 }
 
-const loadGuildFile = (guildId) => {
+const loadRawGuildFile = (guildId) => {
     const guildDataPath = path.join(configDirPath, `${guildId}.json`);
-    return JSON.parse(fs.readFileSync(guildDataPath, 'utf-8'));
+    const rawTextFile = fs.readFileSync(guildDataPath, 'utf-8');
+    return rawTextFile;
+}
+
+const loadGuildFile = (guildId) => {
+    // const guildDataPath = path.join(configDirPath, `${guildId}.json`);
+    // return JSON.parse(fs.readFileSync(guildDataPath, 'utf-8'));
+    return JSON.parse(loadRawGuildFile(guildId));
 }
 
 const writeGuildFile = (guildId, newData) => {
