@@ -37,7 +37,7 @@ const fetchData = async (apiLink) => {
 		return null;
 	} catch (err) {
 		console.log(`[${new Date().toISOString()}] [WARN] Client: host unreachable. Try connecting again in ${clockInterval} minutes.`);
-		console.error(err);
+		// console.error(err);
 		return null;
 	}
 }
