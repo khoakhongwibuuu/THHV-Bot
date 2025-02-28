@@ -142,6 +142,7 @@ const handleInput = (msg) => {
 }
 
 module.exports.isSetup = isSetup;
+module.exports.loadRawGuildFile = loadRawGuildFile;
 module.exports.loadGuildFile = loadGuildFile;
 module.exports.guildSetup = guildSetup;
 module.exports.guildReset = guildReset;
