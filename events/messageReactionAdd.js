@@ -5,6 +5,6 @@ module.exports = {
     name: Discord.Events.MessageReactionAdd,
     async execute(reaction, user) {
         if (user.bot || user.system) return;
-
+        await require(path.join(global.dirname, 'modules/auto-reactor/lib/reactLib.js')).handleReaction(reaction, user);
     },
 };

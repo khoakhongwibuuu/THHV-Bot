@@ -2,151 +2,143 @@
 const fs = require('fs');
 const path = require('path');
 
-// Functions
-const isSetup = (guildId) => {
-    const guildDataPath = path.join(global.dirname, 'modules/auto-reactor/config', `${guildId}.json`);
-    return fs.existsSync(guildDataPath);
-}
-
-const loadGuildFile = (guildId) => {
-    const guildDataPath = path.join(global.dirname, 'modules/auto-reactor/config', `${guildId}.json`);
-    return JSON.parse(fs.readFileSync(guildDataPath, 'utf-8'));
-}
-
-const writeGuildFile = (guildId, newData) => {
-    const guildDataPath = path.join(global.dirname, 'modules/auto-reactor/config', `${guildId}.json`);
-    fs.writeFileSync(guildDataPath, JSON.stringify(newData), 'utf8');
-}
-
-const isInRoom = (guildId, channelId) => {
-    if (!isSetup(guildId)) return false;
-    let guildData = loadGuildFile(guildId);
-    return (channelId === guildData.channelId)
-}
-
-const isPrefix = (str, prefix) => {
-    return str.toLowerCase().startsWith(prefix.toLowerCase());
-}
-
-const guildSetup = (guildId, channelId, upvoteToken, downvoteToken) => {
-    const guildDataPath = path.join(global.dirname, 'modules/auto-reactor/config', `${guildId}.json`);
-    // allow override in installed guilds
-    fs.writeFileSync(guildDataPath, JSON.stringify({
-        // Auto reactor will not be triggered OUTSIDE this channel
-        channelId: channelId,
-
-        // UPVOTE and DOWNVOTE token
-        upvoteToken: upvoteToken,
-        downvoteToken: downvoteToken,
-
-        // keep listened message consistent after bot shutdown
-        listenMessage: {}
-    }), 'utf8');
-}
-
-const guildReset = (guildId) => {
-    if (isSetup(guildId)) {
-        const guildDataPath = path.join(global.dirname, 'modules/auto-reactor/config', `${guildId}.json`);
-        fs.unlinkSync(guildDataPath);
-    }
-}
-
-const getTokenName = (token) => {
-    const start = token.indexOf(':') + 1;
-    const end = token.lastIndexOf(':');
-
-    if (start >= 0 && end > start) {
-        return token.slice(start, end);
-    }
-    return token;
-}
-
-const getTokenId = (token) => {
-    const start = token.lastIndexOf(':') + 1;
-    const end = token.lastIndexOf('>');
-
-    if (start >= 0 && end > start) {
-        return token.slice(start, end);
-    }
-    return token;
-}
-
+// In-memory tracking for listened messages
 let listenMessage = {};
 
-const isListened = (guildId, messageId) => {
-    if (!listenMessage[guildId]) return false;
-    return listenMessage[guildId].hasOwnProperty(messageId);
-}
+// Utility to get the guild config file path
+const getGuildFilePath = (guildId) => path.join(global.dirname, 'modules/auto-reactor/config', `${guildId}.json`);
 
+// Check if the guild has a config file
+const isSetup = (guildId) => fs.existsSync(getGuildFilePath(guildId));
+
+// Load guild configuration file
+const loadGuildFile = (guildId) => isSetup(guildId) ? JSON.parse(fs.readFileSync(getGuildFilePath(guildId), 'utf-8')) : null;
+
+// Write new data to the guild configuration file
+const writeGuildFile = (guildId, newData) => fs.writeFileSync(getGuildFilePath(guildId), JSON.stringify(newData), 'utf8');
+
+// Check if a channel is configured for auto-reactions
+const isInRoom = (guildId, channelId) => {
+    const guildData = loadGuildFile(guildId);
+    return guildData ? guildData.channelId === channelId : false;
+};
+
+// Check if a string starts with a specific prefix (case insensitive)
+const isPrefix = (str, prefix) => str.toLowerCase().startsWith(prefix.toLowerCase());
+
+// Set up guild configuration
+const guildSetup = (guildId, channelId, upvoteToken, downvoteToken) => {
+    writeGuildFile(guildId, {
+        channelId,
+        upvoteToken,
+        downvoteToken,
+        listenMessage: {}
+    });
+};
+
+// Reset guild configuration
+const guildReset = (guildId) => {
+    delete listenMessage[guildId];
+    if (isSetup(guildId)) fs.unlinkSync(getGuildFilePath(guildId));
+};
+
+// Extract token name from custom emoji format
+const getTokenName = (token) => token.includes(':') ? token.split(':')[1] : token;
+
+// Extract token ID from custom emoji format
+const getTokenId = (token) => {
+    const match = token.match(/:(\d+)>$/);
+    return match ? match[1] : token;
+};
+
+// Check if a message is being tracked
+const isListened = (guildId, messageId) => listenMessage[guildId]?.hasOwnProperty(messageId) || false;
+
+// Add a message to tracking
 const addMessage = (guildId, messageId) => {
-    if (!listenMessage[guildId]) {
-        listenMessage[guildId] = {};
-    }
+    listenMessage[guildId] ??= {};
     listenMessage[guildId][messageId] = 1;
-}
+};
 
+// Remove a tracked message
 const removeMessage = (msg) => {
-    const guildId = msg.guild.id,
-        channelId = msg.channel.id,
-        messageId = msg.id;
-    if (isInRoom(guildId, channelId)) {
-        if (isListened(guildId, messageId)) {
-            // Remove message ID from RAM
-            if (listenMessage[guildId]) {
-                listenMessage[guildId][messageId] = null;
-                delete listenMessage[guildId][messageId];
-                if (Object.keys(listenMessage[guildId]).length === 0) {
-                    listenMessage[guildId] = null;
-                    delete listenMessage[guildId];
-                }
-            }
+    const { guild, channel, id: messageId } = msg;
+    if (!isInRoom(guild.id, channel.id)) return;
 
-            // Remove message ID from configuration file
-            let guildData = loadGuildFile(guildId);
-            guildData.listenMessage[messageId] = null;
+    if (isListened(guild.id, messageId)) {
+        delete listenMessage[guild.id][messageId];
+        if (Object.keys(listenMessage[guild.id]).length === 0) delete listenMessage[guild.id];
+
+        // Remove from configuration file
+        const guildData = loadGuildFile(guild.id);
+        if (guildData) {
             delete guildData.listenMessage[messageId];
-            writeGuildFile(guildId, guildData);
+            writeGuildFile(guild.id, guildData);
         }
     }
-}
+};
 
+// Flush all tracked messages for a guild
 const flushGuild = (guildId) => {
-    if (listenMessage[guildId]) {
-        listenMessage[guildId] = null;
-        delete listenMessage[guildId];
+    delete listenMessage[guildId];
+
+    const guildData = loadGuildFile(guildId);
+    if (guildData) {
+        guildData.listenMessage = {};
+        writeGuildFile(guildId, guildData);
     }
-    let guildData = loadGuildFile(guildId);
-    guildData.listenMessage = {};
-    writeGuildFile(guildId, guildData);
-}
+};
 
+// Initialize auto-reactions on a message
 const initialiseInput = (msg) => {
-    if (isInRoom(msg.guild.id, msg.channel.id)) {
-        if (isPrefix(msg.content, "suggest") || isPrefix(msg.content, "vote")) {
-            let guildData = loadGuildFile(msg.guild.id);
-            try {
-                msg.react(guildData.upvoteToken);
-                msg.react(guildData.downvoteToken);
+    if (!isInRoom(msg.guild.id, msg.channel.id)) return;
+    if (!isPrefix(msg.content, "suggest") && !isPrefix(msg.content, "vote")) return;
 
-                if (!listenMessage[msg.guild.id])
-                    listenMessage[msg.guild.id] = {};
+    const guildData = loadGuildFile(msg.guild.id);
+    if (!guildData) return;
 
-                // Store listening message ID in RAM
-                listenMessage[msg.guild.id][msg.id] = 1;
+    try {
+        msg.react(guildData.upvoteToken);
+        msg.react(guildData.downvoteToken);
 
-                // Store listening message ID in configuration file
-                guildData.listenMessage[msg.id] = 1;
-                writeGuildFile(msg.guild.id, guildData);
-            } catch (error) {
-                console.error(error);
+        addMessage(msg.guild.id, msg.id);
+        guildData.listenMessage[msg.id] = 1;
+        writeGuildFile(msg.guild.id, guildData);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+// Handle reaction events & prevent double-voting
+const handleReaction = async (reaction, user) => {
+    if (user.bot || !isListened(reaction.message.guildId, reaction.message.id)) return;
+
+    try {
+        await reaction.message.fetch();
+        const guildData = loadGuildFile(reaction.message.guildId);
+        if (!guildData) return;
+
+        const { upvoteToken, downvoteToken } = guildData;
+        if (![upvoteToken, downvoteToken].includes(reaction.emoji.name)) return;
+
+        const oppositeToken = reaction.emoji.name === upvoteToken ? downvoteToken : upvoteToken;
+        const oppositeReaction = reaction.message.reactions.cache.get(oppositeToken);
+
+        if (oppositeReaction) {
+            const users = await oppositeReaction.users.fetch();
+            if (users.has(user.id)) {
+                await oppositeReaction.users.remove(user.id);
             }
         }
+    } catch (error) {
+        console.error('Error handling reaction:', error);
     }
-}
+};
 
 module.exports = {
     isSetup,
     loadGuildFile,
+    writeGuildFile,
     isInRoom,
     isPrefix,
     guildSetup,
@@ -157,5 +149,6 @@ module.exports = {
     addMessage,
     removeMessage,
     flushGuild,
-    initialiseInput
-}
+    initialiseInput,
+    handleReaction
+};
