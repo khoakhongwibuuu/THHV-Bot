@@ -28,6 +28,7 @@ const isPrefix = (str, prefix) => str.toLowerCase().startsWith(prefix.toLowerCas
 
 // Set up guild configuration
 const guildSetup = (guildId, channelId, upvoteToken, downvoteToken) => {
+    listenMessage[guildId] = {};
     writeGuildFile(guildId, {
         channelId,
         upvoteToken,
@@ -43,13 +44,27 @@ const guildReset = (guildId) => {
 };
 
 // Extract token name from custom emoji format
-const getTokenName = (token) => token.includes(':') ? token.split(':')[1] : token;
+const getTokenName = (token) => {
+    const start = token.indexOf(':') + 1;
+    const end = token.lastIndexOf(':');
+
+    if (start >= 0 && end > start) {
+        return token.slice(start, end);
+    }
+    return token;
+}
+
 
 // Extract token ID from custom emoji format
 const getTokenId = (token) => {
-    const match = token.match(/:(\d+)>$/);
-    return match ? match[1] : token;
-};
+    const start = token.lastIndexOf(':') + 1;
+    const end = token.lastIndexOf('>');
+
+    if (start >= 0 && end > start) {
+        return token.slice(start, end);
+    }
+    return token;
+}
 
 // Check if a message is being tracked
 const isListened = (guildId, messageId) => listenMessage[guildId]?.hasOwnProperty(messageId) || false;
@@ -119,9 +134,10 @@ const handleReaction = async (reaction, user) => {
         if (!guildData) return;
 
         const { upvoteToken, downvoteToken } = guildData;
-        if (![upvoteToken, downvoteToken].includes(reaction.emoji.name)) return;
+        if (![getTokenName(upvoteToken), getTokenName(downvoteToken)].includes(reaction.emoji.name)) return;
 
-        const oppositeToken = reaction.emoji.name === upvoteToken ? downvoteToken : upvoteToken;
+        const oppositeToken = reaction.emoji.name === getTokenName(upvoteToken)
+            ? getTokenId(downvoteToken) : getTokenId(upvoteToken);
         const oppositeReaction = reaction.message.reactions.cache.get(oppositeToken);
 
         if (oppositeReaction) {
@@ -131,7 +147,7 @@ const handleReaction = async (reaction, user) => {
             }
         }
     } catch (error) {
-        console.error('Error handling reaction:', error);
+        console.error(error);
     }
 };
 
