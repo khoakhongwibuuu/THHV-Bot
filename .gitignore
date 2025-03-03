@@ -4,6 +4,7 @@ node_modules/*
 cache/*
 logs/*
 auth/*
+debug/*
 .ideas/*
 utils/data.json
 utils/rawInput.txt
