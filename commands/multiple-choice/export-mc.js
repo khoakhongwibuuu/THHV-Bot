@@ -9,11 +9,11 @@ const mcLib = require(path.join(global.dirname, 'modules/multiple-choice/lib/gam
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-export')
-        .setDescription('[Moderators Only] - Export this server trivia-game data.')
+        .setDescription('[Debug Only] - Export this server trivia-game data. Used for debugging.')
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!global.discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+        if (process.env.OWNER_ID !== interaction.user.id) {
             interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
             return;
         }
@@ -21,19 +21,15 @@ module.exports = {
             interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
-        if (interaction.channel.id !== mcLib.getRoomId(interaction.guild.id)) {
-            interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại phòng chơi <#${mcLib.getRoomId(interaction.guild.id)}>`, ephemeral: true });
-            return;
-        }
         if (mcLib.isRunning(interaction.guild.id)) {
             interaction.reply({ content: '⚠️ Bạn không được phép sử dụng lệnh này khi có lượt chơi đang diễn ra. Vui lòng chờ lượt chơi đó hoàn tất.', ephemeral: true });
             return;
         }
         const dat = mcLib.loadRawGuildFile(interaction.guild.id);
-        const sentText = null;
+        console.log("trivia-game:", interaction.guild.id, dat);
         interaction.reply({
             embeds: [new Discord.EmbedBuilder()
-                .setDescription(`Server data. Required by <@${interaction.user.id}>\n\`\`\`${dat}\`\`\``)
+                .setDescription(`Server data has been exported.`)
             ],
             ephemeral: true
         });
