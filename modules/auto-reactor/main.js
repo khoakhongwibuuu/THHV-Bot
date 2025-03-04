@@ -7,7 +7,7 @@ if (!fs.existsSync(configPath)) {
     fs.mkdirSync(configPath, { recursive: true });
 }
 
-const reactLib = require(path.join(global.dirname, 'modules/auto-reactor/lib/reactLib.js'));
+const reactLib = require("./lib/reactLib.js");
 const guildFiles = fs.readdirSync(configPath).filter(file => file.endsWith('json'));
 
 for (const guildFile of guildFiles) {
