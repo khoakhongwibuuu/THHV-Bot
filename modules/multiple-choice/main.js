@@ -8,7 +8,10 @@ if (!fs.existsSync(configPath)) {
 }
 
 const mcLib = require("./lib/gameLib");
-global.client.guilds.cache.filter(guild => mcLib.isSetup(guild.id)).forEach(guild => {
-    mcLib.guildUnlock(guild.id);
-    mcLib.updateOutdatedFiles(guild.id);
-});
+const guildFiles = fs.readdirSync(configPath).filter(file => file.endsWith('json'));
+
+for (const guildFile of guildFiles) {
+    const guildId = guildFile.slice(0, guildFile.lastIndexOf('.')) || guildFile;
+    mcLib.guildUnlock(guildId);
+    mcLib.updateOutdatedFiles(guildId);
+}
