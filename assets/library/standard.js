@@ -36,13 +36,36 @@ const simple_decrypt = (DATA, DECRYPTION_KEY) => {
 	return data;
 }
 
+const formatString = (format, ...args) => {
+	let i = 0;
+	return format.replace(/%([-+]?[0-9]*\.?[0-9]*[sdifoxXeEc])/g, match => {
+		if (i >= args.length) return match;
+		let value = args[i++];
+
+		switch (match[match.length - 1]) {
+			case 's': return String(value);
+			case 'd':
+			case 'i': return parseInt(value, 10);
+			case 'f': return parseFloat(value).toFixed(match.includes('.') ? match.split('.')[1].length : 6);
+			case 'o': return '0' + parseInt(value, 10).toString(8);
+			case 'x': return parseInt(value, 10).toString(16);
+			case 'X': return parseInt(value, 10).toString(16).toUpperCase();
+			case 'e': return parseFloat(value).toExponential();
+			case 'E': return parseFloat(value).toExponential().toUpperCase();
+			case 'c': return String.fromCharCode(value);
+			default: return match;
+		}
+	});
+}
+
 module.exports = {
 	trueRnd,
 	shuffle,
 	randomEvent,
 	randomPercent,
 	simple_encrypt,
-	simple_encrypt
+	simple_decrypt,
+	formatString
 }
 
 String.prototype.URLdecode = function () {
