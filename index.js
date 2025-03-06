@@ -6,6 +6,17 @@ const fs = require('node:fs');
 const path = require('node:path');
 const dotenv = require('dotenv');
 
+const tokenPath = path.join(global.dirname, 'auth');
+if (!fs.existsSync(tokenPath)) {
+	fs.mkdirSync(tokenPath, { recursive: true });
+}
+
+if (!fs.existsSync(path.join(tokenPath, 'login.env'))) {
+	fs.writeFileSync(path.join(tokenPath, 'login.env'), "TOKEN=\nCLIENT_ID=\nOWNER_ID=", 'utf8');
+	console.log("Login file created!");
+	process.exit(0);
+}
+
 if (!process.env.TOKEN) {
 	// load config from login.env
 	dotenv.config({ path: "./auth/login.env" });
@@ -88,11 +99,11 @@ process.on('unhandledRejection', (err) => {
 	setTimeout(() => process.exit(1), 1000);
 });
 
-if (process.env.TOKEN != "")
+if (process.env.TOKEN !== "")
 	try {
 		client.login(process.env.TOKEN);
 	} catch (error) {
 		console.error(error);
 	}
 else
-	console.log("Please provide a token.")
+	console.log("Please provide a token.");
