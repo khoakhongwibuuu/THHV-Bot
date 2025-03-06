@@ -2,11 +2,11 @@
 
 ## About this project
 
-THHV-Bot is a Discord bot developed using Node.js and the `discord.js` library. It serves as the backend software for the THHV Discord server, offering features such as Codeforces Contest Announcement and quiz games.
+THHV-Bot is a Discord bot project developed using Node.js and the `discord.js` library. It serves as the backend software for the THHV Discord server, offering features such as Codeforces Contest Announcement and quiz games.
 
 ## Prerequisites
 
-Before setting up THHV-Bot, ensure you have the following:
+Before setting up the bot, ensure you have the following:
 
 -   **Node.js**: Install the latest version from [nodejs.org](https://nodejs.org/).
 -   **Discord Account**: Required to create and manage your bot.
@@ -17,7 +17,7 @@ Before setting up THHV-Bot, ensure you have the following:
 
 ### 1. Clone the Repository
 
-Begin by cloning the THHV-Bot repository to your local machine:
+Begin by cloning the repository to your local machine:
 
 ```bash
 git clone https://github.com/khoakhongwibuuu/THHV-Bot.git
