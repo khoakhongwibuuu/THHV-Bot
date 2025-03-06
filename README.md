@@ -32,7 +32,7 @@ Navigate to the project directory and install the necessary dependencies:
 npm install
 ```
 
-This command installs all packages listed in the `package.json` file `discord.js`.
+This command installs all packages listed in the `package.json` file such as `discord.js`.
 
 ### 3. Configure Environment Variables
 
