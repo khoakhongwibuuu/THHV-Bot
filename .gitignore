@@ -1,14 +1,7 @@
 modules/*/config/*
 modules/*/cache/*
 node_modules/*
-cache/*
-logs/*
 auth/*
 debug/*
 .ideas/*
-utils/data.json
-utils/rawInput.txt
-*.exe
-_raw/
-_test
 **/**.env
