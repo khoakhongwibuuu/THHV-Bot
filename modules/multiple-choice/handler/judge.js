@@ -13,11 +13,11 @@ const generateLuckData = (eligiblePlayer, rndRate) => {
 }
 
 const emojiTable = Object.freeze({
-    up: '<:002_cute:1341258059296538677>',
-    down: '<:sad_cat:1341256932589178911>',
-    double: '<:umaru_cool:1341256937676865587>',
-    immunity: '<:saitama_ok:1341257184960450572>',
-    skipped: '<:surprised_pikachu:1341256950536605717>'
+    up: '✅',
+    down: '❌',
+    double: '☑️',
+    immunity: '🛟',
+    skipped: '⌚'
 });
 
 const execute = (interaction, responseData, key) => {
