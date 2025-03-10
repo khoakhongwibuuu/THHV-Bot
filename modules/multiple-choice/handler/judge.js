@@ -69,7 +69,7 @@ const execute = (interaction, responseData, key) => {
                 Content += `<@${interaction.user.id}> lấy bài nhưng không làm, phí phạm tài nguyên. Trừ \`${Math.abs(gameSetting.score.down)}\` điểm ${emojiTable.skipped}.`;
                 loseList.push(interaction.user.id);
             } else {
-                Content += `<@${interaction.user.id}> lấy bài nhưng không làm, phí phạm tài nguyên. Xóa phép bổ trợ \`Miễn nhiễm\` ${emojiTable.skipped}.`;
+                Content += `<@${interaction.user.id}> lấy bài nhưng không làm, phí phạm tài nguyên. Xóa phép bổ trợ \`Miễn nhiễm\` ${emojiTable.immunity}.`;
                 immuneList.push(interaction.user.id);
             }
         }

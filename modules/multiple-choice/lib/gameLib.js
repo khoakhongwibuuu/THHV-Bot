@@ -7,30 +7,12 @@ const qsDB = JSON.parse(fs.readFileSync(path.join(global.dirname, 'modules/multi
 const configDirPath = path.join(global.dirname, "modules/multiple-choice/config");
 
 // Configuration
-
 const LATEST_DATABASE_VERSION = 1;
-
-const defaultSettingProfile = (channelId) => {
-    return {
-        running: false,
-        channelId: channelId,
-        score: {
-            up: 2,
-            down: -3,
-            boostRate: 0
-        },
-        time: {
-            base: 10,
-            easy: 0,
-            medium: 5,
-            hard: 10
-        },
-        roles: {
-            high: "",
-            low: ""
-        }
-    }
-}
+const BOOST_ID = Object.freeze({
+    NONE: 0,
+    DOUBLE: 1,
+    IMMUNITY: 2
+});
 
 // Root
 const isSetup = (guildId) => {
@@ -44,7 +26,25 @@ const guildSetup = (guildId, channelId) => {
         const setupData = JSON.stringify({
             version: LATEST_DATABASE_VERSION,
             dateCreated: new Date().getTime(),
-            setting: defaultSettingProfile(channelId),
+            setting: {
+                running: false,
+                channelId: channelId,
+                score: {
+                    up: 2,
+                    down: -3,
+                    boostRate: 0
+                },
+                time: {
+                    base: 10,
+                    easy: 0,
+                    medium: 5,
+                    hard: 10
+                },
+                roles: {
+                    high: "",
+                    low: ""
+                }
+            },
             playerdata: {}
         });
         fs.writeFileSync(guildDataPath, (setupData), 'utf-8');
@@ -245,10 +245,6 @@ const bulkSaveInstaceResult = (guildId, gameResultData) => {
 
     if (gameResultData.boostReceiver.boostId != 0) {
         guildData.playerdata[gameResultData.boostReceiver.playerId].auxiliary = gameResultData.boostReceiver.boostId;
-        // boostId EXPLANATION
-        // 0 : none
-        // 1 : Double Reward
-        // 2 : Immunity
     }
 
     writeGuildFile(guildId, guildData);
@@ -264,8 +260,8 @@ const bulkBoostLoad = (guildId) => {
     const guildData = loadGuildFile(guildId);
     const immunity = [], doubleReward = [];
     for (const [playerId, playerObj] of Object.entries(guildData.playerdata)) {
-        if (playerObj.auxiliary === 2) immunity.push(playerId);
-        if (playerObj.auxiliary === 1) doubleReward.push(playerId);
+        if (playerObj.auxiliary === BOOST_ID.IMMUNITY) immunity.push(playerId);
+        if (playerObj.auxiliary === BOOST_ID.DOUBLE) doubleReward.push(playerId);
     }
     return {
         immunity: immunity,
