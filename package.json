@@ -1,4 +1,5 @@
 {
+    "type": "module",
     "dependencies": {
         "aes256": "latest",
         "discord.js": "latest",
