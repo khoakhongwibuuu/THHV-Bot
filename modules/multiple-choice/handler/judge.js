@@ -21,14 +21,14 @@ const emojiTable = Object.freeze({
 });
 
 const execute = (interaction, responseData, key) => {
-    const gameSetting = mcLib.loadGuildFile(interaction.guild.id).setting;
-
     if (!mcLib.isRunning(interaction.guild.id)) {
         // Only when server moderator use /stop,
         interaction.followUp({
             content: "Có vẻ như một người điều hành máy chủ đã buộc dừng lượt chơi này, do đó kết quả của lượt chơi sẽ bị hủy."
         });
     } else {
+        const gameSetting = mcLib.loadGuildFile(interaction.guild.id).setting;
+        
         let correct = [], incorrect = [];
         const boostList = mcLib.bulkBoostLoad(interaction.guild.id);
         const doubleRewardList = boostList.doubleReward, immunityList = boostList.immunity;

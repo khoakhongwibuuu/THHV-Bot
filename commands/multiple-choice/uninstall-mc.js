@@ -61,8 +61,8 @@ module.exports = {
         let executed = false;
         const filter = (interaction) => interaction.isButton();
         const collector = interaction.channel.createMessageComponentCollector({ filter, time: 10000 });
-        collector.on('collect', async () => {
-            await mcLib.guildUninstall(interaction.guild.id);
+        collector.on('collect', () => {
+            mcLib.guildUninstall(interaction.guild.id);
             executed = true;
             interaction.editReply({
                 embeds: [sentEmbed.setFooter({ text: "✅ Đã xóa dữ liệu thành công." })],

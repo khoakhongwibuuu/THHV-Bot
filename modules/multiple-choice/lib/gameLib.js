@@ -22,8 +22,7 @@ let gameState = {};
 
 // File handling tasks
 const isSetup = (guildId) => {
-    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
-    return fs.existsSync(guildDataPath);
+    return gameState.hasOwnProperty(guildId);
 }
 
 const guildSetup = (guildId, channelId) => {
@@ -58,11 +57,11 @@ const guildSetup = (guildId, channelId) => {
 }
 
 const guildUninstall = (guildId) => {
-    delete gameState[guildId];
     if (isSetup(guildId)) {
         const guildDataPath = path.join(configDirPath, `${guildId}.json`);
         fs.unlinkSync(guildDataPath);
     }
+    delete gameState[guildId];
 }
 
 const loadRawGuildFile = (guildId) => {
