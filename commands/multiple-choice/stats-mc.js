@@ -87,6 +87,6 @@ module.exports = {
                 { name: "Phép bổ trợ hiện có", value: `\`\`\`${targetStat.boost}\`\`\``, inline: false }
             )
             .setTimestamp()
-        interaction.reply({ embeds: [sentEmbed], ephemeral: !mcLib.isInRoom(interaction.guild.id, interaction.channel.id) });
+        interaction.reply({ embeds: [sentEmbed], ephemeral: !mcLib.isInRoom(interaction.guild.id, interaction.channel.id) | mcLib.isRunning(interaction.guild.id) });
     },
 };

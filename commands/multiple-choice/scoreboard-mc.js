@@ -43,6 +43,6 @@ module.exports = {
         sentEmbed.setFooter({ text: `Đang hiển thị ${lim} trong tổng số ${sortedEntries.length} người chơi đã ghi điểm.` });
         topList.forEach((v, k) => content += `* <@${k}> : \`${v} điểm\`.\n`);
         sentEmbed.setDescription(content);
-        interaction.reply({ embeds: [sentEmbed], ephemeral: !mcLib.isInRoom(interaction.guild.id, interaction.channel.id) });
+        interaction.reply({ embeds: [sentEmbed], ephemeral: !mcLib.isInRoom(interaction.guild.id, interaction.channel.id) | mcLib.isRunning(interaction.guild.id) });
     },
 };

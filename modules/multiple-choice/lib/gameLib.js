@@ -4,6 +4,9 @@ const path = require('path');
 
 // Module based
 const qsDB = JSON.parse(fs.readFileSync(path.join(global.dirname, 'modules/multiple-choice/database/processed.database.min.json'), 'utf-8'));
+const booleanDB = qsDB.results.filter(qs => qs.type === 'boolean');
+const multiDB = qsDB.results.filter(qs => qs.type === 'multiple');
+
 const configDirPath = path.join(global.dirname, "modules/multiple-choice/config");
 
 // Configuration
@@ -14,7 +17,7 @@ const BOOST_ID = Object.freeze({
     IMMUNITY: 2
 });
 
-// Root
+// File handling tasks
 const isSetup = (guildId) => {
     const guildDataPath = path.join(configDirPath, `${guildId}.json`);
     return fs.existsSync(guildDataPath);
@@ -92,18 +95,7 @@ const resetRoomId = (guildId, newChannelId) => {
     writeGuildFile(guildId, guildData);
 }
 
-module.exports.isSetup = isSetup;
-module.exports.guildSetup = guildSetup;
-module.exports.guildUninstall = guildUninstall;
-module.exports.loadRawGuildFile = loadRawGuildFile;
-module.exports.loadGuildFile = loadGuildFile;
-module.exports.writeGuildFile = writeGuildFile;
-module.exports.getRoomId = getRoomId;
-module.exports.isInRoom = isInRoom;
-module.exports.resetRoomId = resetRoomId;
-
 // updating tasks
-
 const getConfigVersion = (guildData) => {
     if (!guildData.hasOwnProperty("version")) return 0;
     else return guildData.version;
@@ -118,11 +110,11 @@ const updateOutdatedFiles = (guildId) => {
         if (!guildData.hasOwnProperty("dateCreated")) // For version 1: Add created timestamp
             guildData.dateCreated = new Date().getTime();
 
+        // future stuffs can be added for scalability
+
         writeGuildFile(guildId, guildData);
     }
 }
-
-module.exports.updateOutdatedFiles = updateOutdatedFiles;
 
 // Ingame tasks
 const hasPlayerData = (guildId, userId) => {
@@ -155,7 +147,10 @@ const bulkSaveInstaceResult = (guildId, gameResultData) => {
     //     doubleWin: [..arr_of_usr_id],
     //     lose: [..arr_of_usr_id],
     //     immune: [..arr_of_usr_id]
-    //     boostReceiver: {playerId: <PLAYER_ID> (can be a string of number or NULL value),  boostId:<BOOST_ID> (integer value: 0<=BOOST_ID<=2)}
+    //     boostReceiver: {
+    //          playerId: <PLAYER_ID> (can be a string of number or NULL value),
+    //          boostId:<BOOST_ID> (integer value: 0<=BOOST_ID<=2)
+    //     }
     // }
 
     const guildData = loadGuildFile(guildId);
@@ -183,7 +178,7 @@ const bulkSaveInstaceResult = (guildId, gameResultData) => {
     });
 
     gameResultData.doubleWin.forEach(userId => {
-        // THESE PLAYERS WILL LOSE THEIR BOOSTS
+        // THESE PLAYERS WILL LOSE THEIR BOOSTS, SINCE THEY'VE USED THEM
         if (hasPlayerData(guildId, userId)) {
             if (guildData.playerdata[userId].hasOwnProperty("score")) {
                 if (guildData.playerdata[userId].score.length > 0) {
@@ -223,7 +218,7 @@ const bulkSaveInstaceResult = (guildId, gameResultData) => {
     });
 
     gameResultData.immune.forEach(userId => {
-        // THESE PLAYERS WILL LOSE THEIR BOOSTS
+        // THESE PLAYERS WILL LOSE THEIR BOOSTS, SINCE THEY'VE USED THEM
         if (hasPlayerData(guildId, userId)) {
             if (guildData.playerdata[userId].hasOwnProperty("score")) {
                 if (guildData.playerdata[userId].score.length > 0) {
@@ -286,21 +281,13 @@ const guildUnlock = (guildId) => {
     writeGuildFile(guildId, guildData);
 }
 
-const dbReader = () => {
-    return qsDB.results.randomValue();
+const booleanReader = () => {
+    return booleanDB.randomValue();
 }
 
-module.exports.hasPlayerData = hasPlayerData;
-module.exports.allPlayerList = allPlayerList;
-module.exports.readPlayerScore = readPlayerScore;
-module.exports.readPlayerBoost = readPlayerBoost;
-module.exports.bulkSaveInstaceResult = bulkSaveInstaceResult;
-module.exports.bulkPlayerReset = bulkPlayerReset;
-module.exports.bulkBoostLoad = bulkBoostLoad;
-module.exports.isRunning = isRunning;
-module.exports.guildLock = guildLock;
-module.exports.guildUnlock = guildUnlock;
-module.exports.dbReader = dbReader;
+const multipleReader = () => {
+    return multiDB.randomValue();
+}
 
 // Boosting mechanics
 const boostModuleEnabled = (guildId) => {
@@ -314,5 +301,29 @@ const boostModuleToggle = (guildId) => {
     writeGuildFile(guildId, guildData);
 }
 
-module.exports.boostModuleEnabled = boostModuleEnabled;
-module.exports.boostModuleToggle = boostModuleToggle;
+module.exports = {
+    isSetup,
+    guildSetup,
+    guildUninstall,
+    loadRawGuildFile,
+    loadGuildFile,
+    writeGuildFile,
+    getRoomId,
+    isInRoom,
+    resetRoomId,
+    updateOutdatedFiles,
+    hasPlayerData,
+    allPlayerList,
+    readPlayerScore,
+    readPlayerBoost,
+    bulkSaveInstaceResult,
+    bulkPlayerReset,
+    bulkBoostLoad,
+    isRunning,
+    guildLock,
+    guildUnlock,
+    booleanReader,
+    multipleReader,
+    boostModuleEnabled,
+    boostModuleToggle
+}

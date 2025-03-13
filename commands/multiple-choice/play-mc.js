@@ -24,7 +24,8 @@ module.exports = {
             return;
         }
         mcLib.guildLock(interaction.guild.id);
-        const questionBlock = mcLib.dbReader();
+        let booleanRate = global.stdlib.randomPercent(50);
+        const questionBlock = (booleanRate) ? mcLib.booleanReader() : mcLib.multipleReader();
         require(path.join(global.dirname, "modules/multiple-choice/handler", questionBlock.type)).execute(interaction, questionBlock);
     },
 };
