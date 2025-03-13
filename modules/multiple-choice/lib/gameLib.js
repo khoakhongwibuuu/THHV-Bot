@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 
-// Module based
+// Database
 const qsDB = JSON.parse(fs.readFileSync(path.join(global.dirname, 'modules/multiple-choice/database/processed.database.min.json'), 'utf-8'));
 const booleanDB = qsDB.results.filter(qs => qs.type === 'boolean');
 const multiDB = qsDB.results.filter(qs => qs.type === 'multiple');
@@ -10,12 +10,15 @@ const multiDB = qsDB.results.filter(qs => qs.type === 'multiple');
 const configDirPath = path.join(global.dirname, "modules/multiple-choice/config");
 
 // Configuration
-const LATEST_DATABASE_VERSION = 1;
+const LATEST_DATABASE_VERSION = 2;
 const BOOST_ID = Object.freeze({
     NONE: 0,
     DOUBLE: 1,
     IMMUNITY: 2
 });
+
+// Game-state tracking
+let gameState = {};
 
 // File handling tasks
 const isSetup = (guildId) => {
@@ -24,13 +27,13 @@ const isSetup = (guildId) => {
 }
 
 const guildSetup = (guildId, channelId) => {
+    gameState[guildId] = false;
     const guildDataPath = path.join(configDirPath, `${guildId}.json`);
     if (!fs.existsSync(guildDataPath)) {
         const setupData = JSON.stringify({
             version: LATEST_DATABASE_VERSION,
             dateCreated: new Date().getTime(),
             setting: {
-                running: false,
                 channelId: channelId,
                 score: {
                     up: 2,
@@ -55,6 +58,7 @@ const guildSetup = (guildId, channelId) => {
 }
 
 const guildUninstall = (guildId) => {
+    delete gameState[guildId];
     if (isSetup(guildId)) {
         const guildDataPath = path.join(configDirPath, `${guildId}.json`);
         fs.unlinkSync(guildDataPath);
@@ -109,6 +113,9 @@ const updateOutdatedFiles = (guildId) => {
 
         if (!guildData.hasOwnProperty("dateCreated")) // For version 1: Add created timestamp
             guildData.dateCreated = new Date().getTime();
+
+        if (guildData.setting.hasOwnProperty('running')) // For version 2: Changed isRunning state from file to memory
+            delete guildData.setting.running;
 
         // future stuffs can be added for scalability
 
@@ -265,20 +272,15 @@ const bulkBoostLoad = (guildId) => {
 }
 
 const isRunning = (guildId) => {
-    const guildData = loadGuildFile(guildId);
-    return guildData.setting.running;
+    return gameState[guildId];
 }
 
 const guildLock = (guildId) => {
-    const guildData = loadGuildFile(guildId);
-    guildData.setting.running = true;
-    writeGuildFile(guildId, guildData);
+    gameState[guildId] = true;
 }
 
 const guildUnlock = (guildId) => {
-    const guildData = loadGuildFile(guildId);
-    guildData.setting.running = false;
-    writeGuildFile(guildId, guildData);
+    gameState[guildId] = false;
 }
 
 const booleanReader = () => {
