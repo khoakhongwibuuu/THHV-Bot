@@ -22,7 +22,7 @@ module.exports = {
             return;
         }
         const dat = wordLib.loadRawGuildFile(interaction.guild.id);
-        console.log(dat);
+        console.log("word-match", interaction.guild.id, dat);
         interaction.reply({
             embeds: [new Discord.EmbedBuilder()
                 .setDescription(`Server data has been exported.`)
