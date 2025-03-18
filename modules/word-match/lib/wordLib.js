@@ -12,10 +12,12 @@ const emojiTable = Object.freeze({
     not_ok: '❌'
 });
 
+// Channel ID tracking
+let channelIdDict = {};
+
 // Functions
 const isSetup = (guildId) => {
-    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
-    return fs.existsSync(guildDataPath);
+    return channelIdDict.hasOwnProperty(guildId);
 }
 
 const loadRawGuildFile = (guildId) => {
@@ -25,8 +27,6 @@ const loadRawGuildFile = (guildId) => {
 }
 
 const loadGuildFile = (guildId) => {
-    // const guildDataPath = path.join(configDirPath, `${guildId}.json`);
-    // return JSON.parse(fs.readFileSync(guildDataPath, 'utf-8'));
     return JSON.parse(loadRawGuildFile(guildId));
 }
 
@@ -36,6 +36,7 @@ const writeGuildFile = (guildId, newData) => {
 }
 
 const guildSetup = (guildId, channelId) => {
+    channelIdDict[guildId] = channelId;
     const guildDataPath = path.join(configDirPath, `${guildId}.json`);
     if (!fs.existsSync(guildDataPath)) {
         fs.writeFileSync(guildDataPath, JSON.stringify({
@@ -61,12 +62,17 @@ const guildReset = (guildId, removeScore) => {
 
 const getRoomId = (guildId) => {
     if (!isSetup(guildId)) return null;
-    else return loadGuildFile(guildId).channelId;
+    return channelIdDict[guildId];
 }
 
 const isInRoom = (guildId, testChannelId) => {
     if (!isSetup(guildId)) return false;
     else return (getRoomId(guildId) === testChannelId);
+}
+
+const preLoad = (guildId) => {
+    const guildData = loadGuildFile(guildId);
+    channelIdDict[guildId] = guildData.channelId;
 }
 
 const modifyPlayerScore = (guildId, playerId, offset, guildData) => {
@@ -141,12 +147,15 @@ const handleInput = (msg) => {
     }
 }
 
-module.exports.isSetup = isSetup;
-module.exports.loadRawGuildFile = loadRawGuildFile;
-module.exports.loadGuildFile = loadGuildFile;
-module.exports.guildSetup = guildSetup;
-module.exports.guildReset = guildReset;
-module.exports.getRoomId = getRoomId;
-module.exports.isInRoom = isInRoom;
-module.exports.getUserScore = getUserScore;
-module.exports.handleInput = handleInput;
+module.exports = {
+    isSetup,
+    loadRawGuildFile,
+    loadGuildFile,
+    guildSetup,
+    guildReset,
+    getRoomId,
+    isInRoom,
+    preLoad,
+    getUserScore,
+    handleInput
+}

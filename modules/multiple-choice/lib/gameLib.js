@@ -71,8 +71,6 @@ const loadRawGuildFile = (guildId) => {
 }
 
 const loadGuildFile = (guildId) => {
-    // const guildDataPath = path.join(configDirPath, `${guildId}.json`);
-    // const rawTextFile = fs.readFileSync(guildDataPath, 'utf-8');
     return JSON.parse(loadRawGuildFile(guildId));
 }
 
