@@ -1,3 +1,4 @@
+"use-strict";
 const BotStartTime = new Date().toISOString();
 global.BotStartTime = BotStartTime;
 global.dirname = __dirname;
