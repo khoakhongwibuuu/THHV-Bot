@@ -13,11 +13,11 @@ const emojiTable = Object.freeze({
 });
 
 // Channel ID tracking
-let channelIdDict = {};
+let channelIdList = {};
 
 // Functions
 const isSetup = (guildId) => {
-    return channelIdDict.hasOwnProperty(guildId);
+    return channelIdList.hasOwnProperty(guildId);
 }
 
 const loadRawGuildFile = (guildId) => {
@@ -36,7 +36,7 @@ const writeGuildFile = (guildId, newData) => {
 }
 
 const guildSetup = (guildId, channelId) => {
-    channelIdDict[guildId] = channelId;
+    channelIdList[guildId] = channelId;
     const guildDataPath = path.join(configDirPath, `${guildId}.json`);
     if (!fs.existsSync(guildDataPath)) {
         fs.writeFileSync(guildDataPath, JSON.stringify({
@@ -62,17 +62,17 @@ const guildReset = (guildId, removeScore) => {
 
 const getRoomId = (guildId) => {
     if (!isSetup(guildId)) return null;
-    return channelIdDict[guildId];
+    return channelIdList[guildId];
 }
 
-const isInRoom = (guildId, testChannelId) => {
+const isInRoom = (guildId, channelId) => {
     if (!isSetup(guildId)) return false;
-    else return (getRoomId(guildId) === testChannelId);
+    else return (getRoomId(guildId) === channelId);
 }
 
 const preLoad = (guildId) => {
     const guildData = loadGuildFile(guildId);
-    channelIdDict[guildId] = guildData.channelId;
+    channelIdList[guildId] = guildData.channelId;
 }
 
 const modifyPlayerScore = (guildId, playerId, offset, guildData) => {
