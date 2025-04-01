@@ -82,8 +82,6 @@ const preLoad = (guildId) => {
     Object.keys(guildData.listenMessage).forEach(messageId => {
         listenMessage[guildId][messageId] = 1;
     });
-    console.log(channelIdList);
-    console.log(listenMessage);
 }
 
 // Set up guild configuration
