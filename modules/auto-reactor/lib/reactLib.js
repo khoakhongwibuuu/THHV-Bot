@@ -151,7 +151,7 @@ const initialiseInput = (msg) => {
         msg.react(guildData.upvoteToken);
         msg.react(guildData.downvoteToken);
 
-        addMessage(msg.guild.id, msg.id);
+        listenMessage[msg.guild.id][msg.id] = 1;
         guildData.listenMessage[msg.id] = 1;
         writeGuildFile(msg.guild.id, guildData);
     } catch (error) {
