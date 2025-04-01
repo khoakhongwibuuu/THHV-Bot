@@ -71,6 +71,7 @@ Loaded config from login.env
 Started refreshing 22 application (/) commands.
 Successfully reloaded 22 application (/) commands.
 ```
+Note that the number of application commands may change as the bot gets new features.
 
 ### 5. Configure Privileged Gateway Intents
 
