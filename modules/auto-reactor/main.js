@@ -12,8 +12,5 @@ const guildFiles = fs.readdirSync(configPath).filter(file => file.endsWith('json
 
 for (const guildFile of guildFiles) {
     const guildId = guildFile.slice(0, guildFile.lastIndexOf('.')) || guildFile;
-    const guildData = reactLib.loadGuildFile(guildId);
-    Object.keys(guildData.listenMessage).forEach(messageId => {
-        reactLib.addMessage(guildId, messageId);
-    });
+    reactLib.preLoad(guildId);
 }
