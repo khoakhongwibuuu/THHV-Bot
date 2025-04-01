@@ -7,6 +7,6 @@ if (!fs.existsSync(cachePath)) {
     fs.mkdirSync(cachePath, { recursive: true });
 }
 
-const codeforcesLib = require("./lib/codeforcesLib");
+// const codeforcesLib = require("./lib/codeforcesLib");
 
-codeforcesLib.initCache("https://codeforces.com/api/problemset.problems", "problemset-problem");
+// codeforcesLib.initCache("https://codeforces.com/api/problemset.problems", "problemset-problem");
