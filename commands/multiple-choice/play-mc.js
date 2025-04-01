@@ -7,7 +7,7 @@ const mcLib = require(path.join(global.dirname, 'modules/multiple-choice/lib/gam
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-play')
-        .setDescription('Start a MultipleChoice game instance.')
+        .setDescription('Start a Trivia game instance.')
         .setDMPermission(false)
     ,
     async execute(interaction) {

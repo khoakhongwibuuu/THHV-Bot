@@ -9,7 +9,7 @@ const mcLib = require(path.join(global.dirname, 'modules/multiple-choice/lib/gam
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-stop')
-        .setDescription('[Moderators Only] - Force stop an instance.')
+        .setDescription('[Moderators Only] - Force stop the running Trivia game an instance in this server.')
         .setDMPermission(false)
     ,
     async execute(interaction) {

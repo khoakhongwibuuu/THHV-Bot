@@ -56,7 +56,7 @@ const statBuilder = (playerId, playerScore, playerAux) => {
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-statistic')
-        .setDescription('View your MultipleChoice game statistics or anyone else.')
+        .setDescription('View your Trivia game statistics or anyone else.')
         .addUserOption(option =>
             option.setName("member")
                 .setDescription("Member whose statistics you want to view")

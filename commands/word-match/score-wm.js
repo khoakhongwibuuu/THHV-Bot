@@ -9,7 +9,7 @@ const wordLib = require(path.join(global.dirname, 'modules/word-match/lib/wordLi
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('wm-score')
-        .setDescription('View your WordMatch game score or anyone else.')
+        .setDescription('View your Word Match game score or anyone else.')
         .addUserOption(option =>
             option.setName("member")
                 .setDescription("Member whose score you want to view")

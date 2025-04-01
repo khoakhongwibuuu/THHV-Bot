@@ -9,7 +9,7 @@ const wordLib = require(path.join(global.dirname, 'modules/word-match/lib/wordLi
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('wm-scoreboard')
-        .setDescription('View the top players of WordMatch game in this server.')
+        .setDescription('View the top players of Word Match game in this server.')
         .addIntegerOption(option =>
             option.setName("number-of-players")
                 .setDescription("The number of players to be displayed.")

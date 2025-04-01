@@ -9,7 +9,7 @@ const mcLib = require(path.join(global.dirname, 'modules/multiple-choice/lib/gam
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-scoreboard')
-        .setDescription('View the top players of MultipleChoice game in this server.')
+        .setDescription('View the top players of Trivia game in this server.')
         .addIntegerOption(option =>
             option.setName("number-of-players")
                 .setDescription("The number of players to be displayed.")

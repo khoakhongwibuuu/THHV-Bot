@@ -18,7 +18,7 @@ const defaultBtnRow = new Discord.ActionRowBuilder()
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-uninstall')
-        .setDescription('[Moderators Only] - Delete this server MultipleChoice game profile.')
+        .setDescription('[Moderators Only] - Delete this server Trivia game profile.')
         .setDMPermission(false)
     ,
     async execute(interaction) {

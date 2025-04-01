@@ -9,7 +9,7 @@ const mcLib = require(path.join(global.dirname, 'modules/multiple-choice/lib/gam
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-setup')
-        .setDescription('[Moderators Only] - Create a server profile and set MultipleChoice game room at this channel.')
+        .setDescription('[Moderators Only] - Create a server profile and set Trivia game room at this channel.')
         .setDMPermission(false)
     ,
     async execute(interaction) {

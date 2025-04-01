@@ -9,7 +9,7 @@ const wordLib = require(path.join(global.dirname, 'modules/word-match/lib/wordLi
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('wm-setup')
-        .setDescription('[Moderators Only] - Set WordMatch game at this channel.')
+        .setDescription('[Moderators Only] - Set Word Match game at this channel.')
         .setDMPermission(false)
     ,
     async execute(interaction) {

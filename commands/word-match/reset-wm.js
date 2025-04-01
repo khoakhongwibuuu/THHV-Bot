@@ -9,7 +9,7 @@ const wordLib = require(path.join(global.dirname, 'modules/word-match/lib/wordLi
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('wm-reset')
-        .setDescription('[Moderators Only] - Reset WordMatch game data.')
+        .setDescription('[Moderators Only] - Reset Word Match game data.')
         .addBooleanOption(option =>
             option.setName("remove-all-player-scores")
                 .setDescription("Delete all player scores?")

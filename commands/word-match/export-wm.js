@@ -9,7 +9,7 @@ const wordLib = require(path.join(global.dirname, 'modules/word-match/lib/wordLi
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('wm-export')
-        .setDescription('[Debug Only] - Export this server word-match data. Used for debugging.')
+        .setDescription('[Debug Only] - Export this server Word Match game data. Used for debugging.')
         .setDMPermission(false)
     ,
     async execute(interaction) {

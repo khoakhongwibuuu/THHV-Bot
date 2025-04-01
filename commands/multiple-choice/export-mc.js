@@ -9,7 +9,7 @@ const mcLib = require(path.join(global.dirname, 'modules/multiple-choice/lib/gam
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-export')
-        .setDescription('[Debug Only] - Export this server trivia-game data. Used for debugging.')
+        .setDescription('[Debug Only] - Export this server Trivia game data. Used for debugging.')
         .setDMPermission(false)
     ,
     async execute(interaction) {
