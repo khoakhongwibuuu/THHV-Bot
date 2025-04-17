@@ -41,7 +41,7 @@ module.exports = {
         const filteredProblemList = problemSet.problems.filter(prob => prob.rating >= minRating && prob.rating <= maxRating);
 
         if (filteredProblemList.length === 0) {
-            await interaction.reply({
+            await interaction.editReply({
                 content: "No contests matching criteria were found.",
                 ephemeral: true
             });
