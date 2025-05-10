@@ -4,4 +4,5 @@ node_modules/*
 auth/*
 debug/*
 .ideas/*
+commands/interactions-debug/*
 **/**.env
