@@ -22,19 +22,19 @@ const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {
                 new Discord.ButtonBuilder()
                     .setCustomId('A')
                     .setLabel('A')
-                    .setStyle('Primary'),
+                    .setStyle(Discord.ButtonStyle.Primary),
                 new Discord.ButtonBuilder()
                     .setCustomId('B')
                     .setLabel('B')
-                    .setStyle('Primary'),
+                    .setStyle(Discord.ButtonStyle.Primary),
                 new Discord.ButtonBuilder()
                     .setCustomId('C')
                     .setLabel('C')
-                    .setStyle('Primary'),
+                    .setStyle(Discord.ButtonStyle.Primary),
                 new Discord.ButtonBuilder()
                     .setCustomId('D')
                     .setLabel('D')
-                    .setStyle('Primary')
+                    .setStyle(Discord.ButtonStyle.Primary)
             );
     } else {
         row = new Discord.ActionRowBuilder()
@@ -42,13 +42,11 @@ const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {
                 new Discord.ButtonBuilder()
                     .setCustomId('True')
                     .setLabel('True')
-
-                    .setStyle('Success'),
+                    .setStyle(Discord.ButtonStyle.Success),
                 new Discord.ButtonBuilder()
                     .setCustomId('False')
                     .setLabel('False')
-
-                    .setStyle('Danger')
+                    .setStyle(Discord.ButtonStyle.Danger)
             );
     }
 

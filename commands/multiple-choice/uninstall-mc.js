@@ -12,7 +12,7 @@ const defaultBtnRow = new Discord.ActionRowBuilder()
             .setCustomId('True')
             .setLabel('Xác nhận')
             .setEmoji('⚠️')
-            .setStyle('Success')
+            .setStyle(Discord.ButtonStyle.Success)
     );
 
 module.exports = {
