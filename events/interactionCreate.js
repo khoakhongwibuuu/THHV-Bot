@@ -32,8 +32,10 @@ module.exports = {
 			}
 		}
 		if (interaction.isModalSubmit()) {
+			
+		}
+		if (interaction.isButton()) {
 
 		}
-
 	},
 };
