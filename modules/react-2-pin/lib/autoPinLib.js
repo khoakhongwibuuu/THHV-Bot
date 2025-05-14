@@ -48,8 +48,7 @@ const includeChannel = (guildId, channelId) => {
     if (!isSetup(guildId)) cachedObjId[guildId] = {};
 
     // Check if the channel is already being tracked, if so, exit
-    if (isThisChannelTracked(guildId, channelId)) false
-
+    if (isThisChannelTracked(guildId, channelId)) return false;
     // Main operation
     cachedObjId[guildId][channelId] = 1;
 

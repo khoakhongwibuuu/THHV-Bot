@@ -20,10 +20,15 @@ module.exports = {
             });
             return;
         }
-        autoPinLib.excludeChannel(interaction.guild.id, interaction.channel.id);
-        interaction.reply({
-            content: `✅ This channel has been excluded from react2pin tracking module.`,
-            ephemeral: true
-        });
+        if (autoPinLib.excludeChannel(interaction.guild.id, interaction.channel.id))
+            interaction.reply({
+                content: `✅ Successfully excluded this channel into react2pin tracking module.`,
+                ephemeral: true
+            });
+        else
+            interaction.reply({
+                content: `🚫 Nothing changed. This channel is not being tracked by react2pin tracking module.`,
+                ephemeral: true
+            });
     },
 };

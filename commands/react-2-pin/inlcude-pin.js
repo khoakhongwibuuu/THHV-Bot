@@ -20,10 +20,15 @@ module.exports = {
             });
             return;
         }
-        autoPinLib.includeChannel(interaction.guild.id, interaction.channel.id)
-        interaction.reply({
-            content: `✅ This channel has been included into react2pin tracking module.`,
-            ephemeral: true
-        });
+        if (autoPinLib.includeChannel(interaction.guild.id, interaction.channel.id))
+            interaction.reply({
+                content: `✅ Successfully included this channel into react2pin tracking module.`,
+                ephemeral: true
+            });
+        else
+            interaction.reply({
+                content: `🚫 Nothing changed. This channel has already been tracked by react2pin tracking module.`,
+                ephemeral: true
+            });
     },
 };
