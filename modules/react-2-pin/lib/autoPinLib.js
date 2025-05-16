@@ -23,7 +23,6 @@ cachedObjId = {
 const getGuildFilePath = (guildId) =>
     path.join(global.dirname, 'modules/react-2-pin/config', `${guildId}.json`);
 
-
 // Guilds, channels, messages checkers
 const isSetup = (guildId) => cachedObjId.hasOwnProperty(guildId);
 const isThisChannelTracked = (guildId, channelId) => cachedObjId[guildId].hasOwnProperty(channelId);
@@ -86,6 +85,14 @@ const viewAllChannels = (guildId) => {
     return Object.keys(cachedObjId[guildId]);
 }
 
+// Remove all tracked channels of a guild
+const guildReset = (guildId) => {
+    if (!isSetup(guildId)) return false;
+    delete cachedObjId[guildId];
+    fs.unlinkSync(getGuildFilePath(guildId));
+    return true;
+}
+
 // Handle pin request
 const handleRequest = async (reaction, user) => {
     // Check if the message is sent in a guild or not
@@ -130,6 +137,7 @@ module.exports = {
     includeChannel,
     excludeChannel,
     viewAllChannels,
+    guildReset,
     handleRequest,
     isSetup,
     isThisChannelTracked,

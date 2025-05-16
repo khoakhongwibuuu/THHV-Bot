@@ -9,17 +9,26 @@ const autoPinLib = require(path.join(global.dirname, 'modules/react-2-pin/lib/au
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('react2pin-view')
-        .setDescription('View channels monitored by react2pin modulennel.')
+        .setDescription('View channels monitored by react2pin module.')
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!global.discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+        if (!autoPinLib.isSetup(interaction.guild.id)) {
             interaction.reply({
-                content: "🚫 You do not have permission to run this command.",
+                content: "There is no channels in this server being tracked by react2pin module.",
                 ephemeral: true
             });
             return;
         }
-
+        const trackedChannels = autoPinLib.viewAllChannels(interaction.guild.id);
+        const sentEmbed = new Discord.EmbedBuilder();
+        sentEmbed.setTitle(`There ${(trackedChannels.length === 1) ? "is" : "are"} ${trackedChannels.length} ${(trackedChannels.length === 1) ? "channel" : "channels"} being tracked by react2pin module.`);
+        let content = "";
+        trackedChannels.forEach(e => content += `* :pushpin: <#${e}>\n`);
+        sentEmbed.setDescription(content);
+        interaction.reply({
+            embeds: [sentEmbed],
+            ephemeral: true
+        })
     },
 };
