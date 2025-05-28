@@ -17,10 +17,8 @@ const fetchData = async (apiLink) => {
         if (typeof data === 'object' && data.status === 'OK') {
             return data.result;
         }
-        console.error('Invalid response from Codeforces API.');
         return null;
     } catch (err) {
-        console.error('Error fetching data from Codeforces API:', err.message);
         return null;
     }
 };
