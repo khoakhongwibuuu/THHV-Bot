@@ -1,6 +1,8 @@
 const Discord = require('discord.js');
 const path = require('path');
 
+const ticketLib = require(path.join(global.dirname, 'modules/ticket/lib/ticketLib.js'));
+
 module.exports = {
 	name: Discord.Events.InteractionCreate,
 	async execute(interaction) {
@@ -35,7 +37,7 @@ module.exports = {
 
 		}
 		if (interaction.isButton()) {
-
+			ticketLib.handleBtnInteraction(interaction);
 		}
 		if (interaction.isUserSelectMenu()) {
 
