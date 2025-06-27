@@ -75,7 +75,6 @@ const handleCreateTicketBtnInteraction = (interaction) => {
 const handleAcceptTicketBtnInteraction = (interaction) => {
     const UUID = interaction.customId.slice(interaction.customId.lastIndexOf(':') + 1);
     const data = memory.getData(UUID);
-    memory.deleteData(UUID);
 
     const channelId = interaction.channel.id;
     const guildId = interaction.guild.id;
@@ -88,7 +87,8 @@ const handleAcceptTicketBtnInteraction = (interaction) => {
                 : "Your 15-minute decision time is up. Please click `Dimiss message` and use `/ticket-setup` again."
         });
     } else {
-
+        memory.deleteData(UUID);
+        
         const broadcastChannel = global.discordAPI.GuildChannel(guildId, channelId);
         const categoryId = broadcastChannel.parentId;
 
@@ -98,7 +98,7 @@ const handleAcceptTicketBtnInteraction = (interaction) => {
             "running": {}
         }
 
-        writeGuildFile(guildId,  guildTickets[guildId]);
+        writeGuildFile(guildId, guildTickets[guildId]);
 
         interaction.reply({
             ephemeral: true,
@@ -143,7 +143,8 @@ const handleTicketSetupModal = (interaction) => {
         "ticket-interface-btn": interaction.fields.getTextInputValue('ticket-interface-btn')
     }, 1000 * 15 * 60);
     interaction.reply({
-        content: "Your public interface will look like this (Accept button will not be shown).\nIf you accept this modal, click Accept within 15 minutes, else you can safely click `Dimiss message`.",
+        content: "Your public interface will look like this (Accept button will not be shown)."
+            + "\nIf you accept this modal, click Accept within 15 minutes, else you can safely click `Dimiss message`.",
         embeds: [
             new Discord.EmbedBuilder()
                 .setTitle(interaction.fields.getTextInputValue('ticket-interface-title'))
