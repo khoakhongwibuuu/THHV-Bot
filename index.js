@@ -25,6 +25,7 @@ if (!process.env.TOKEN) {
 }
 
 const Discord = require('discord.js');
+global.Discord = Discord;
 
 const client = new Discord.Client({
 	intents: [

@@ -34,10 +34,16 @@ module.exports = {
 			}
 		}
 		if (interaction.isModalSubmit()) {
-
+			if (interaction.customId === "ticket-setup-modal")
+				ticketLib.handleTicketSetupModal(interaction);
 		}
 		if (interaction.isButton()) {
-			ticketLib.handleBtnInteraction(interaction);
+			if (interaction.customId.startsWith("ticket-create-AC"))
+				await ticketLib.handleAcceptTicketBtnInteraction(interaction);
+			else if (interaction.customId === "exampleCreateTicket")
+				await ticketLib.handleDumpedTicketBtnInteraction(interaction);
+			else if (interaction.customId.startsWith("createTicket"))
+				await ticketLib.handleCreateTicketBtnInteraction(interaction);
 		}
 		if (interaction.isUserSelectMenu()) {
 

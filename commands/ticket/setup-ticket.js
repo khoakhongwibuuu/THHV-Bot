@@ -5,7 +5,6 @@ const Discord = require('discord.js');
 
 // Module Specified
 const ticketLib = require(path.join(global.dirname, 'modules/ticket/lib/ticketLib.js'));
-const ticket = require(path.join(global.dirname, 'modules/ticket/lib/ticket.js'));
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -52,29 +51,43 @@ module.exports = {
         }
         const channelId = interaction.channel.id;
         const guildId = interaction.guild.id
-        interaction.reply({
-            content: "Setting up. Please wait.",
-            ephemeral: true
-        });
-        global.discordAPI.GuildChannel(guildId, channelId).send({
-            embeds: [new Discord.EmbedBuilder()
-                .setTitle("Bạn cần hỗ trợ ?")
-                .setDescription("Hãy ấn vào 📩 bên dưới sẽ có các Moderator hỗ trợ bạn.")
-                .setColor(0xf6630d)
-                .setFooter({
-                    text: "Powered by Ticket module.",
-                    iconURL: global.client.user.avatarURL()
-                })
 
-            ],
-            components: [new Discord.ActionRowBuilder()
-                .addComponents(
-                    new Discord.ButtonBuilder()
-                        .setLabel('📩 Open a ticket!')
-                        .setStyle(Discord.ButtonStyle.Success)
-                        .setCustomId(`ticket-${guildId}-${categoryId}-${channelId}`)
+        const modal = new Discord.ModalBuilder()
+            .setCustomId("ticket-setup-modal")
+            .setTitle("Customise your ticket interface.")
+            .addComponents(
+                new Discord.ActionRowBuilder().addComponents(
+                    new Discord.TextInputBuilder()
+                        .setCustomId('ticket-interface-title')
+                        .setLabel("The title of your ticket interface.")
+                        .setStyle(Discord.TextInputStyle.Short)
+                        .setMaxLength(32)
+                        .setMinLength(12)
+                        .setPlaceholder('e.g. Do you need assistance ?')
+                        .setRequired(false)
+                ),
+                new Discord.ActionRowBuilder().addComponents(
+                    new Discord.TextInputBuilder()
+                        .setCustomId('ticket-interface-desc')
+                        .setLabel("The description of your ticket interface.")
+                        .setStyle(Discord.TextInputStyle.Paragraph)
+                        .setMaxLength(128)
+                        .setMinLength(12)
+                        .setPlaceholder('e.g. Click the button below and Moderators will assist you.')
+                        .setRequired(false)
+                ),
+                new Discord.ActionRowBuilder().addComponents(
+                    new Discord.TextInputBuilder()
+                        .setCustomId('ticket-interface-btn')
+                        .setLabel("The displayed text of ticket creation button.")
+                        .setStyle(Discord.TextInputStyle.Short)
+                        .setMaxLength(32)
+                        .setMinLength(4)
+                        .setPlaceholder('e.g. 🎫 Create a ticket')
+                        .setRequired(false)
+                )
+            );
 
-                )]
-        });
+        await interaction.showModal(modal);
     },
 };
