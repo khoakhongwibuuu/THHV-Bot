@@ -44,6 +44,8 @@ module.exports = {
 				await ticketLib.handleDumpedTicketBtnInteraction(interaction);
 			else if (interaction.customId.startsWith("createTicket"))
 				await ticketLib.handleCreateTicketBtnInteraction(interaction);
+			else if (interaction.customId.startsWith("destroyTicket"))
+				await ticketLib.handleClosedTicketBtnInteraction(interaction);
 		}
 		if (interaction.isUserSelectMenu()) {
 

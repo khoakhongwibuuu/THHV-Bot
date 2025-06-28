@@ -11,8 +11,8 @@ guildTickets = {
         "rootChannel": channelId,
         "rootCategory" : categoryId,
         "running" : {
-            "ticket-id-1": ticket.ticketInstance(user.id),
-            "ticket-id-2": ticket.ticketInstance(user.id),
+            "ticket-channel-id-1": ticket-creator-id-1,
+            "ticket-channel-id-2": ticket-creator-id-2,
             ...
         }
     },
@@ -20,8 +20,8 @@ guildTickets = {
         "root-channel": channelId,
         "root-category" : categoryId,
         "running" : {
-            "ticket-id-1": ticket.ticketInstance(user.id),
-            "ticket-id-2": ticket.ticketInstance(user.id),
+            "ticket-channel-id-1": ticket-creator-id-1,
+            "ticket-channel-id-2": ticket-creator-id-2,
             ...
         }
     },
@@ -65,10 +65,61 @@ const getRootChannel = (guildId) =>
     isSetup(guildId) ? guildTickets[guildId].rootChannel : null;
 
 const handleCreateTicketBtnInteraction = (interaction) => {
-    // when non-mods members use button to create ticket
+    if (Object.values(guildTickets[interaction.guild.id].running).includes(interaction.user.id)) {
+        interaction.reply({
+            ephemeral: true,
+            content: "You cannot have more than 1 ticket open at the same time."
+                + "\nPlease close your existing ticket to start a new one."
+        });
+        return;
+    }
+
     interaction.reply({
-        ephemeral: true,
-        content: interaction.customId
+        content: "Please wait while the ticket is being created.",
+        ephemeral: true
+    }).then(message => setTimeout(() => message.delete(), 1000));
+
+    global.discordAPI.Guild(interaction.guild.id).channels.create({
+        name: `🎫-ticket-${interaction.user.username}`,
+        type: Discord.ChannelType.GuildText,
+        parent: interaction.channel.parentId, permissionOverwrites: [
+            {
+                id: interaction.guild.roles.everyone.id,
+                deny: [Discord.PermissionFlagsBits.ViewChannel]
+            },
+            {
+                id: interaction.user.id,
+                allow: [Discord.PermissionFlagsBits.ViewChannel]
+            }
+        ]
+    }).then(channel => {
+        guildTickets[interaction.guild.id].running[channel.id] = interaction.user.id;
+        writeGuildFile(interaction.guild.id, guildTickets[interaction.guild.id]);
+
+        channel.send({
+            content: `<@${interaction.user.id}>`,
+            embeds: [
+                new Discord.EmbedBuilder()
+                    .setTitle("Ticket control panel")
+                    .setDescription(
+                        `This ticket was created by <@${interaction.user.id}>`
+                        + ` at <t:${Math.floor(interaction.createdTimestamp / 1000)}:F>.`
+                    )
+            ],
+            components: [
+                new Discord.ActionRowBuilder()
+                    .addComponents(
+                        new Discord.ButtonBuilder()
+                            .setLabel("🚫 Close this ticket.")
+                            .setStyle(Discord.ButtonStyle.Primary)
+                            .setCustomId(`destroyTicket-${interaction.user.id}`)
+                    )
+            ]
+        }).then(message => {
+            message.edit({
+                content: ""
+            });
+        });
     });
 }
 
@@ -88,7 +139,7 @@ const handleAcceptTicketBtnInteraction = (interaction) => {
         });
     } else {
         memory.deleteData(UUID);
-        
+
         const broadcastChannel = global.discordAPI.GuildChannel(guildId, channelId);
         const categoryId = broadcastChannel.parentId;
 
@@ -103,7 +154,7 @@ const handleAcceptTicketBtnInteraction = (interaction) => {
         interaction.reply({
             ephemeral: true,
             content: "Ticket interface has been broadcasted, you can safely click `Dimiss message` now."
-        });
+        }).then(message => setTimeout(() => message.delete(), 1000));
         broadcastChannel.send({
             embeds: [new Discord.EmbedBuilder()
                 .setTitle(data['ticket-interface-title'])
@@ -164,18 +215,29 @@ const handleTicketSetupModal = (interaction) => {
                         .setStyle(Discord.ButtonStyle.Primary)
                         .setCustomId("exampleCreateTicket")
 
-                ),
-            new Discord.ActionRowBuilder()
-                .addComponents(
+                ).addComponents(
                     new Discord.ButtonBuilder()
                         .setLabel("Accept this modal")
                         .setStyle(Discord.ButtonStyle.Success)
                         .setCustomId(`ticket-create-AC:${UUID}`)
 
-                ),
+                )
         ],
         ephemeral: true
     });
+}
+
+const handleClosedTicketBtnInteraction = (interaction) => {
+    if (!global.discordAPI.isModerator(interaction.guild.id, interaction.user.id) && interaction.user.id !== guildTickets[interaction.guild.id].running[interaction.channel.id]) {
+        interaction.reply({
+            ephemeral: true,
+            content: "Sorry, you do not have permission to close this ticket."
+        });
+    } else {
+        interaction.channel.delete();
+        delete guildTickets[interaction.guild.id].running[interaction.channel.id];
+        writeGuildFile(interaction.guild.id, guildTickets[interaction.guild.id]);
+    }
 }
 
 module.exports = {
@@ -189,5 +251,6 @@ module.exports = {
     handleCreateTicketBtnInteraction,
     handleAcceptTicketBtnInteraction,
     handleDumpedTicketBtnInteraction,
+    handleClosedTicketBtnInteraction,
     handleTicketSetupModal
 }
