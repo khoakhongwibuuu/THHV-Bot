@@ -4,6 +4,19 @@ const path = require('path');
 const Discord = require('discord.js');
 const memory = require(path.join(global.dirname, 'assets/api/memory.api.js'));
 
+const DEFAULT_TICKET_PERM_ALLOW = [
+    Discord.PermissionFlagsBits.ViewChannel,
+    Discord.PermissionFlagsBits.AddReactions,
+    Discord.PermissionFlagsBits.SendMessages,
+    Discord.PermissionFlagsBits.SendTTSMessages,
+    Discord.PermissionFlagsBits.EmbedLinks,
+    Discord.PermissionFlagsBits.AttachFiles,
+    Discord.PermissionFlagsBits.ReadMessageHistory,
+    Discord.PermissionFlagsBits.UseExternalEmojis,
+    Discord.PermissionFlagsBits.UseApplicationCommands,
+    Discord.PermissionFlagsBits.UseExternalStickers
+];
+
 let guildTickets = {};
 /* IN-MEMORY STORAGE
 guildTickets = {
@@ -61,10 +74,29 @@ const guildSetup = (guildId, rootChannelId, rootCategoryID) => {
     }
 }
 
+const guildReset = (guildId) => {
+    if (!isSetup(guildId)) return false;
+    delete guildTickets[guildId];
+    fs.unlinkSync(getGuildFilePath(guildId));
+    return true;
+}
+
 const getRootChannel = (guildId) =>
     isSetup(guildId) ? guildTickets[guildId].rootChannel : null;
 
+const getExistingTickets = (guildId) =>
+    isSetup(guildId) ? Object.keys(guildTickets[guildId].running) : [];
+
 const handleCreateTicketBtnInteraction = (interaction) => {
+    if (!isSetup(interaction.guild.id)) {
+        interaction.reply({
+            ephemeral: true,
+            content: "This server ticket profile has been uninstalled before."
+                + "\nYou cannot start a ticket."
+        });
+        return;
+    }
+
     if (Object.values(guildTickets[interaction.guild.id].running).includes(interaction.user.id)) {
         interaction.reply({
             ephemeral: true,
@@ -74,30 +106,42 @@ const handleCreateTicketBtnInteraction = (interaction) => {
         return;
     }
 
-    interaction.reply({
-        content: "Please wait while the ticket is being created.",
-        ephemeral: true
-    }).then(message => setTimeout(() => message.delete(), 1000));
+    let overrideSetting = [
+        {
+            id: interaction.guild.roles.everyone.id,
+            deny: [Discord.PermissionFlagsBits.ViewChannel]
+        },
+        {
+            id: interaction.user.id,
+            allow: DEFAULT_TICKET_PERM_ALLOW
+        }
+    ]
+
+    if (guildTickets[interaction.guild.id].modRoles) {
+        guildTickets[interaction.guild.id].modRoles.forEach(id => {
+            overrideSetting.push({
+                id: id,
+                allow: DEFAULT_TICKET_PERM_ALLOW
+            });
+        });
+    }
 
     global.discordAPI.Guild(interaction.guild.id).channels.create({
         name: `🎫-ticket-${interaction.user.username}`,
         type: Discord.ChannelType.GuildText,
-        parent: interaction.channel.parentId, permissionOverwrites: [
-            {
-                id: interaction.guild.roles.everyone.id,
-                deny: [Discord.PermissionFlagsBits.ViewChannel]
-            },
-            {
-                id: interaction.user.id,
-                allow: [Discord.PermissionFlagsBits.ViewChannel]
-            }
-        ]
+        parent: interaction.channel.parentId, permissionOverwrites: overrideSetting
     }).then(channel => {
         guildTickets[interaction.guild.id].running[channel.id] = interaction.user.id;
         writeGuildFile(interaction.guild.id, guildTickets[interaction.guild.id]);
-
+        interaction.reply({
+            ephemeral: true,
+            content: `Successfully created <#${channel.id}> for you.`
+        });
+        let ticketInitMessage = `<@${interaction.user.id}>`;
+        if (guildTickets[interaction.guild.id].modRoles)
+            ticketInitMessage += `,${guildTickets[interaction.guild.id].modRoles.argList("role-mention")}`
         channel.send({
-            content: `<@${interaction.user.id}>`,
+            content: ticketInitMessage,
             embeds: [
                 new Discord.EmbedBuilder()
                     .setTitle("Ticket control panel")
@@ -112,14 +156,15 @@ const handleCreateTicketBtnInteraction = (interaction) => {
                         new Discord.ButtonBuilder()
                             .setLabel("🚫 Close this ticket.")
                             .setStyle(Discord.ButtonStyle.Primary)
-                            .setCustomId(`destroyTicket-${interaction.user.id}`)
+                            .setCustomId(`destroyTicket`)
                     )
             ]
-        }).then(message => {
-            message.edit({
-                content: ""
-            });
-        });
+        })
+        // .then(message => {
+        //     message.edit({
+        //         content: ""
+        //     });
+        // });
     });
 }
 
@@ -146,6 +191,7 @@ const handleAcceptTicketBtnInteraction = (interaction) => {
         guildTickets[guildId] = {
             "rootChannel": channelId,
             "rootCategory": categoryId,
+            "modRoles": data['ticket-moderator-role-id'],
             "running": {}
         }
 
@@ -154,7 +200,8 @@ const handleAcceptTicketBtnInteraction = (interaction) => {
         interaction.reply({
             ephemeral: true,
             content: "Ticket interface has been broadcasted, you can safely click `Dimiss message` now."
-        }).then(message => setTimeout(() => message.delete(), 1000));
+        })
+        // .then(message => setTimeout(() => message.delete(), 1000));
         broadcastChannel.send({
             embeds: [new Discord.EmbedBuilder()
                 .setTitle(data['ticket-interface-title'])
@@ -172,7 +219,7 @@ const handleAcceptTicketBtnInteraction = (interaction) => {
                         new Discord.ButtonBuilder()
                             .setLabel(data['ticket-interface-btn'])
                             .setStyle(Discord.ButtonStyle.Primary)
-                            .setCustomId(`createTicket-${guildId}-${categoryId}-${channelId}`)
+                            .setCustomId(`createTicket`)
                     )
             ],
             ephemeral: false
@@ -188,14 +235,27 @@ const handleDumpedTicketBtnInteraction = (interaction) => {
 }
 
 const handleTicketSetupModal = (interaction) => {
+    const title = interaction.fields.getTextInputValue('ticket-interface-title'),
+        desc = interaction.fields.getTextInputValue('ticket-interface-desc'),
+        btn = interaction.fields.getTextInputValue('ticket-interface-btn'),
+        modtmp = interaction.fields.getTextInputValue('ticket-moderator-role-id') ?? null;
+
+    const mod = (modtmp ? modtmp.split(',').filter(str => str !== "") : null);
+
     const UUID = memory.setData({
-        "ticket-interface-title": interaction.fields.getTextInputValue('ticket-interface-title'),
-        "ticket-interface-desc": interaction.fields.getTextInputValue('ticket-interface-desc'),
-        "ticket-interface-btn": interaction.fields.getTextInputValue('ticket-interface-btn')
+        "ticket-interface-title": title,
+        "ticket-interface-desc": desc,
+        "ticket-interface-btn": btn,
+        "ticket-moderator-role-id": mod
     }, 1000 * 15 * 60);
+
+    let sentMessage = "Your public interface will look like this (Accept button will not be shown).";
+    if (mod)
+        sentMessage += `\nI will ping ${mod.argList("role-mention")} when a ticket is created.`;
+    sentMessage += "\nIf you accept this modal, click Accept within 15 minutes, else you can safely click `Dimiss message`.";
+
     interaction.reply({
-        content: "Your public interface will look like this (Accept button will not be shown)."
-            + "\nIf you accept this modal, click Accept within 15 minutes, else you can safely click `Dimiss message`.",
+        content: sentMessage,
         embeds: [
             new Discord.EmbedBuilder()
                 .setTitle(interaction.fields.getTextInputValue('ticket-interface-title'))
@@ -228,16 +288,9 @@ const handleTicketSetupModal = (interaction) => {
 }
 
 const handleClosedTicketBtnInteraction = (interaction) => {
-    if (!global.discordAPI.isModerator(interaction.guild.id, interaction.user.id) && interaction.user.id !== guildTickets[interaction.guild.id].running[interaction.channel.id]) {
-        interaction.reply({
-            ephemeral: true,
-            content: "Sorry, you do not have permission to close this ticket."
-        });
-    } else {
-        interaction.channel.delete();
-        delete guildTickets[interaction.guild.id].running[interaction.channel.id];
-        writeGuildFile(interaction.guild.id, guildTickets[interaction.guild.id]);
-    }
+    interaction.channel.delete();
+    delete guildTickets[interaction.guild.id].running[interaction.channel.id];
+    writeGuildFile(interaction.guild.id, guildTickets[interaction.guild.id]);
 }
 
 module.exports = {
@@ -247,7 +300,9 @@ module.exports = {
     writeGuildFile,
     preLoad,
     guildSetup,
+    guildReset,
     getRootChannel,
+    getExistingTickets,
     handleCreateTicketBtnInteraction,
     handleAcceptTicketBtnInteraction,
     handleDumpedTicketBtnInteraction,
