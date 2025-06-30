@@ -78,7 +78,8 @@ Note that the number of application commands may change as the bot gets new feat
 In the Developer Portal, go to the **Bot** section.
 At **Privileged Gateway Intents**, toggle the following on:
 
--   **Message Content Intent**: Needed for `auto-reactor` and `word-match` module to work correctly.
+-   **Message Content Intent**: Needed for `auto-reactor` and `word-match` modules to work correctly.
+-   **Server Members Intent**: Needed for `ticket` module to work correctly.
 
 
 ### 6. Invite Bot to Your Server
