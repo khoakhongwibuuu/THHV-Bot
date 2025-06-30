@@ -44,19 +44,10 @@ module.exports = {
 				if (interaction.customId === "ticket-setup-modal")
 					ticketLib.handleTicketSetupModal(interaction);
 				else {
-					if (interaction.replied || interaction.deferred) {
-						await interaction.followUp({ content: 'This feature is under development!', ephemeral: true });
-					} else {
-						await interaction.reply({ content: 'This feature is under development!', ephemeral: true });
-					}
+
 				}
 			} catch (error) {
 				console.error(error);
-				if (interaction.replied || interaction.deferred) {
-					await interaction.followUp({ content: 'There was an error while executing this modal!', ephemeral: true });
-				} else {
-					await interaction.reply({ content: 'There was an error while executing this modal!', ephemeral: true });
-				}
 			}
 		}
 		if (interaction.isButton()) {
@@ -76,19 +67,10 @@ module.exports = {
 				else if (interaction.customId === "destroyTicket")
 					await ticketLib.handleClosedTicketBtnInteraction(interaction);
 				else {
-					if (interaction.replied || interaction.deferred) {
-						await interaction.followUp({ content: 'This feature is under development!', ephemeral: true });
-					} else {
-						await interaction.reply({ content: 'This feature is under development!', ephemeral: true });
-					}
+
 				}
 			} catch (error) {
 				console.error(error);
-				if (interaction.replied || interaction.deferred) {
-					await interaction.followUp({ content: 'There was an error while executing this button!', ephemeral: true });
-				} else {
-					await interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true });
-				}
 			}
 		}
 		if (interaction.isUserSelectMenu()) {
