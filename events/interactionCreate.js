@@ -34,18 +34,48 @@ module.exports = {
 			}
 		}
 		if (interaction.isModalSubmit()) {
-			if (interaction.customId === "ticket-setup-modal")
-				ticketLib.handleTicketSetupModal(interaction);
+			try {
+				if (interaction.guildId) {
+					console.log(`[${new Date().toISOString()}] [MODAL] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: ${interaction.customId}`);
+				} else {
+					console.log(`[${new Date().toISOString()}] [MODAL] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: ${interaction.customId}`);
+				}
+
+				if (interaction.customId === "ticket-setup-modal")
+					ticketLib.handleTicketSetupModal(interaction);
+			} catch (error) {
+				console.error(error);
+				if (interaction.replied || interaction.deferred) {
+					await interaction.followUp({ content: 'There was an error while executing this modal!', ephemeral: true });
+				} else {
+					await interaction.reply({ content: 'There was an error while executing this modal!', ephemeral: true });
+				}
+			}
 		}
 		if (interaction.isButton()) {
-			if (interaction.customId.startsWith("ticket-create-AC"))
-				await ticketLib.handleAcceptTicketBtnInteraction(interaction);
-			else if (interaction.customId === "exampleCreateTicket")
-				await ticketLib.handleDumpedTicketBtnInteraction(interaction);
-			else if (interaction.customId.startsWith("createTicket"))
-				await ticketLib.handleCreateTicketBtnInteraction(interaction);
-			else if (interaction.customId.startsWith("destroyTicket"))
-				await ticketLib.handleClosedTicketBtnInteraction(interaction);
+			try {
+				if (interaction.guildId) {
+					console.log(`[${new Date().toISOString()}] [BUTTON] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: ${interaction.customId}`);
+				} else {
+					console.log(`[${new Date().toISOString()}] [BUTTON] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: ${interaction.customId}`);
+				}
+
+				if (interaction.customId.startsWith("ticket-create-AC"))
+					await ticketLib.handleAcceptTicketBtnInteraction(interaction);
+				else if (interaction.customId === "exampleCreateTicket")
+					await ticketLib.handleDumpedTicketBtnInteraction(interaction);
+				else if (interaction.customId === "createTicket")
+					await ticketLib.handleCreateTicketBtnInteraction(interaction);
+				else if (interaction.customId === "destroyTicket")
+					await ticketLib.handleClosedTicketBtnInteraction(interaction);
+			} catch (error) {
+				console.error(error);
+				if (interaction.replied || interaction.deferred) {
+					await interaction.followUp({ content: 'There was an error while executing this button!', ephemeral: true });
+				} else {
+					await interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true });
+				}
+			}
 		}
 		if (interaction.isUserSelectMenu()) {
 
