@@ -64,7 +64,7 @@ module.exports = {
                         .setMaxLength(32)
                         .setMinLength(12)
                         .setPlaceholder('e.g. Do you need assistance ?')
-                        .setRequired(false)
+                        .setRequired(true)
                 ),
                 new Discord.ActionRowBuilder().addComponents(
                     new Discord.TextInputBuilder()
@@ -74,7 +74,7 @@ module.exports = {
                         .setMaxLength(128)
                         .setMinLength(12)
                         .setPlaceholder('e.g. Click the button below and Moderators will assist you.')
-                        .setRequired(false)
+                        .setRequired(true)
                 ),
                 new Discord.ActionRowBuilder().addComponents(
                     new Discord.TextInputBuilder()
@@ -84,6 +84,16 @@ module.exports = {
                         .setMaxLength(32)
                         .setMinLength(4)
                         .setPlaceholder('e.g. 🎫 Create a ticket')
+                        .setRequired(true)
+                ),
+                new Discord.ActionRowBuilder().addComponents(
+                    new Discord.TextInputBuilder()
+                        .setCustomId('ticket-moderator-role-id')
+                        .setLabel("The role id(s) of moderators. (Optional)")
+                        .setStyle(Discord.TextInputStyle.Paragraph)
+                        // .setMaxLength(16)
+                        .setMinLength(4)
+                        .setPlaceholder('@Moderator role id(s).\nIf you have multiple roles to be notified, separate them by a comma `,`')
                         .setRequired(false)
                 )
             );
