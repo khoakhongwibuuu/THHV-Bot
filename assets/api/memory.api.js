@@ -10,12 +10,10 @@ const crypto = require("crypto");
 const setData = (data, expire) => {
     const uuid = crypto.randomUUID();
     storage.set(uuid, data);
-    console.log(`Added ${data} with UUID ${uuid}`);
     if (expire) {
         setTimeout(() => {
             if (hasData(uuid)) {
                 storage.delete(uuid);
-                console.log(`Data ${uuid} has been automatically freed.`);
             }
         }, expire);
     }
@@ -47,7 +45,6 @@ const getData = (uuid) => {
  * @returns {boolean}
  */
 const deleteData = (uuid) => {
-    console.log(`Data ${uuid} has been manually freed.`);
     return storage.delete(uuid); // returns true or false
 };
 
