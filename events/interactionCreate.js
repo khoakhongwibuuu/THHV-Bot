@@ -43,6 +43,13 @@ module.exports = {
 
 				if (interaction.customId === "ticket-setup-modal")
 					ticketLib.handleTicketSetupModal(interaction);
+				else {
+					if (interaction.replied || interaction.deferred) {
+						await interaction.followUp({ content: 'This feature is under development!', ephemeral: true });
+					} else {
+						await interaction.reply({ content: 'This feature is under development!', ephemeral: true });
+					}
+				}
 			} catch (error) {
 				console.error(error);
 				if (interaction.replied || interaction.deferred) {
@@ -68,6 +75,13 @@ module.exports = {
 					await ticketLib.handleCreateTicketBtnInteraction(interaction);
 				else if (interaction.customId === "destroyTicket")
 					await ticketLib.handleClosedTicketBtnInteraction(interaction);
+				else {
+					if (interaction.replied || interaction.deferred) {
+						await interaction.followUp({ content: 'This feature is under development!', ephemeral: true });
+					} else {
+						await interaction.reply({ content: 'This feature is under development!', ephemeral: true });
+					}
+				}
 			} catch (error) {
 				console.error(error);
 				if (interaction.replied || interaction.deferred) {
