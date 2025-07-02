@@ -58,6 +58,10 @@ module.exports = {
 					console.log(`[${new Date().toISOString()}] [BUTTON] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: ${interaction.customId}`);
 				}
 
+				// filter out requests from trivia-game module (multiple choice module)
+				if (['A', 'B', 'C', 'D', 'True', 'False', 'mc-accept-uninstall'].includes(interaction.customId))
+					return;
+
 				if (interaction.customId.startsWith("ticket-create-AC"))
 					await ticketLib.handleAcceptTicketBtnInteraction(interaction);
 				else if (interaction.customId === "exampleCreateTicket")
