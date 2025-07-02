@@ -9,7 +9,7 @@ const mcLib = require(path.join(global.dirname, 'modules/multiple-choice/lib/gam
 const defaultBtnRow = new Discord.ActionRowBuilder()
     .addComponents(
         new Discord.ButtonBuilder()
-            .setCustomId('True')
+            .setCustomId('mc-accept-uninstall')
             .setLabel('Xác nhận')
             .setEmoji('⚠️')
             .setStyle(Discord.ButtonStyle.Success)
@@ -59,7 +59,7 @@ module.exports = {
         });
 
         let executed = false;
-        const filter = (interaction) => interaction.isButton();
+        const filter = (interaction) => interaction.isButton() && interaction.customId === "mc-accept-uninstall";
         const collector = interaction.channel.createMessageComponentCollector({ filter, time: 10000 });
         collector.on('collect', () => {
             mcLib.guildUninstall(interaction.guild.id);
