@@ -1,8 +1,9 @@
 // Packages
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 const Discord = require('discord.js');
-const memory = require(path.join(global.dirname, 'assets/api/memory.api.js'));
+const { dirname, client } = global.variable;
+const { memory, discordAPI } = global.customLib;
 
 const DEFAULT_TICKET_PERM_ALLOW = [
     Discord.PermissionFlagsBits.ViewChannel,
@@ -43,7 +44,7 @@ guildTickets = {
 */
 
 const getGuildFilePath = (guildId) =>
-    path.join(global.dirname, 'modules/ticket/config', `${guildId}.json`);
+    path.join(dirname, 'modules/ticket/config', `${guildId}.json`);
 
 const isSetup = (guildId) =>
     guildTickets.hasOwnProperty(guildId);
@@ -126,7 +127,7 @@ const handleCreateTicketBtnInteraction = (interaction) => {
         });
     }
 
-    global.discordAPI.Guild(interaction.guild.id).channels.create({
+    discordAPI.Guild(interaction.guild.id).channels.create({
         name: `🎫-ticket-${interaction.user.username}`,
         type: Discord.ChannelType.GuildText,
         parent: interaction.channel.parentId, permissionOverwrites: overrideSetting
@@ -160,11 +161,6 @@ const handleCreateTicketBtnInteraction = (interaction) => {
                     )
             ]
         })
-        // .then(message => {
-        //     message.edit({
-        //         content: ""
-        //     });
-        // });
     });
 }
 
@@ -185,7 +181,7 @@ const handleAcceptTicketBtnInteraction = (interaction) => {
     } else {
         memory.deleteData(UUID);
 
-        const broadcastChannel = global.discordAPI.GuildChannel(guildId, channelId);
+        const broadcastChannel = discordAPI.GuildChannel(guildId, channelId);
         const categoryId = broadcastChannel.parentId;
 
         guildTickets[guildId] = {
@@ -209,7 +205,7 @@ const handleAcceptTicketBtnInteraction = (interaction) => {
                 .setColor(0xf6630d)
                 .setFooter({
                     text: "Powered by Ticket module.",
-                    iconURL: global.client.user.avatarURL()
+                    iconURL: client.user.avatarURL()
                 })
 
             ],
@@ -263,7 +259,7 @@ const handleTicketSetupModal = (interaction) => {
                 .setColor(0xf6630d)
                 .setFooter({
                     text: "Powered by Ticket module.",
-                    iconURL: global.client.user.avatarURL()
+                    iconURL: client.user.avatarURL()
                 })
 
         ],

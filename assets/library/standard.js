@@ -1,7 +1,3 @@
-const fs = require('node:fs');
-const path = require('node:path');
-const aes256 = require('aes256');
-
 const trueRnd = (l, h) => {
 	return l + Math.floor(Math.random() * (h - l + 1));
 }
@@ -22,18 +18,6 @@ const randomEvent = (offset) => {
 const randomPercent = (offset) => {
 	// offset% cases returns true
 	return Math.random() * 100 < offset;
-}
-
-const simple_encrypt = (DATA, ENCRYPTION_KEY) => {
-	const cipher = aes256.createCipher(ENCRYPTION_KEY);
-	const data = cipher.encrypt(DATA);
-	return data;
-}
-
-const simple_decrypt = (DATA, DECRYPTION_KEY) => {
-	const cipher = aes256.createCipher(DECRYPTION_KEY);
-	const data = cipher.decrypt(DATA);
-	return data;
 }
 
 const formatString = (format, ...args) => {
@@ -63,8 +47,6 @@ module.exports = {
 	shuffle,
 	randomEvent,
 	randomPercent,
-	simple_encrypt,
-	simple_decrypt,
 	formatString
 }
 

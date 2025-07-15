@@ -1,6 +1,7 @@
 // Packages
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
+const { dirname } = global.variable;
 
 // In-memory channel-ids for each guilds storage
 let channelIdList = {};
@@ -32,7 +33,7 @@ listenMessage = {
 
 // Utility to get the guild config file path
 const getGuildFilePath = (guildId) =>
-    path.join(global.dirname, 'modules/auto-reactor/config', `${guildId}.json`);
+    path.join(dirname, 'modules/auto-reactor/config', `${guildId}.json`);
 
 // Check if the guild has a config file
 const isSetup = (guildId) =>
@@ -193,7 +194,6 @@ module.exports = {
     guildSetup,
     guildReset,
     isInRoom,
-
     isPrefix,
     isListened,
     getTokenName,

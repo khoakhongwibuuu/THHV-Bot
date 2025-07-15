@@ -1,10 +1,11 @@
 // Packages
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
+const { dirname } = global.variable;
 
 // Module based
-const configDirPath = path.join(global.dirname, "modules/word-match/config");
-const dict = JSON.parse(fs.readFileSync(path.join(global.dirname, 'modules/word-match/database/default.dict.min.json'), 'utf-8'));
+const configDirPath = path.join(dirname, "modules/word-match/config");
+const dict = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/word-match/database/default.dict.min.json'), 'utf-8'));
 
 // Configuration
 const emojiTable = Object.freeze({
@@ -50,6 +51,14 @@ const guildSetup = (guildId, channelId) => {
     }
 }
 
+const guildUninstall = (guildId) => {
+    if (isSetup(guildId)) {
+        const guildDataPath = path.join(configDirPath, `${guildId}.json`);
+        fs.unlinkSync(guildDataPath);
+    }
+    delete channelIdList[guildId];
+}
+
 const guildReset = (guildId, removeScore) => {
     const guildData = loadGuildFile(guildId);
     guildData.recentUser = null;
@@ -92,6 +101,14 @@ const getUserScore = (guildId, playerId) => {
     }
 }
 
+const allPlayerList = (guildId) => {
+    let res = []
+    const guildData = loadGuildFile(guildId);
+    for (let key in guildData.playerScore)
+        res.push(key);
+    return res;
+}
+
 const handleInput = (msg) => {
     if (isInRoom(msg.guild.id, msg.channel.id)) {
         let guildData = loadGuildFile(msg.guild.id);
@@ -131,7 +148,7 @@ const handleInput = (msg) => {
             return;
         }
 
-        modifyPlayerScore(msg.guild.id, msg.author.id, 2, guildData);
+        modifyPlayerScore(msg.guild.id, msg.author.id, 1, guildData);
         guildData.used[msg.content.toLowerCase()] = 1;
         guildData.recentWord = msg.content.toLowerCase().lastDigit();
         guildData.recentSentTime = msg.createdTimestamp;
@@ -152,10 +169,12 @@ module.exports = {
     loadRawGuildFile,
     loadGuildFile,
     guildSetup,
+    guildUninstall,
     guildReset,
     getRoomId,
     isInRoom,
     preLoad,
     getUserScore,
+    allPlayerList,
     handleInput
 }

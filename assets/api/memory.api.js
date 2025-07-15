@@ -1,5 +1,5 @@
 const storage = new Map();
-const crypto = require("crypto");
+const crypto = require('crypto');
 
 /**
  * Stores data with optional expiration time.

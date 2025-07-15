@@ -1,10 +1,6 @@
 // Packages
-const fs = require('fs');
-const path = require('path');
 const Discord = require('discord.js');
-
-// Module Specified
-const reactLib = require(path.join(global.dirname, 'modules/auto-reactor/lib/reactLib.js'));
+const { reactLib, discordAPI } = global.customLib;
 
 const isValidToken = (token) => {
     const customEmojiPattern = /^<:[^\s]+:\d+>$/;
@@ -29,7 +25,7 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!global.discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+        if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
             interaction.reply({
                 content: "🚫 You do not have permission to run this command.",
                 ephemeral: true

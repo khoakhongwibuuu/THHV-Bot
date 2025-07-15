@@ -1,15 +1,11 @@
 // Packages
-const fs = require('fs');
-const path = require('path');
 const Discord = require('discord.js');
-
-// Module Specified
-const wordLib = require(path.join(global.dirname, 'modules/word-match/lib/wordLib.js'));
+const { wordLib, discordAPI } = global.customLib;
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('wm-reset')
-        .setDescription('[Moderators Only] - Reset Word Match game data.')
+        .setDescription('[Moderators Only] - Reset Word Match used words.')
         .addBooleanOption(option =>
             option.setName("remove-all-player-scores")
                 .setDescription("Delete all player scores?")
@@ -18,7 +14,7 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!global.discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+        if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
             interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
             return;
         }
@@ -33,7 +29,6 @@ module.exports = {
         wordLib.guildReset(interaction.guild.id, interaction.options.getBoolean('remove-all-player-scores'));
         interaction.reply({
             content: `Dữ liệu trò chơi ${(interaction.options.getBoolean('remove-all-player-scores')) ? "và điểm của người chơi" : ""} đã được reset!\n`
-                + `Đã chọn phòng chơi: <#${interaction.channel.id}>.\n`
                 + `Trò chơi bắt đầu! Vui lòng nhập 1 từ bất kỳ!`,
             ephemeral: false
         });

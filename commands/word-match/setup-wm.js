@@ -1,19 +1,15 @@
 // Packages
-const fs = require('fs');
-const path = require('path');
 const Discord = require('discord.js');
-
-// Module Specified
-const wordLib = require(path.join(global.dirname, 'modules/word-match/lib/wordLib.js'));
+const { wordLib, discordAPI } = global.customLib;
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('wm-setup')
-        .setDescription('[Moderators Only] - Set Word Match game at this channel.')
+        .setDescription('[Moderators Only] - Create a server profile and set Word Match game room at this channel.')
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!global.discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+        if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
             interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
             return;
         }

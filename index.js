@@ -1,13 +1,11 @@
 "use-strict";
 const BotStartTime = new Date().toISOString();
-global.BotStartTime = BotStartTime;
-global.dirname = __dirname;
 
 const fs = require('node:fs');
 const path = require('node:path');
 const dotenv = require('dotenv');
 
-const tokenPath = path.join(global.dirname, 'auth');
+const tokenPath = path.join(__dirname, 'auth');
 if (!fs.existsSync(tokenPath)) {
 	fs.mkdirSync(tokenPath, { recursive: true });
 }
@@ -19,13 +17,11 @@ if (!fs.existsSync(path.join(tokenPath, 'login.env'))) {
 }
 
 if (!process.env.TOKEN) {
-	// load config from login.env
 	dotenv.config({ path: "./auth/login.env" });
 	console.info("Loaded config from login.env");
 }
 
 const Discord = require('discord.js');
-global.Discord = Discord;
 
 const client = new Discord.Client({
 	intents: [
@@ -48,10 +44,13 @@ const client = new Discord.Client({
 		Discord.Partials.User
 	]
 });
-global.client = client;
 
-global.discordAPI = require('./assets/api/discord.api.js');
-global.stdlib = require('./assets/library/standard.js');
+global.variable = {};
+global.variable.client = client;
+global.variable.BotStartTime = BotStartTime;
+global.variable.dirname = __dirname;
+
+require('./assets/instruction/pre-login.js');
 
 client.commands = new Discord.Collection();
 const foldersPath = path.join(__dirname, 'commands');

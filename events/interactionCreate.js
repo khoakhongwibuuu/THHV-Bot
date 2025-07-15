@@ -1,7 +1,6 @@
+// Packages
 const Discord = require('discord.js');
-const path = require('path');
-
-const ticketLib = require(path.join(global.dirname, 'modules/ticket/lib/ticketLib.js'));
+const { ticketLib } = global.customLib;
 
 module.exports = {
 	name: Discord.Events.InteractionCreate,
@@ -58,8 +57,8 @@ module.exports = {
 					console.log(`[${new Date().toISOString()}] [BUTTON] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: ${interaction.customId}`);
 				}
 
-				// filter out requests from trivia-game module (multiple choice module)
-				if (['A', 'B', 'C', 'D', 'True', 'False', 'mc-accept-uninstall'].includes(interaction.customId))
+				// filter out requests from trivia-game module (multiple choice module), word-match module
+				if (['A', 'B', 'C', 'D', 'True', 'False', 'wm-accept-uninstall', 'mc-accept-uninstall'].includes(interaction.customId))
 					return;
 
 				if (interaction.customId.startsWith("ticket-create-AC"))

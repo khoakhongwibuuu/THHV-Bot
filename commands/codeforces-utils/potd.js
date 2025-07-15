@@ -1,8 +1,6 @@
-const path = require('path');
+// Packages
 const Discord = require('discord.js');
-
-// Module Specified
-const codeforcesLib = require(path.join(global.dirname, 'modules/codeforces-utils/lib/codeforcesLib.js'));
+const { codeforcesLib } = global.customLib;
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()

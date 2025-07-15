@@ -1,10 +1,6 @@
 // Packages
-const fs = require('fs');
-const path = require('path');
 const Discord = require('discord.js');
-
-// Module Specified
-const autoPinLib = require(path.join(global.dirname, 'modules/react-2-pin/lib/autoPinLib.js'));
+const { autoPinLib, discordAPI } = global.customLib;
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -13,7 +9,7 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!global.discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+        if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
             interaction.reply({
                 content: "🚫 You do not have permission to run this command.",
                 ephemeral: true

@@ -1,6 +1,7 @@
 // Packages
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
+const { dirname } = global.variable;
 
 // In-memory author ID of cached messages
 let cachedObjId = {};
@@ -21,7 +22,7 @@ cachedObjId = {
 
 // Ultility to get the guild config file path
 const getGuildFilePath = (guildId) =>
-    path.join(global.dirname, 'modules/react-2-pin/config', `${guildId}.json`);
+    path.join(dirname, 'modules/react-2-pin/config', `${guildId}.json`);
 
 // Guilds, channels, messages checkers
 const isSetup = (guildId) => cachedObjId.hasOwnProperty(guildId);

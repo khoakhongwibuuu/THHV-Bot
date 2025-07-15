@@ -1,10 +1,6 @@
 // Packages
-const fs = require('fs');
-const path = require('path');
 const Discord = require('discord.js');
-
-// Module Specified
-const autoPinLib = require(path.join(global.dirname, 'modules/react-2-pin/lib/autoPinLib.js'));
+const { autoPinLib } = global.customLib;
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()

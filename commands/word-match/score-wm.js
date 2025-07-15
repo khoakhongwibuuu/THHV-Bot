@@ -1,10 +1,6 @@
 // Packages
-const fs = require('fs');
-const path = require('path');
 const Discord = require('discord.js');
-
-// Module Specified
-const wordLib = require(path.join(global.dirname, 'modules/word-match/lib/wordLib.js'));
+const { wordLib } = global.customLib;
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
