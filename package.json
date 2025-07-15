@@ -1,6 +1,5 @@
 {
     "dependencies": {
-        "aes256": "latest",
         "discord.js": "latest",
         "dotenv": "latest",
         "fs": "latest",
