@@ -2,6 +2,27 @@ const storage = new Map();
 const crypto = require('crypto');
 
 /**
+ * Store data with given key and optional expiration time.
+ * @param {string} key - Key of the data.
+ * @param {*} data - Data to store.
+ * @param {number} [expire] - Expiration time in milliseconds.
+ * @returns {boolean} Return true if the data can be added, false otherwise.
+ */
+const setDataWithKey = (key, data, expire) => {
+    if (storage.has(key)) {
+        return false;
+    }
+    storage.set(key, data);
+    if (expire) {
+        setTimeout(() => {
+            if (storage.has(key)) {
+                storage.delete(key);
+            }
+        }, expire);
+    }
+}
+
+/**
  * Stores data with optional expiration time.
  * @param {*} data - Data to store.
  * @param {number} [expire] - Expiration time in milliseconds.
@@ -45,10 +66,11 @@ const getData = (uuid) => {
  * @returns {boolean}
  */
 const deleteData = (uuid) => {
-    return storage.delete(uuid); // returns true or false
+    return storage.delete(uuid);
 };
 
 module.exports = {
+    setDataWithKey,
     setData,
     hasData,
     getData,
