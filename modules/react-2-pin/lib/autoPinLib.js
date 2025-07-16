@@ -3,10 +3,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { dirname } = global.variable;
 
-// In-memory author ID of cached messages
-let cachedObjId = {};
+// Stores tracked channel-ids of installed guilds
+let guildsTracked = {};
 /*
-cachedObjId = {
+guildsTracked = {
     "guild-id-1": {
         "channel-id-1": 1,
         "channel-id-2": 1,
@@ -25,8 +25,8 @@ const getGuildFilePath = (guildId) =>
     path.join(dirname, 'modules/react-2-pin/config', `${guildId}.json`);
 
 // Guilds, channels, messages checkers
-const isSetup = (guildId) => cachedObjId.hasOwnProperty(guildId);
-const isThisChannelTracked = (guildId, channelId) => cachedObjId[guildId].hasOwnProperty(channelId);
+const isSetup = (guildId) => guildsTracked.hasOwnProperty(guildId);
+const isThisChannelTracked = (guildId, channelId) => guildsTracked[guildId].hasOwnProperty(channelId);
 const isAuthorMatched = (msgAuthorId, userId) => msgAuthorId === userId;
 
 // File operations
@@ -39,21 +39,21 @@ const writeGuildFile = (guildId, newData) =>
 // Module startup
 const preLoad = (guildId) => {
     const guildData = loadGuildFile(guildId);
-    cachedObjId[guildId] = guildData;
+    guildsTracked[guildId] = guildData;
 }
 
 // Include a channel to the list of tracked channels
 const includeChannel = (guildId, channelId) => {
     // Check if the guild is already set up, if not, initialise it
-    if (!isSetup(guildId)) cachedObjId[guildId] = {};
+    if (!isSetup(guildId)) guildsTracked[guildId] = {};
 
     // Check if the channel is already being tracked, if so, exit
     if (isThisChannelTracked(guildId, channelId)) return false;
     // Main operation
-    cachedObjId[guildId][channelId] = 1;
+    guildsTracked[guildId][channelId] = 1;
 
     // Write to the guild configuration file
-    writeGuildFile(guildId, cachedObjId[guildId]);
+    writeGuildFile(guildId, guildsTracked[guildId]);
     return true;
 }
 
@@ -66,14 +66,14 @@ const excludeChannel = (guildId, channelId) => {
     if (!isThisChannelTracked(guildId, channelId)) return false;
 
     // Main operation
-    delete cachedObjId[guildId][channelId];
+    delete guildsTracked[guildId][channelId];
 
     // Write to the guild configuration file
-    writeGuildFile(guildId, cachedObjId[guildId]);
+    writeGuildFile(guildId, guildsTracked[guildId]);
 
     // remove the guildid config file if all channels are removed
-    if (Object.keys(cachedObjId[guildId]).length === 0) {
-        delete cachedObjId[guildId];
+    if (Object.keys(guildsTracked[guildId]).length === 0) {
+        delete guildsTracked[guildId];
         fs.unlinkSync(getGuildFilePath(guildId));
     }
 
@@ -83,13 +83,13 @@ const excludeChannel = (guildId, channelId) => {
 // View all tracked channels
 const viewAllChannels = (guildId) => {
     if (!isSetup(guildId)) return null;
-    return Object.keys(cachedObjId[guildId]);
+    return Object.keys(guildsTracked[guildId]);
 }
 
 // Remove all tracked channels of a guild
 const guildReset = (guildId) => {
     if (!isSetup(guildId)) return false;
-    delete cachedObjId[guildId];
+    delete guildsTracked[guildId];
     fs.unlinkSync(getGuildFilePath(guildId));
     return true;
 }
