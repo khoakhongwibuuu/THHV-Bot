@@ -48,6 +48,7 @@ const writeGuildFile = (guildId, newData) => fs.writeFileSync(getGuildFilePath(g
 
 // Remove a tracked message
 const removeMessage = (msg) => {
+    if (!msg.guild) return;
     const { guild, channel, id: messageId } = msg;
     if (!isInRoom(guild.id, channel.id)) return;
 
