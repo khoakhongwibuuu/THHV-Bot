@@ -1,6 +1,11 @@
 // Packages
 const Discord = require('discord.js');
-const { ticketLib } = global.customLib;
+const path = require('node:path');
+
+const moduleLookup = Object.freeze({
+	"approval-form": global.customLib.formLib,
+	"ticket": global.customLib.ticketLib
+});
 
 module.exports = {
 	name: Discord.Events.InteractionCreate,
@@ -31,19 +36,23 @@ module.exports = {
 					await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 				}
 			}
+		} else if (interaction.customId) {
+			// filter out collected requests
+			if (['A', 'B', 'C', 'D', 'True', 'False', 'wm-accept-uninstall', 'mc-accept-uninstall'].includes(interaction.customId))
+				return;
+
+			const interactionToken = interaction.customId.split(":");
+			const [moduleName, handlerType, handlerName, UUID] = interactionToken;
+			const handlersPath = moduleLookup[moduleName].handlersPath;
+			require(path.join(handlersPath, handlerType, handlerName)).exec(interaction, UUID);
 		}
+
 		if (interaction.isModalSubmit()) {
 			try {
 				if (interaction.guildId) {
 					console.log(`[${new Date().toISOString()}] [MODAL] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: ${interaction.customId}`);
 				} else {
 					console.log(`[${new Date().toISOString()}] [MODAL] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: ${interaction.customId}`);
-				}
-
-				if (interaction.customId === "ticket-setup-modal")
-					ticketLib.handleTicketSetupModal(interaction);
-				else {
-
 				}
 			} catch (error) {
 				console.error(error);
@@ -56,28 +65,26 @@ module.exports = {
 				} else {
 					console.log(`[${new Date().toISOString()}] [BUTTON] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: ${interaction.customId}`);
 				}
-
-				// filter out requests from trivia-game module (multiple choice module), word-match module
-				if (['A', 'B', 'C', 'D', 'True', 'False', 'wm-accept-uninstall', 'mc-accept-uninstall'].includes(interaction.customId))
-					return;
-
-				if (interaction.customId.startsWith("ticket-create-AC"))
-					await ticketLib.handleAcceptTicketBtnInteraction(interaction);
-				else if (interaction.customId === "exampleCreateTicket")
-					await ticketLib.handleDumpedTicketBtnInteraction(interaction);
-				else if (interaction.customId === "createTicket")
-					await ticketLib.handleCreateTicketBtnInteraction(interaction);
-				else if (interaction.customId === "destroyTicket")
-					await ticketLib.handleClosedTicketBtnInteraction(interaction);
-				else {
-
-				}
 			} catch (error) {
 				console.error(error);
 			}
 		}
-		if (interaction.isUserSelectMenu()) {
+		if (
+			interaction.isChannelSelectMenu() ||
+			interaction.isMentionableSelectMenu() ||
+			interaction.isRoleSelectMenu() ||
+			interaction.isStringSelectMenu() ||
+			interaction.isUserSelectMenu()
+		) {
+			try {
+				if (interaction.guildId) {
+					console.log(`[${new Date().toISOString()}] [SELECT-MENU] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: ${interaction.customId}`);
+				} else {
+					console.log(`[${new Date().toISOString()}] [SELECT-MENU] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: ${interaction.customId}`);
+				}
+			} catch {
 
+			}
 		}
 	},
 };

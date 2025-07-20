@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const fsPromises = require('node:fs').promises;
 const path = require('node:path');
 const dotenv = require('dotenv');
+const Discord = require('discord.js');
 
 const tokenPath = path.join(__dirname, 'auth');
 if (!fs.existsSync(tokenPath)) {
@@ -26,8 +27,35 @@ global.variable = {};
 global.variable.BotStartTime = BotStartTime;
 global.variable.dirname = __dirname;
 
+const client = new Discord.Client({
+	intents: [
+		Discord.GatewayIntentBits.Guilds,
+		Discord.GatewayIntentBits.GuildMessages,
+		Discord.GatewayIntentBits.MessageContent,
+		Discord.GatewayIntentBits.GuildMembers,
+		Discord.GatewayIntentBits.GuildVoiceStates,
+		Discord.GatewayIntentBits.GuildMessageReactions,
+		Discord.GatewayIntentBits.GuildMessageTyping,
+		Discord.GatewayIntentBits.GuildPresences,
+		Discord.GatewayIntentBits.GuildEmojisAndStickers,
+		Discord.GatewayIntentBits.DirectMessages,
+		Discord.GatewayIntentBits.DirectMessageReactions,
+		Discord.GatewayIntentBits.DirectMessageTyping
+	],
+	partials: [
+		Discord.Partials.Message,
+		Discord.Partials.Reaction,
+		Discord.Partials.User
+	]
+});
+
+global.variable.client = client;
+global.customLib = {};
+global.customLib.memory = require('./assets/api/memory.api.js');
+global.customLib.stdlib = require('./assets/library/standard.js');
+global.customLib.discordAPI = require('./assets/api/discord.api.js');
+
 async function loadModules() {
-	global.customLib = {};
 	const modulesPath = path.join(__dirname, "modules");
 	const files = await fsPromises.readdir(modulesPath, { withFileTypes: true });
 
@@ -53,36 +81,6 @@ async function loadModules() {
 
 (async () => {
 	await loadModules();
-
-	const Discord = require('discord.js');
-
-	const client = new Discord.Client({
-		intents: [
-			Discord.GatewayIntentBits.Guilds,
-			Discord.GatewayIntentBits.GuildMessages,
-			Discord.GatewayIntentBits.MessageContent,
-			Discord.GatewayIntentBits.GuildMembers,
-			Discord.GatewayIntentBits.GuildVoiceStates,
-			Discord.GatewayIntentBits.GuildMessageReactions,
-			Discord.GatewayIntentBits.GuildMessageTyping,
-			Discord.GatewayIntentBits.GuildPresences,
-			Discord.GatewayIntentBits.GuildEmojisAndStickers,
-			Discord.GatewayIntentBits.DirectMessages,
-			Discord.GatewayIntentBits.DirectMessageReactions,
-			Discord.GatewayIntentBits.DirectMessageTyping
-		],
-		partials: [
-			Discord.Partials.Message,
-			Discord.Partials.Reaction,
-			Discord.Partials.User
-		]
-	});
-
-	global.variable.client = client;
-
-	global.customLib.discordAPI = require('./assets/api/discord.api.js');
-	global.customLib.memory = require('./assets/api/memory.api.js');
-	global.customLib.stdlib = require('./assets/library/standard.js');
 
 	client.commands = new Discord.Collection();
 	const foldersPath = path.join(__dirname, 'commands');

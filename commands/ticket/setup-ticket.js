@@ -49,7 +49,7 @@ module.exports = {
         const guildId = interaction.guild.id
 
         const modal = new Discord.ModalBuilder()
-            .setCustomId("ticket-setup-modal")
+            .setCustomId(`ticket:MODAL:setup:${0}`)
             .setTitle("Customise your ticket interface.")
             .addComponents(
                 new Discord.ActionRowBuilder().addComponents(

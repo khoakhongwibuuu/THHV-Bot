@@ -7,6 +7,7 @@ global.variable = {};
 global.variable.dirname = __dirname;
 
 global.customLib = {};
+global.customLib.formLib = require('./modules/approval-form/lib/formLib.js');
 global.customLib.reactLib = require('./modules/auto-reactor/lib/reactLib.js');
 global.customLib.codeforcesLib = require('./modules/codeforces-utils/lib/codeforcesLib.js');
 global.customLib.contestLib = require('./modules/contest/lib/contestLib.js');

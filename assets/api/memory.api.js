@@ -44,8 +44,8 @@ const setData = (data, expire) => {
 
 /**
  * Checks if the UUID exists in the store.
- * @param {string} uuid
- * @returns {boolean}
+ * @param {string} uuid - uuid of data
+ * @returns {boolean} Return true if the data is present, false otherwise.
  */
 const hasData = (uuid) => {
     return storage.has(uuid);
@@ -53,7 +53,7 @@ const hasData = (uuid) => {
 
 /**
  * Retrieves data by UUID, returns null if not found.
- * @param {string} uuid
+ * @param {string} uuid - uuid of data
  * @returns {*} Stored data or null.
  */
 const getData = (uuid) => {
@@ -62,17 +62,30 @@ const getData = (uuid) => {
 
 /**
  * Deletes data by UUID.
- * @param {string} uuid
- * @returns {boolean}
+ * @param {string} uuid - uuid of data
+ * @returns {boolean} Return true if the data can be deleted, false otherwise.
  */
 const deleteData = (uuid) => {
     return storage.delete(uuid);
 };
+
+/**
+ *
+ * @param {*} uuid - uuid of data
+ * @param {*} newData - new value of data
+ * @returns {boolean} Return true if the data is present and modified, false otherwise.
+ */
+const modifyData = (uuid, newData) => {
+    if (!hasData(uuid)) return false;
+    storage.set(uuid, newData);
+    return true;
+}
 
 module.exports = {
     setDataWithKey,
     setData,
     hasData,
     getData,
-    deleteData
+    deleteData,
+    modifyData
 };

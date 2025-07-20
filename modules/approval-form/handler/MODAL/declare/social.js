@@ -1,0 +1,13 @@
+const Discord = require('discord.js');
+const { formLib, memory, discordAPI } = global.customLib;
+const { client } = global.variable;
+
+module.exports.exec = async (interaction, UUID) => {
+    const data = memory.getData(UUID);
+    if (data) {
+        data.social.Email = interaction.fields.getTextInputValue('email') ?? null;
+        data.social.Codeforces = interaction.fields.getTextInputValue('codeforces') ?? null;
+        data.social.VNOI = interaction.fields.getTextInputValue('vnoi') ?? null;
+        await require('./../../BUTTON/declare/display-page2').exec(data.host, UUID, data.host.message, false, interaction);
+    }
+}

@@ -1,0 +1,31 @@
+const { memory, formLib } = global.customLib;
+
+module.exports.exec = async (interaction) => {
+    let userData = {
+        guildId: interaction.guild.id,
+        basic: {
+            fullName: null,
+            schoolYear: null,
+        },
+        social: {
+            Email: null,
+            Codeforces: null,
+            VNOI: null
+        },
+        rewards: {
+            VOI: null,
+            others: null
+        },
+        notes: null
+    }
+
+    const UUID = memory.setData(userData, 1000 * 60 * 15);
+
+    formLib.addMemberToCache(interaction.guild.id, interaction.user.id);
+    setTimeout(() => {
+        formLib.removeMemberFromCache(interaction.guild.id, interaction.user.id);
+    }, 1000 * 60 * 15);
+    await interaction.user.send({
+        content: "Đang khởi tạo form khai báo."
+    }).then(message => require('./BUTTON/declare/display-page1.js').exec(interaction, UUID, message, true, false));
+}
