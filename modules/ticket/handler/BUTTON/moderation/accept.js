@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { dirname, client } = global.variable;
+const { client } = global.variable;
 const { ticketLib, memory, discordAPI } = global.customLib;
 
 module.exports.exec = async (interaction, UUID) => {

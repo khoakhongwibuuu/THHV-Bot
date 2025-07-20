@@ -1,36 +1,11 @@
 // Packages
 const fs = require('node:fs');
 const path = require('node:path');
-const Discord = require('discord.js');
-const { dirname, client } = global.variable;
-const { memory, discordAPI } = global.customLib;
+const { dirname } = global.variable;
 
 const handlersPath = path.join(dirname, 'modules/ticket/handler');
 
 let guildsConfig = {};
-/* IN-MEMORY STORAGE
-guildsConfig = {
-    "guild-id-1": {
-        "rootChannel": channelId,
-        "rootCategory" : categoryId,
-        "running" : {
-            "ticket-channel-id-1": ticket-creator-id-1,
-            "ticket-channel-id-2": ticket-creator-id-2,
-            ...
-        }
-    },
-    "guild-id-2": {
-        "root-channel": channelId,
-        "root-category" : categoryId,
-        "running" : {
-            "ticket-channel-id-1": ticket-creator-id-1,
-            "ticket-channel-id-2": ticket-creator-id-2,
-            ...
-        }
-    },
-    ...
-}
-*/
 
 const getGuildFilePath = (guildId) =>
     path.join(dirname, 'modules/ticket/config', `${guildId}.json`);

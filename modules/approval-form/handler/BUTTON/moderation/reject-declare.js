@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { memory, formLib, discordAPI } = global.customLib;
+const { formLib, discordAPI } = global.customLib;
 
 module.exports.exec = async (interaction) => {
     if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {

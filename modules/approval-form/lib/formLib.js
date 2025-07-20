@@ -1,8 +1,8 @@
 // Packages
 const fs = require('node:fs');
 const path = require('node:path');
-const { dirname, client } = global.variable;
-const { memory, discordAPI } = global.customLib;
+const { dirname } = global.variable;
+const { discordAPI } = global.customLib;
 
 const handlersPath = path.join(dirname, 'modules/approval-form/handler');
 
