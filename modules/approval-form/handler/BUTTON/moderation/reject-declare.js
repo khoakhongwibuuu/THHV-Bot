@@ -24,7 +24,7 @@ module.exports.exec = async (interaction) => {
         sentEmbed.setDescription(
             sentEmbed.data.description
             + `\n* Người từ chối yêu cầu: <@${interaction.user.id}>`
-            + `\n* Thời điểm từ chối yêu cầu: <@${interaction.createdTimestamp}>`
+            + `\n* Thời điểm từ chối yêu cầu: <t:${interaction.createdTimestamp}:F>`
         );
 
         await interaction.message.edit({
