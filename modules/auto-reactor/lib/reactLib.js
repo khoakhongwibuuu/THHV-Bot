@@ -141,6 +141,7 @@ const getTokenId = (token) => {
 
 // Initialize auto-reactions on a message
 const initialiseInput = (msg) => {
+    if (!msg.guild.id || !msg.channel.id) return;
     if (!isInRoom(msg.guild.id, msg.channel.id)) return;
     if (!isPrefix(msg.content, "suggest") && !isPrefix(msg.content, "vote")) return;
 
