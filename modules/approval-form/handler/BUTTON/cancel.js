@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const { memory, formLib } = global.customLib;
 
 module.exports.exec = async (interaction, UUID) => {
