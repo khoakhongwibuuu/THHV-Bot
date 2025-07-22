@@ -10,7 +10,7 @@ module.exports.exec = async (interaction) => {
         return;
     }
     if (formLib.isSetup(interaction.guild.id)) {
-        interaction.message.fetch();
+        await interaction.message.fetch();
 
         const footerText = interaction.message.embeds[0].footer.text;
         const clienMembertId = footerText.slice(footerText.lastIndexOf('-') + 1);
@@ -19,7 +19,14 @@ module.exports.exec = async (interaction) => {
 
         const sentEmbed = Discord.EmbedBuilder.from(interaction.message.embeds[0])
             .setColor(0xb42831)
-            .setFooter({ text: `❌ Đã bị từ chối bởi ${interaction.user.username}` })
+            .setFooter({ text: `❌ Đã bị từ chối` });
+
+        sentEmbed.setDescription(
+            sentEmbed.data.description
+            + `\n* Người từ chối yêu cầu: <@${interaction.user.id}>`
+            + `\n* Thời điểm từ chối yêu cầu: <@${interaction.createdTimestamp}>`
+        );
+
         await interaction.message.edit({
             embeds: [sentEmbed],
             components: []
