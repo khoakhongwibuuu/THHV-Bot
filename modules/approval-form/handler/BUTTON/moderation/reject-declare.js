@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const { formLib, discordAPI } = global.customLib;
 
-module.exports.exec = async (interaction) => {
+module.exports.exec = async (interaction, clienMembertId) => {
     if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
         interaction.reply({
             content: "🚫 You do not have permission to run this command.",
@@ -12,8 +12,6 @@ module.exports.exec = async (interaction) => {
     if (formLib.isSetup(interaction.guild.id)) {
         await interaction.message.fetch();
 
-        const footerText = interaction.message.embeds[0].footer.text;
-        const clienMembertId = footerText.slice(footerText.lastIndexOf('-') + 1);
         formLib.removeMemberFromApprovalQueue(interaction.guild.id, clienMembertId);
         formLib.removeMemberFromCache(interaction.guild.id, clienMembertId);
 
@@ -24,7 +22,7 @@ module.exports.exec = async (interaction) => {
         sentEmbed.setDescription(
             sentEmbed.data.description
             + `\n* Người từ chối yêu cầu: <@${interaction.user.id}>`
-            + `\n* Thời điểm từ chối yêu cầu: <t:${interaction.createdTimestamp}:F>`
+            + `\n* Thời điểm từ chối yêu cầu: <t:${Math.floor(interaction.createdTimestamp / 1000)}:F>`
         );
 
         await interaction.message.edit({
@@ -34,7 +32,7 @@ module.exports.exec = async (interaction) => {
 
         await interaction.reply({
             ephemeral: true,
-            content: "Done."
+            content: `Đã từ chối yêu cầu của <@${clienMembertId}>.`
         });
     }
 }
