@@ -103,6 +103,10 @@ String.prototype.keyReverse = function () {
 	return newString;
 }
 
+String.prototype.sanitise = function () {
+	return this.replace(/[`"']/g, "");
+}
+
 Array.prototype.argList = function (mode) {
 	let res = "";
 	this.forEach((e, i, a) => {
