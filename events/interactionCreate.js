@@ -38,7 +38,7 @@ module.exports = {
 			}
 		} else if (interaction.customId) {
 			// filter out collected requests
-			if (['A', 'B', 'C', 'D', 'True', 'False', 'wm-accept-uninstall', 'mc-accept-uninstall'].includes(interaction.customId))
+			if (!interaction.customId.includes(":"))
 				return;
 
 			const interactionToken = interaction.customId.split(":");
