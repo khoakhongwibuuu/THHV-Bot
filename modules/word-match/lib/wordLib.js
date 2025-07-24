@@ -55,8 +55,8 @@ const guildUninstall = (guildId) => {
     if (isSetup(guildId)) {
         const guildDataPath = path.join(configDirPath, `${guildId}.json`);
         fs.unlinkSync(guildDataPath);
+        delete channelIdList[guildId];
     }
-    delete channelIdList[guildId];
 }
 
 const guildReset = (guildId, removeScore) => {
