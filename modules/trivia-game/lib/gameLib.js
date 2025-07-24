@@ -8,160 +8,102 @@ const qsDB = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/trivia-game/
 const booleanDB = qsDB.results.filter(qs => qs.type === 'boolean');
 const multiDB = qsDB.results.filter(qs => qs.type === 'multiple');
 
-const configDirPath = path.join(dirname, "modules/trivia-game/config");
+const getGuildFilePath = (guildId) => path.join(dirname, "modules/trivia-game/config", `${guildId}.json`);
 
-// Configuration
-const LATEST_DATABASE_VERSION = 2;
-const BOOST_ID = Object.freeze({
-    NONE: 0,
-    DOUBLE: 1,
-    IMMUNITY: 2
-});
-
-// Game-state tracking
-let gameState = {};
-
-// File handling tasks
-const isSetup = (guildId) => {
-    return gameState.hasOwnProperty(guildId);
+const penalty = {
+    boolean: { easy: { up: 2, down: -2 }, medium: { up: 3, down: -2 }, hard: { up: 4, down: -2 } },
+    multiple: { easy: { up: 2, down: -2 }, medium: { up: 3, down: -2 }, hard: { up: 4, down: -2 } }
 }
 
+const timeAllowed = {
+    easy: 10,
+    medium: 15,
+    hard: 20
+}
+
+let guildState = {};
+
+const isSetup = (guildId) =>
+    guildState.hasOwnProperty(guildId);
+
+const loadRawGuildFile = (guildId) =>
+    fs.readFileSync(getGuildFilePath(guildId), 'utf-8');
+
+const loadGuildFile = (guildId) =>
+    JSON.parse(loadRawGuildFile(guildId));
+
+const writeGuildFile = (guildId, newData) =>
+    fs.writeFileSync(getGuildFilePath(guildId), JSON.stringify(newData), 'utf8');
+
 const guildSetup = (guildId, channelId) => {
-    gameState[guildId] = false;
-    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
-    if (!fs.existsSync(guildDataPath)) {
-        const setupData = JSON.stringify({
-            version: LATEST_DATABASE_VERSION,
-            dateCreated: new Date().getTime(),
-            setting: {
-                channelId: channelId,
-                score: {
-                    up: 2,
-                    down: -3,
-                    boostRate: 0
-                },
-                time: {
-                    base: 10,
-                    easy: 0,
-                    medium: 5,
-                    hard: 10
-                },
-                roles: {
-                    high: "",
-                    low: ""
-                }
-            },
-            playerdata: {}
-        });
-        fs.writeFileSync(guildDataPath, (setupData), 'utf-8');
-    }
+    if (isSetup(guildId)) return;
+
+    guildState[guildId] = {
+        room: channelId,
+        running: false
+    };
+
+    writeGuildFile(guildId, {
+        room: channelId,
+        playerdata: {}
+    });
 }
 
 const guildUninstall = (guildId) => {
-    if (isSetup(guildId)) {
-        const guildDataPath = path.join(configDirPath, `${guildId}.json`);
-        fs.unlinkSync(guildDataPath);
+    if (!isSetup(guildId)) return;
+    delete guildState[guildId];
+    fs.unlinkSync(getGuildFilePath(guildId));
+}
+
+const preLoad = (guildId) => {
+    const guildData = loadGuildFile(guildId);
+    guildState[guildId] = {
+        room: guildData.room,
+        running: false
     }
-    delete gameState[guildId];
 }
 
-const loadRawGuildFile = (guildId) => {
-    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
-    const rawTextFile = fs.readFileSync(guildDataPath, 'utf-8');
-    return rawTextFile;
-}
+const getRoom = (guildId) =>
+    isSetup(guildId) ? guildState[guildId].room : null;
 
-const loadGuildFile = (guildId) => {
-    return JSON.parse(loadRawGuildFile(guildId));
-}
+const isInRoom = (guildId, testChannelId) =>
+    isSetup(guildId) ? getRoom(guildId) === testChannelId : false;
 
-const writeGuildFile = (guildId, newData) => {
-    const guildDataPath = path.join(configDirPath, `${guildId}.json`);
-    const JSONdata = JSON.stringify(newData);
-    fs.writeFileSync(guildDataPath, (JSONdata), 'utf8');
-}
-
-const getRoomId = (guildId) => {
-    if (!isSetup(guildId)) return null;
-    else return loadGuildFile(guildId).setting.channelId;
-}
-
-const isInRoom = (guildId, testChannelId) => {
-    if (!isSetup(guildId)) return false;
-    else return (getRoomId(guildId) === testChannelId);
-}
 
 const resetRoomId = (guildId, newChannelId) => {
+    if (!isSetup(guildId)) return;
+    guildState[guildId].room = newChannelId;
     const guildData = loadGuildFile(guildId);
-    guildData.setting.channelId = newChannelId;
+    guildData.room = newChannelId;
     writeGuildFile(guildId, guildData);
 }
 
-// updating tasks
-const getConfigVersion = (guildData) => {
-    if (!guildData.hasOwnProperty("version")) return 0;
-    else return guildData.version;
-}
+// ingame tasks
+const getTimeAllowed = (diff) =>
+    timeAllowed.hasOwnProperty(diff) ? timeAllowed[diff] : 0;
 
-const updateOutdatedFiles = (guildId) => {
-    const guildData = loadGuildFile(guildId);
-    if (getConfigVersion(guildData) < LATEST_DATABASE_VERSION) {
-        console.log(`[${new Date().toISOString()}] [INFO] Updating ${guildId}'s MultipleChoice configuration file.`);
-        guildData.version = LATEST_DATABASE_VERSION;
+const getPenalty = (type, diff) =>
+    penalty.hasOwnProperty(type) ? penalty[type].hasOwnProperty(diff) ? penalty[type][diff] : null : null;
 
-        if (!guildData.hasOwnProperty("dateCreated")) // For version 1: Add created timestamp
-            guildData.dateCreated = new Date().getTime();
+const hasPlayerData = (guildId, userId) =>
+    loadGuildFile(guildId).playerdata.hasOwnProperty(userId)
 
-        if (guildData.setting.hasOwnProperty('running')) // For version 2: Changed isRunning state from file to memory
-            delete guildData.setting.running;
+const allPlayerList = (guildId) =>
+    isSetup(guildId) ? Object.keys(loadGuildFile(guildId).playerdata) : [];
 
-        // future stuffs can be added for scalability
+const readPlayerScore = (guildId, userId) =>
+    isSetup(guildId) ? hasPlayerData(guildId, userId) ? loadGuildFile(guildId).playerdata[userId].score : null : null;
 
-        writeGuildFile(guildId, guildData);
-    }
-}
-
-// Ingame tasks
-const hasPlayerData = (guildId, userId) => {
-    const guildData = loadGuildFile(guildId);
-    return guildData.playerdata.hasOwnProperty(userId);
-}
-
-const allPlayerList = (guildId) => {
-    let res = []
-    const guildData = loadGuildFile(guildId);
-    for (let key in guildData.playerdata)
-        res.push(key);
-    return res;
-}
-
-const readPlayerScore = (guildId, userId) => {
-    const guildData = loadGuildFile(guildId);
-    return hasPlayerData(guildId, userId) ? guildData.playerdata[userId].score : null;
-}
-
-const readPlayerBoost = (guildId, userId) => {
-    const guildData = loadGuildFile(guildId);
-    return hasPlayerData(guildId, userId) ? guildData.playerdata[userId].auxiliary : 0;
-}
-
-const bulkSaveInstaceResult = (guildId, gameResultData) => {
-    // gameResultData MUST follow this pattern
+const bulkSaveInstaceResult = (guildId, gameResultData, type, diff) => {
     // gameResultData = {
-    //     win: [..arr_of_usr_id],
-    //     doubleWin: [..arr_of_usr_id],
-    //     lose: [..arr_of_usr_id],
-    //     immune: [..arr_of_usr_id]
-    //     boostReceiver: {
-    //          playerId: <PLAYER_ID> (can be a string of number or NULL value),
-    //          boostId:<BOOST_ID> (integer value: 0<=BOOST_ID<=2)
-    //     }
+    //     win: [..usr_id],
+    //     lose: [..usr_id],
     // }
 
-    const guildData = loadGuildFile(guildId);
+    const winPenalty = penalty[type][diff].up;
+    const losePenalty = penalty[type][diff].down;
 
-    let winPenalty = guildData.setting.score.up;
-    let losePenalty = guildData.setting.score.down;
+    const guildData = loadGuildFile(guildId);
 
     gameResultData.win.forEach(userId => {
         if (hasPlayerData(guildId, userId)) {
@@ -176,29 +118,7 @@ const bulkSaveInstaceResult = (guildId, gameResultData) => {
             }
         } else {
             guildData.playerdata[userId] = {
-                auxiliary: 0,
                 score: [0, winPenalty]
-            }
-        }
-    });
-
-    gameResultData.doubleWin.forEach(userId => {
-        // THESE PLAYERS WILL LOSE THEIR BOOSTS, SINCE THEY'VE USED THEM
-        if (hasPlayerData(guildId, userId)) {
-            if (guildData.playerdata[userId].hasOwnProperty("score")) {
-                if (guildData.playerdata[userId].score.length > 0) {
-                    guildData.playerdata[userId].score.push(guildData.playerdata[userId].score.lastValue() + winPenalty * 2);
-                } else {
-                    guildData.playerdata[userId].score.push(0, winPenalty * 2);
-                }
-            } else {
-                guildData.playerdata[userId].score = [0, winPenalty * 2];
-            }
-            guildData.playerdata[userId].auxiliary = 0;
-        } else {
-            guildData.playerdata[userId] = {
-                auxiliary: 0,
-                score: [0, winPenalty * 2]
             }
         }
     });
@@ -216,36 +136,10 @@ const bulkSaveInstaceResult = (guildId, gameResultData) => {
             }
         } else {
             guildData.playerdata[userId] = {
-                auxiliary: 0,
                 score: [0, losePenalty]
             }
         }
     });
-
-    gameResultData.immune.forEach(userId => {
-        // THESE PLAYERS WILL LOSE THEIR BOOSTS, SINCE THEY'VE USED THEM
-        if (hasPlayerData(guildId, userId)) {
-            if (guildData.playerdata[userId].hasOwnProperty("score")) {
-                if (guildData.playerdata[userId].score.length > 0) {
-                    guildData.playerdata[userId].score.push(guildData.playerdata[userId].score.lastValue());
-                } else {
-                    guildData.playerdata[userId].score.push(0, 0);
-                }
-            } else {
-                guildData.playerdata[userId].score = [0, 0];
-            }
-            guildData.playerdata[userId].auxiliary = 0;
-        } else {
-            guildData.playerdata[userId] = {
-                auxiliary: 0,
-                score: [0, 0]
-            }
-        }
-    });
-
-    if (gameResultData.boostReceiver.boostId != 0) {
-        guildData.playerdata[gameResultData.boostReceiver.playerId].auxiliary = gameResultData.boostReceiver.boostId;
-    }
 
     writeGuildFile(guildId, guildData);
 }
@@ -256,74 +150,47 @@ const bulkPlayerReset = (guildId) => {
     writeGuildFile(guildId, guildData);
 }
 
-const bulkBoostLoad = (guildId) => {
-    const guildData = loadGuildFile(guildId);
-    const immunity = [], doubleReward = [];
-    for (const [playerId, playerObj] of Object.entries(guildData.playerdata)) {
-        if (playerObj.auxiliary === BOOST_ID.IMMUNITY) immunity.push(playerId);
-        if (playerObj.auxiliary === BOOST_ID.DOUBLE) doubleReward.push(playerId);
-    }
-    return {
-        immunity: immunity,
-        doubleReward: doubleReward
-    }
-}
+const isRunning = (guildId) =>
+    isSetup(guildId) ? guildState[guildId].running : false;
 
-const isRunning = (guildId) => {
-    return gameState[guildId];
-}
 
-const guildLock = (guildId) => {
-    gameState[guildId] = true;
-}
+const guildLock = (guildId) =>
+    guildState[guildId].running = true;
 
-const guildUnlock = (guildId) => {
-    gameState[guildId] = false;
-}
 
-const booleanReader = () => {
-    return booleanDB.randomValue();
-}
+const guildUnlock = (guildId) =>
+    guildState[guildId].running = false;
 
-const multipleReader = () => {
-    return multiDB.randomValue();
-}
 
-// Boosting mechanics
-const boostModuleEnabled = (guildId) => {
-    const guildData = loadGuildFile(guildId);
-    return !(guildData.setting.score.boostRate === 0);
-}
+const booleanReader = () =>
+    booleanDB.randomValue();
 
-const boostModuleToggle = (guildId) => {
-    const guildData = loadGuildFile(guildId);
-    guildData.setting.score.boostRate = (5 - guildData.setting.score.boostRate);
-    writeGuildFile(guildId, guildData);
-}
+
+const multipleReader = () =>
+    multiDB.randomValue();
+
 
 module.exports = {
     isSetup,
-    guildSetup,
-    guildUninstall,
     loadRawGuildFile,
     loadGuildFile,
     writeGuildFile,
-    getRoomId,
+    guildSetup,
+    guildUninstall,
+    preLoad,
+    getRoom,
     isInRoom,
     resetRoomId,
-    updateOutdatedFiles,
+    getTimeAllowed,
+    getPenalty,
     hasPlayerData,
     allPlayerList,
     readPlayerScore,
-    readPlayerBoost,
     bulkSaveInstaceResult,
     bulkPlayerReset,
-    bulkBoostLoad,
     isRunning,
     guildLock,
     guildUnlock,
     booleanReader,
-    multipleReader,
-    boostModuleEnabled,
-    boostModuleToggle
+    multipleReader
 }

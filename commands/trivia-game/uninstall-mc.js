@@ -19,19 +19,19 @@ module.exports = {
     ,
     async execute(interaction) {
         if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
-            interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
+            await interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
             return;
         }
         if (!gameLib.isSetup(interaction.guild.id)) {
-            interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
+            await interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
-        if (interaction.channel.id !== gameLib.getRoomId(interaction.guild.id)) {
-            interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại phòng chơi <#${gameLib.getRoomId(interaction.guild.id)}>`, ephemeral: true });
+        if (!gameLib.isInRoom(interaction.guild.id, interaction.channel.id)) {
+            await interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại phòng chơi <#${gameLib.getRoom(interaction.guild.id)}>`, ephemeral: true });
             return;
         }
         if (gameLib.isRunning(interaction.guild.id)) {
-            interaction.reply({ content: '⚠️ Bạn không được phép sử dụng lệnh này khi có lượt chơi đang diễn ra. Vui lòng chờ lượt chơi đó hoàn tất.', ephemeral: true });
+            await interaction.reply({ content: '⚠️ Bạn không được phép sử dụng lệnh này khi có lượt chơi đang diễn ra. Vui lòng chờ lượt chơi đó hoàn tất.', ephemeral: true });
             return;
         }
         const sentEmbed = new Discord.EmbedBuilder();
@@ -39,7 +39,7 @@ module.exports = {
         let content = "⚠️ **Bạn đang xóa dữ liệu Trivia game của server này. Bạn chắc chứ?**\n";
         const affected = gameLib.allPlayerList(interaction.guild.id);
 
-        content += `\nNếu bạn tiếp tục, điểm và phép bổ trợ của những người chơi sau đây sẽ bị xóa.\n`;
+        content += `\nNếu bạn tiếp tục, điểm của những người chơi sau đây sẽ bị xóa.\n`;
         if (affected.length > 0)
             affected.forEach(e => content += `* <@${e}>\n`);
         else
@@ -48,7 +48,7 @@ module.exports = {
         sentEmbed.setDescription(content);
         sentEmbed.setFooter({ text: "🕑 Bạn có 10s để xác nhận hành động của bạn." });
 
-        interaction.reply({
+        await interaction.reply({
             embeds: [sentEmbed],
             components: [defaultBtnRow],
             ephemeral: true
@@ -57,18 +57,18 @@ module.exports = {
         let executed = false;
         const filter = (interaction) => interaction.isButton() && interaction.customId === "mc-accept-uninstall";
         const collector = interaction.channel.createMessageComponentCollector({ filter, time: 10000 });
-        collector.on('collect', () => {
+        collector.on('collect', async () => {
             gameLib.guildUninstall(interaction.guild.id);
             executed = true;
-            interaction.editReply({
+            await interaction.editReply({
                 embeds: [sentEmbed.setFooter({ text: "✅ Đã xóa dữ liệu thành công." })],
                 components: [],
                 ephemeral: true
             });
         });
-        collector.on('end', () => {
+        collector.on('end', async () => {
             if (!executed) {
-                interaction.editReply({
+                await interaction.editReply({
                     embeds: [sentEmbed.setFooter({ text: "⛔ Đã hết giờ." })],
                     components: [],
                     ephemeral: true

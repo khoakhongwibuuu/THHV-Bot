@@ -15,6 +15,5 @@ const guildFiles = fs.readdirSync(configPath).filter(file => file.endsWith('json
 
 for (const guildFile of guildFiles) {
     const guildId = guildFile.slice(0, guildFile.lastIndexOf('.')) || guildFile;
-    gameLib.guildUnlock(guildId);
-    gameLib.updateOutdatedFiles(guildId);
+    gameLib.preLoad(guildId);
 }

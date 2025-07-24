@@ -1,11 +1,9 @@
 // Packages
 const { gameLib, stdlib } = global.customLib;
 
-const execute = (interaction, questionBlock) => {
+module.exports.execute = async (interaction, questionBlock) => {
     const validKey = ['A', 'B', 'C', 'D'];
-
-    const guildTime = gameLib.loadGuildFile(interaction.guildId).setting.time;
-    const ETA = guildTime.base + guildTime[questionBlock.difficulty];
+    const time = gameLib.getTimeAllowed(questionBlock.difficulty);
 
     let correctKeyIdx = stdlib.trueRnd(0, 3);
     const correctKey = validKey[correctKeyIdx];
@@ -20,14 +18,10 @@ const execute = (interaction, questionBlock) => {
         content += `**${OptionalKey}**. ${answer.URLdecode()}${idx == 3 ? "" : "\n"}`;
     });
 
-    require('./deliver')
+    await require('./deliver')
         .execute(interaction,
             questionBlock.category.URLdecode(),
             questionBlock.difficulty.URLdecode(),
             questionBlock.question.URLdecode(),
-            correctKey, content, "multiple", ETA);
-}
-
-module.exports = {
-    execute
+            correctKey, content, "multiple", time);
 }

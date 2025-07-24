@@ -2,7 +2,7 @@
 const Discord = require('discord.js');
 const { gameLib } = global.customLib;
 
-const statBuilder = (playerId, playerScore, playerAux) => {
+const statBuilder = (playerId, playerScore) => {
     if (playerScore === null) {
         return {
             uuid: playerId,
@@ -13,10 +13,7 @@ const statBuilder = (playerId, playerScore, playerAux) => {
             rate: "0%",
 
             streak: "0",
-            max: "0",
-            boost: (playerAux === 0) ? "Không có"
-                : (playerAux === 1) ? "Nhân đôi phần thưởng"
-                    : (playerAux === 2) ? "Miễn nhiễm" : "Không có"
+            max: "0"
         }
     } else {
         let maxLength = 1, length = 1, correct = 0, datasize = playerScore.length;
@@ -41,10 +38,7 @@ const statBuilder = (playerId, playerScore, playerAux) => {
             rate: `${accuracy}%`,
 
             streak: (Math.max(length, maxLength) - 1).toString(),
-            max: (Math.max(...playerScore)).toString(),
-            boost: (playerAux === 0) ? "Không có"
-                : (playerAux === 1) ? "Nhân đôi phần thưởng"
-                    : (playerAux === 2) ? "Miễn nhiễm" : "Không có"
+            max: (Math.max(...playerScore)).toString()
         }
     }
 }
@@ -62,13 +56,12 @@ module.exports = {
     ,
     async execute(interaction) {
         if (!gameLib.isSetup(interaction.guild.id)) {
-            interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
+            await interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
         const target = interaction.options.getUser('member') ?? interaction.user;
         const targetScore = gameLib.readPlayerScore(interaction.guildId, target.id);
-        const targetAux = gameLib.readPlayerBoost(interaction.guildId, target.id);
-        const targetStat = statBuilder(target.id, targetScore, targetAux);
+        const targetStat = statBuilder(target.id, targetScore);
         const sentEmbed = new Discord.EmbedBuilder()
             .setTitle(`Dữ liệu game MultipleChoice`)
             .setDescription(`Dữ liệu sau đây thuộc về <@${target.id}>\n`)
@@ -80,9 +73,8 @@ module.exports = {
                 { name: "Tỉ lệ đúng", value: `\`\`\`${targetStat.rate}\`\`\``, inline: true },
                 { name: "Chuỗi đúng dài nhất", value: `\`\`\`${targetStat.streak}\`\`\``, inline: true },
                 { name: "Điểm cao nhất từng đạt", value: `\`\`\`${targetStat.max}\`\`\``, inline: true },
-                { name: "Phép bổ trợ hiện có", value: `\`\`\`${targetStat.boost}\`\`\``, inline: false }
             )
             .setTimestamp()
-        interaction.reply({ embeds: [sentEmbed], ephemeral: !gameLib.isInRoom(interaction.guild.id, interaction.channel.id) | gameLib.isRunning(interaction.guild.id) });
+        await interaction.reply({ embeds: [sentEmbed], ephemeral: !gameLib.isInRoom(interaction.guild.id, interaction.channel.id) | gameLib.isRunning(interaction.guild.id) });
     },
 };

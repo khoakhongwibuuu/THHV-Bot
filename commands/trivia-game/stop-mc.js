@@ -10,24 +10,24 @@ module.exports = {
     ,
     async execute(interaction) {
         if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
-            interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
+            await interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
             return;
         }
         if (!gameLib.isSetup(interaction.guild.id)) {
-            interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
+            await interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
-        if (interaction.channel.id !== gameLib.getRoomId(interaction.guild.id)) {
-            interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại phòng chơi <#${gameLib.getRoomId(interaction.guild.id)}>`, ephemeral: true });
+        if (!gameLib.isInRoom(interaction.guild.id, interaction.channel.id)) {
+            await interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại phòng chơi <#${gameLib.getRoom(interaction.guild.id)}>`, ephemeral: true });
             return;
         }
         if (!gameLib.isRunning(interaction.guild.id)) {
-            interaction.reply({ content: `⚠️ Không có lượt chơi nào đang diễn ra.`, ephemeral: true });
+            await interaction.reply({ content: `⚠️ Không có lượt chơi nào đang diễn ra.`, ephemeral: true });
             return;
         }
         gameLib.guildUnlock(interaction.guild.id);
-        interaction.reply({
-            content: `<@${interaction.user.id}>: đã buộc dừng lượt chơi.`,
+        await interaction.reply({
+            content: `Moderator <@${interaction.user.id}> đã buộc dừng chơi này.\nKết quả của lượt chơi sẽ không được ghi nhận.`,
             ephemeral: false
         });
     },

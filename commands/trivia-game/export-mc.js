@@ -10,20 +10,20 @@ module.exports = {
     ,
     async execute(interaction) {
         if (process.env.OWNER_ID !== interaction.user.id) {
-            interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
+            await interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
             return;
         }
         if (!gameLib.isSetup(interaction.guild.id)) {
-            interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
+            await interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
         if (gameLib.isRunning(interaction.guild.id)) {
-            interaction.reply({ content: '⚠️ Bạn không được phép sử dụng lệnh này khi có lượt chơi đang diễn ra. Vui lòng chờ lượt chơi đó hoàn tất.', ephemeral: true });
+            await interaction.reply({ content: '⚠️ Bạn không được phép sử dụng lệnh này khi có lượt chơi đang diễn ra. Vui lòng chờ lượt chơi đó hoàn tất.', ephemeral: true });
             return;
         }
         const dat = gameLib.loadRawGuildFile(interaction.guild.id);
         console.log("trivia-game:", interaction.guild.id, dat);
-        interaction.reply({
+        await interaction.reply({
             embeds: [new Discord.EmbedBuilder()
                 .setDescription(`Server data has been exported.`)
             ],

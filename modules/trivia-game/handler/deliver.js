@@ -8,14 +8,14 @@ const dictionary = {
     hard: "Khó"
 }
 
-const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {
+module.exports.execute = async (interaction, cat, difficulty, quest, key, cont, type, time) => {
     console.log(key);
     const embed = new Discord.EmbedBuilder()
         .setTitle(quest)
         .setDescription(cont);
 
     let row = null;
-    if (mode === "multiple") {
+    if (type === "multiple") {
         row = new Discord.ActionRowBuilder()
             .addComponents(
                 new Discord.ButtonBuilder()
@@ -49,17 +49,17 @@ const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {
             );
     }
 
-    interaction.reply({
-        content: `:alarm_clock: Bạn có \`${ETA}\` giây để trả lời câu hỏi sau.\nChủ đề: ${cat}\nĐộ khó: ${dictionary[diff]}`,
+    await interaction.reply({
+        content: `:alarm_clock: Bạn có \`${time}\` giây để trả lời câu hỏi sau.\nChủ đề: ${cat}\nĐộ khó: ${dictionary[difficulty]}`,
         embeds: [embed],
         components: [row]
     });
 
     const filter = (interaction) => interaction.isButton();
-    const collector = interaction.channel.createMessageComponentCollector({ filter, time: ETA * 1000 });
+    const collector = interaction.channel.createMessageComponentCollector({ filter, time: time * 1000 });
 
     let responseData = {};
-    let memberVotedCount = 0;
+    let responseCount = 0;
 
     collector.on('collect', async (subInteraction) => {
         if (responseData.hasOwnProperty(subInteraction.user.id)) {
@@ -69,7 +69,7 @@ const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {
                 await subInteraction.reply({ content: 'Không thể ghi nhận câu trả lời của bạn. Lượt chơi này đã bị một người điều phối hủy bỏ.', ephemeral: true })
                     .then(thisMessage => setTimeout(() => thisMessage.delete(), 3000));
             } else {
-                memberVotedCount++;
+                responseCount++;
                 responseData[subInteraction.user.id] = subInteraction.customId;
                 await subInteraction.reply({ content: 'Đã ghi nhận câu trả lời của bạn.', ephemeral: true })
                     .then(thisMessage => setTimeout(() => thisMessage.delete(), 3000));
@@ -77,7 +77,7 @@ const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {
                 interaction.editReply({
                     embeds: [embed
                         .setFooter({
-                            text: `${memberVotedCount} người chơi đã tham gia.`
+                            text: `${responseCount} người chơi đã tham gia.`
                         })
                     ]
                 });
@@ -85,29 +85,25 @@ const execute = (interaction, cat, diff, quest, key, cont, mode, ETA) => {
         }
     });
 
-    collector.on('end', () => {
+    collector.on('end', async () => {
         // time in seconds to review the question before it disappears
         const timeHidden = 20;
-        interaction.editReply({
+        await interaction.editReply({
             embeds: [embed
-                .setFooter({ text: `Lượt chơi này đã kết thúc. ${memberVotedCount} người chơi đã tham gia.` })
+                .setFooter({ text: `Lượt chơi này đã kết thúc. ${responseCount} người chơi đã tham gia.` })
             ],
             components: []
         });
-        require('./judge.js').execute(interaction, responseData, key);
-        interaction.editReply({
+        await require('./judge.js').execute(interaction, responseData, key, difficulty, type);
+        await interaction.editReply({
             embeds: [embed
                 .setDescription(`${cont}\n\nCâu hỏi sẽ bị xóa trong <t:${parseInt(new Date().getTime() / 1000) + timeHidden + 1}:R>.`)
             ]
         });
-        setTimeout(() => {
-            interaction.editReply({
+        setTimeout(async () => {
+            await interaction.editReply({
                 embeds: []
             });
         }, timeHidden * 1000);
     });
-}
-
-module.exports = {
-    execute
 }
