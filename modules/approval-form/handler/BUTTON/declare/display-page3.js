@@ -18,24 +18,24 @@ module.exports.exec = async (interaction, UUID, message, pageRedirected, modalIn
     if (!data) {
         await interaction.reply({
             ephemeral: true,
-            content: `Đã có lỗi xảy ra. Vui lòng huỷ yêu cầu thử khai báo lại.`
+            content: `Đã có lỗi xảy ra. Vui lòng huỷ yêu cầu và thử khai báo lại.`
         });
         return;
     }
-    
+
     let pg3_data = {
         content: "",
         embeds: [
             new Discord.EmbedBuilder()
                 .setTitle("Form khai báo thông tin - Trang 3")
                 .setDescription(
-                    "**Trang cuối cùng dành dùng để khai báo các giải thưởng bạn đã có. Các giải thưởng gồm:**"
-                    + "\n* Các năm học bạn đã tham gia kì thi Học sinh giỏi quốc gia"
-                    + "\n* Các giải thưởng tin học khác"
+                    "**Trang cuối cùng dùng để khai báo các thành tích môn tin học bạn đã có. Gồm:**"
+                    + "\n* Các năm học bạn đã tham gia kì thi Học sinh giỏi quốc gia nếu có"
+                    + "\n* Các giải thưởng tin học khác nếu có"
 
                     + "\n\n**Lưu ý:**"
                     + "\n* Các thông tin bên dưới là không bắt buộc."
-                    + "\n* Nếu bạn không có bất kì giải thường nào thì có thể bỏ qua trang này và bấm `Gửi yêu cầu`."
+                    + "\n* Nếu bạn không có bất kì thành tích nào thì có thể bỏ qua trang này và bấm `Gửi yêu cầu`."
                 )
                 .setFooter({
                     text: "Trang 3/3: Thông tin các giải thưởng",
@@ -80,7 +80,6 @@ module.exports.exec = async (interaction, UUID, message, pageRedirected, modalIn
                     .setCustomId(`approval-form:BUTTON:declare/submit:${UUID}`)
                     .setStyle(Discord.ButtonStyle.Success)
                     .setDisabled(isSubmitLocked(data))
-                ,
             )
         ]
     }

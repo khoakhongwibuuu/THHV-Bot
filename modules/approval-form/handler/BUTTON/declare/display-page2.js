@@ -5,12 +5,12 @@ const { client } = global.variable;
 module.exports.exec = async (interaction, UUID, message, pageRedirected, modalInteraction) => {
     if (!pageRedirected && pageRedirected !== false) pageRedirected = true;
     if (!message) message = interaction.message;
-    
+
     const data = memory.getData(UUID);
     if (!data) {
         await interaction.reply({
             ephemeral: true,
-            content: `Đã có lỗi xảy ra. Vui lòng huỷ yêu cầu thử khai báo lại.`
+            content: `Đã có lỗi xảy ra. Vui lòng huỷ yêu cầu và thử khai báo lại.`
         });
         return;
     }
@@ -76,7 +76,6 @@ module.exports.exec = async (interaction, UUID, message, pageRedirected, modalIn
                     .setCustomId(`approval-form:BUTTON:declare/display-page3:${UUID}`)
                     .setStyle(Discord.ButtonStyle.Primary)
                     .setDisabled(false)
-                ,
             )
         ]
     }

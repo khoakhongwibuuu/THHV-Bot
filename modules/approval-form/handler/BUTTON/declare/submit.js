@@ -30,7 +30,7 @@ module.exports.exec = async (interaction, UUID) => {
     if (!data) {
         await interaction.reply({
             ephemeral: true,
-            content: `Đã có lỗi xảy ra.Vui lòng huỷ yêu cầu thử khai báo lại.`
+            content: `Đã có lỗi xảy ra. Vui lòng huỷ yêu cầu và thử khai báo lại.`
         });
         return;
     }
