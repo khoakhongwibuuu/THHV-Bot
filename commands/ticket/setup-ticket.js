@@ -5,33 +5,33 @@ const { ticketLib, discordAPI } = global.customLib;
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('ticket-setup')
-        .setDescription('[Moderators Only] - Setup ticket init channel.')
+        .setDescription('[Admin Only] - Setup ticket init channel.')
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
-            interaction.reply({
+        if (!discordAPI.isAdmin(interaction.guild.id, interaction.user.id)) {
+            await interaction.reply({
                 content: "🚫 You do not have permission to run this command.",
                 ephemeral: true
             });
             return;
         }
         if (ticketLib.isSetup(interaction.guild.id)) {
-            interaction.reply({
+            await interaction.reply({
                 content: `⚠️ Ticket module has been installed at <#${ticketLib.getRootChannel(interaction.guild.id)}>.`,
                 ephemeral: true
             });
             return;
         }
         if (interaction.channel.isThread()) {
-            interaction.reply({
+            await interaction.reply({
                 content: "⚠️ This command is not intended for thread channel uses.",
                 ephemeral: true
             });
             return;
         }
         if (interaction.channel.isVoiceBased()) {
-            interaction.reply({
+            await interaction.reply({
                 content: "⚠️ This command is not intended for voice channel uses.",
                 ephemeral: true
             });
@@ -39,14 +39,12 @@ module.exports = {
         }
         const categoryId = interaction.channel?.parentId ?? null;
         if (!categoryId) {
-            interaction.reply({
+            await interaction.reply({
                 content: "⚠️ This channel does not belong to any category.",
                 ephemeral: true
             });
             return;
         }
-        const channelId = interaction.channel.id;
-        const guildId = interaction.guild.id
 
         const modal = new Discord.ModalBuilder()
             .setCustomId(`ticket:MODAL:setup:${0}`)
