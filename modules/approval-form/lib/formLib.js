@@ -22,12 +22,14 @@ const writeGuildFile = (guildId, newData) => fs.writeFileSync(getGuildFilePath(g
 const preLoad = (guildId) => {
     const guildData = loadGuildFile(guildId);
     guildsConfig[guildId] = guildData;
+    cachedFormsRequests[guildId] = {};
 }
 
 // Installation-Uninstallation
 const guildSetup = (guildId, data) => {
     if (isSetup(guildId)) return false;
     guildsConfig[guildId] = data;
+    cachedFormsRequests[guildId] = {};
     writeGuildFile(guildId, data);
     return true;
 }
@@ -37,6 +39,11 @@ const guildUninstall = (guildId) => {
     delete guildsConfig[guildId];
     fs.unlinkSync(getGuildFilePath(guildId));
     return true;
+}
+
+const isUninstallable = (guildId) => {
+    if (!isSetup(guildId)) return false;
+    return (Object.keys(cachedFormsRequests[guildId]).length === 0 && Object.keys(guildsConfig[guildId].waitApproval).length === 0);
 }
 
 const getGuildConfig = (guildId) => isSetup(guildId) ? guildsConfig[guildId] : null;
@@ -68,8 +75,6 @@ const memberIsInApprovalQueue = (guildId, userId) => {
 
 const addMemberToCache = (guildId, userId) => {
     if (isSetup(guildId)) {
-        if (!cachedFormsRequests.hasOwnProperty(guildId))
-            cachedFormsRequests[guildId] = {}
         cachedFormsRequests[guildId][userId] = 1;
     }
 }
@@ -98,6 +103,7 @@ module.exports = {
     preLoad,
     guildSetup,
     guildUninstall,
+    isUninstallable,
     getGuildConfig,
     memberIsVerified,
     addMemberToApprovalQueue,
