@@ -2,7 +2,6 @@
 const BotStartTime = new Date().toISOString();
 
 const fs = require('node:fs');
-const fsPromises = require('node:fs').promises;
 const path = require('node:path');
 const dotenv = require('dotenv');
 const Discord = require('discord.js');
@@ -55,32 +54,10 @@ global.customLib.memory = require('./assets/api/memory.api.js');
 global.customLib.stdlib = require('./assets/library/standard.js');
 global.customLib.discordAPI = require('./assets/api/discord.api.js');
 
-async function loadModules() {
-	const modulesPath = path.join(__dirname, "modules");
-	const files = await fsPromises.readdir(modulesPath, { withFileTypes: true });
-
-	for (const file of files) {
-		if (file.isDirectory()) {
-			const loaderPath = path.join(modulesPath, file.name, "offline-loader.js");
-			if (fs.existsSync(loaderPath)) {
-				try {
-					await fsPromises.access(loaderPath);
-					console.log(`[${new Date().toISOString()}] [INFO] Client: loading ${file.name} module!`);
-					const loadTime = Date.now();
-					require(loaderPath);
-					const finishTime = Date.now();
-					console.log(`[${new Date().toISOString()}] [SUCCESS] Client: loaded ${file.name} module in ${finishTime - loadTime}ms!`);
-				} catch (err) {
-					console.error(`[${new Date().toISOString()}] [ERROR] Error loading module ${file.name}:`, err);
-					process.exit(1);
-				}
-			}
-		}
-	}
-}
 
 (async () => {
-	await loadModules();
+	// Load offline modules
+	await require('./assets/instruction/pre-login.js').loadModules();
 
 	client.commands = new Discord.Collection();
 	const foldersPath = path.join(__dirname, 'commands');

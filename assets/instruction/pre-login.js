@@ -7,19 +7,19 @@ module.exports.loadModules = async () => {
     const modulesPath = path.join(dirname, "modules");
     const modules = await fsPromises.readdir(modulesPath, { withFileTypes: true });
 
-    for (const onlineModule of modules) {
-        if (onlineModule.isDirectory()) {
-            const loaderPath = path.join(modulesPath, onlineModule.name, "online-loader.js");
+    for (const offlineModule of modules) {
+        if (offlineModule.isDirectory()) {
+            const loaderPath = path.join(modulesPath, offlineModule.name, "offline-loader.js");
             if (fs.existsSync(loaderPath)) {
                 try {
                     await fsPromises.access(loaderPath);
-                    console.log(`[${new Date().toISOString()}] [INFO] Client: loading ${onlineModule.name} module!`);
+                    console.log(`[${new Date().toISOString()}] [INFO] Client: loading ${offlineModule.name} module!`);
                     const loadTime = Date.now();
                     require(loaderPath);
                     const finishTime = Date.now();
-                    console.log(`[${new Date().toISOString()}] [SUCCESS] Client: loaded ${onlineModule.name} module in ${finishTime - loadTime}ms!`);
+                    console.log(`[${new Date().toISOString()}] [SUCCESS] Client: loaded ${offlineModule.name} module in ${finishTime - loadTime}ms!`);
                 } catch (err) {
-                    console.error(`[${new Date().toISOString()}] [ERROR] Error loading module ${onlineModule.name}:`, err);
+                    console.error(`[${new Date().toISOString()}] [ERROR] Error loading module ${offlineModule.name}:`, err);
                     process.exit(1);
                 }
             }

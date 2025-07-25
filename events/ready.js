@@ -15,8 +15,8 @@ module.exports = {
         // Login success event
         console.log(`[${new Date().toISOString()}] [SUCCESS] Ready! Logged in as ${client.user.tag}`);
 
-        // Load custom post-login-instruction
-        require(path.join(dirname, 'assets/instruction/post-login.js'));
+        // Load online modules
+        await require(path.join(dirname, 'assets/instruction/post-login.js')).loadModules();
 
         // Set client presence
         client.user.setPresence({
