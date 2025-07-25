@@ -36,7 +36,7 @@ const guildSetup = (guildId, data) => {
     }
 }
 
-const guildReset = (guildId) => {
+const guildUninstall = (guildId) => {
     if (!isSetup(guildId)) return false;
     delete guildsConfig[guildId];
     fs.unlinkSync(getGuildFilePath(guildId));
@@ -77,7 +77,7 @@ module.exports = {
     writeGuildFile,
     preLoad,
     guildSetup,
-    guildReset,
+    guildUninstall,
     getRootChannel,
     getExistingTickets,
     isOccupied,
