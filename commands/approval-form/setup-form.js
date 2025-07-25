@@ -1,6 +1,6 @@
 // Packages
 const Discord = require('discord.js');
-const { discordAPI, memory } = global.customLib;
+const { formLib, discordAPI, memory } = global.customLib;
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -10,8 +10,15 @@ module.exports = {
     ,
     async execute(interaction) {
         if (!discordAPI.isAdmin(interaction.guild.id, interaction.user.id)) {
-            interaction.reply({
+            await interaction.reply({
                 content: "🚫 You do not have permission to run this command.",
+                ephemeral: true
+            });
+            return;
+        }
+        if (formLib.isSetup(interaction.guild.id)) {
+            await interaction.reply({
+                content: `⚠️ Nothing changed. Member\'s information management panel has been installed in this server.`,
                 ephemeral: true
             });
             return;
