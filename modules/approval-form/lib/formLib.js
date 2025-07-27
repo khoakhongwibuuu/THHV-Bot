@@ -94,6 +94,11 @@ const memberIsInCache = (guildId, userId) => {
         && cachedFormsRequests[guildId][userId]);
 }
 
+const usageData = (guildId) => {
+    if (!cachedFormsRequests[guildId] || !isSetup(guildId)) return [];
+    else return Object.keys(cachedFormsRequests[guildId]);
+}
+
 module.exports = {
     handlersPath,
     getGuildFilePath,
@@ -111,5 +116,6 @@ module.exports = {
     memberIsInApprovalQueue,
     addMemberToCache,
     removeMemberFromCache,
-    memberIsInCache
+    memberIsInCache,
+    usageData
 }
