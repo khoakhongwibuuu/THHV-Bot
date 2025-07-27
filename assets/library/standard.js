@@ -123,6 +123,16 @@ Array.prototype.argList = function (mode) {
 	return res;
 }
 
+Array.prototype.listing = function (prefix, suffix, delimiter) {
+    let res = "";
+    this.forEach((e, i, a) => {
+        res += (prefix + e + suffix);
+        if (i < a.length - 1)
+            res += delimiter;
+    });
+    return res;
+}
+
 Array.prototype.lastValue = function () {
 	return this[this.length - 1];
 }
