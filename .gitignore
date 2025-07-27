@@ -3,6 +3,7 @@ modules/*/cache/*
 node_modules/*
 auth/*
 debug/*
+.debug/*
 .ideas/*
 commands/interactions-debug/*
 **/**.env
