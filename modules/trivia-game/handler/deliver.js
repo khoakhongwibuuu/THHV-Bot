@@ -104,6 +104,6 @@ module.exports.execute = async (interaction, cat, difficulty, quest, key, cont, 
             await interaction.editReply({
                 embeds: []
             });
-        }, timeHidden * 1000);
+        }, timeHidden * 1000 - 1000);
     });
 }
