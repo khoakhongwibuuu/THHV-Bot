@@ -5,7 +5,7 @@ const { dirname } = global.variable;
 
 // Persist Controller
 const persistPath = path.join(dirname, 'modules/contest/config/persist.json');
-const loadPersist = () => {
+const loadPersist = async () => {
     if (!fs.existsSync(persistPath))
         return 0;
     else try {
@@ -15,8 +15,8 @@ const loadPersist = () => {
         return -1;
     }
 }
-const savePersist = (Persist) => { fs.writeFileSync(persistPath, JSON.stringify(Persist)); }
-const wipePersist = () => {
+const savePersist = async (Persist) => { fs.writeFileSync(persistPath, JSON.stringify(Persist)); }
+const wipePersist = async () => {
     fs.writeFileSync(persistPath, JSON.stringify({
         ready: {},
         channel: {},
