@@ -19,8 +19,6 @@ module.exports.exec = async (interaction, clienMemberId) => {
 
     await interaction.message.fetch();
 
-    formLib.removeMemberFromApprovalQueue(interaction.guild.id, clienMemberId);
-
     const sentEmbed = Discord.EmbedBuilder.from(interaction.message.embeds[0])
         .setColor(0xb42831)
         .setFooter({ text: `❌ Đã bị từ chối` });

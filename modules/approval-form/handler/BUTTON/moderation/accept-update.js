@@ -19,16 +19,14 @@ module.exports.exec = async (interaction, clienMemberId) => {
 
     await interaction.message.fetch();
 
-    formLib.removeMemberFromApprovalQueue(interaction.guild.id, clienMemberId);
-
     const sentEmbed = Discord.EmbedBuilder.from(interaction.message.embeds[0])
-        .setColor(0xb42831)
-        .setFooter({ text: `❌ Đã bị từ chối` });
+        .setColor(0x047e37)
+        .setFooter({ text: `✅ Đã được duyệt` });
 
     sentEmbed.setDescription(
         sentEmbed.data.description
-        + `\n* Người từ chối yêu cầu: <@${interaction.user.id}>`
-        + `\n* Thời điểm từ chối yêu cầu: <t:${Math.floor(interaction.createdTimestamp / 1000)}:F>`
+        + `\n* Người duyệt yêu cầu: <@${interaction.user.id}>`
+        + `\n* Thời điểm duyệt yêu cầu: <t:${Math.floor(interaction.createdTimestamp / 1000)}:F>`
     );
 
     await interaction.message.edit({
@@ -38,6 +36,6 @@ module.exports.exec = async (interaction, clienMemberId) => {
 
     await interaction.reply({
         ephemeral: true,
-        content: `Đã từ chối yêu cầu của <@${clienMemberId}>.`
+        content: `Đã xác nhận yêu cầu của <@${clienMemberId}>.`
     });
 }

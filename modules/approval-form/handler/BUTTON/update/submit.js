@@ -30,7 +30,7 @@ module.exports.exec = async (interaction, UUID) => {
     if (!data) {
         await interaction.reply({
             ephemeral: true,
-            content: `Đã có lỗi xảy ra. Vui lòng huỷ yêu cầu và thử khai báo lại.`
+            content: `Đã có lỗi xảy ra. Vui lòng huỷ yêu cầu và thử cập nhật lại.`
         });
         return;
     }
@@ -43,13 +43,11 @@ module.exports.exec = async (interaction, UUID) => {
     }
 
     memory.deleteData(UUID);
-
     formLib.removeMemberFromCache(data.guildId, interaction.user.id);
-    formLib.addMemberToApprovalQueue(data.guildId, interaction.user.id);
 
     await interaction.reply({
         ephemeral: true,
-        content: "Đã gửi yêu cầu khai báo đến các Moderator/Admin Tin học Hùng Vương."
+        content: "Đã gửi yêu cầu cập nhật đến các Moderator/Admin Tin học Hùng Vương."
     });
 
     await interaction.message.delete();
@@ -60,56 +58,52 @@ module.exports.exec = async (interaction, UUID) => {
                 .setFooter({
                     text: `🕒 Đang chờ duyệt`
                 })
-                .setTitle("Yêu cầu khai báo thông tin thành viên")
+                .setTitle("Yêu cầu cập nhật thông tin thành viên")
                 .setDescription(
                     `* Người tạo yêu cầu: <@${interaction.user.id}> `
                     + `\n * Thời điểm tạo yêu cầu: <t:${Math.floor(interaction.createdTimestamp / 1000)}:F>`
                 )
                 .addFields(
                     {
-                        name: "**Họ và tên**",
-                        value: `||\`\`\`${data.basic.fullName}\`\`\`||`,
-                        inline: false
-                    },
-                    {
-                        name: "**Khoá**",
-                        value: `\`\`\`${data.basic.schoolYear}\`\`\``,
-                        inline: false
-                    },
-                    {
                         name: "**Địa chỉ Email**",
-                        value: `||\`\`\`${emailTokenBreak(data.social.Email.split(','))}\`\`\`||`,
+                        value: data.social.Email
+                            ? `||\`\`\`${emailTokenBreak(data.social.Email.split(','))}\`\`\`||`
+                            : "Không thay đổi",
                         inline: false
                     },
                     {
                         name: "**Codeforces**",
-                        value: socialTokenBreak('https://codeforces.com/profile/', data.social.Codeforces.split(',')),
+                        value: data.social.Codeforces
+                            ? socialTokenBreak('https://codeforces.com/profile/', data.social.Codeforces.split(','))
+                            : "Không thay đổi",
                         inline: true
                     },
                     {
                         name: "**VNOI OJ**",
-                        value: socialTokenBreak('https://oj.vnoi.info/user/', data.social.VNOI.split(',')),
+                        value: data.social.VNOI
+                            ? socialTokenBreak('https://oj.vnoi.info/user/', data.social.VNOI.split(','))
+                            : "Không thay đổi",
                         inline: true
                     },
                     {
                         name: "**Các năm tham gia kì thi HSGQG**",
                         value: data.rewards.VOI
                             ? `\`\`\`${data.rewards.VOI}\`\`\``
-                            : "Không có",
+                            : "Không thay đổi",
                         inline: false
                     },
                     {
                         name: "**Các giải thưởng tin học khác**",
                         value: data.rewards.others
                             ? `\`\`\`${data.rewards.others}\`\`\``
-                            : "Không có",
+                            : "Không thay đổi",
                         inline: false
                     },
                     {
                         name: "**Ghi chú thêm**",
                         value: data.notes
                             ? `\`\`\`${data.notes}\`\`\``
-                            : "Không có",
+                            : "Không thay đổi",
                         inline: false
                     },
                 )
@@ -118,12 +112,12 @@ module.exports.exec = async (interaction, UUID) => {
             new Discord.ActionRowBuilder().addComponents(
                 new Discord.ButtonBuilder()
                     .setLabel("Accept")
-                    .setCustomId(`approval-form:BUTTON:moderation/accept-declare:${interaction.user.id}`)
+                    .setCustomId(`approval-form:BUTTON:moderation/accept-update:${interaction.user.id}`)
                     .setStyle(Discord.ButtonStyle.Success)
                 ,
                 new Discord.ButtonBuilder()
                     .setLabel("Reject")
-                    .setCustomId(`approval-form:BUTTON:moderation/reject-declare:${interaction.user.id}`)
+                    .setCustomId(`approval-form:BUTTON:moderation/reject-update:${interaction.user.id}`)
                     .setStyle(Discord.ButtonStyle.Danger)
             )
         ]
