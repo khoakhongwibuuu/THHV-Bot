@@ -10,7 +10,7 @@ module.exports.exec = async (interaction, UUID, message, firstTimeDisplay, pageR
     if (!data) {
         await interaction.reply({
             ephemeral: true,
-            content: `Đã có lỗi xảy ra. Vui lòng huỷ yêu cầu và thử khai báo lại.`
+            content: `Đã có lỗi xảy ra. Vui lòng huỷ yêu cầu và thử lại.`
         });
         return;
     }
@@ -19,9 +19,9 @@ module.exports.exec = async (interaction, UUID, message, firstTimeDisplay, pageR
         content: "",
         embeds: [
             new Discord.EmbedBuilder()
-                .setTitle("Form khai báo thông tin - Trang 1")
+                .setTitle("Form cập nhật thông tin - Trang 1")
                 .setDescription(
-                    "**Ở trang này, bạn sẽ khai báo các thông tin sau:**"
+                    "**Ở trang này, bạn sẽ cập nhật các thông tin sau nếu có thay đổi:**"
                     + "\n* Địa chỉ Email của bạn"
                     + "\n* Handle tài khoản của bạn trên nền tảng [Codeforces](https://codeforces.com/)"
                     + "\n* Username tài khoản của bạn trên nền tảng [VNOI Online Judge](https://oj.vnoi.info/)"

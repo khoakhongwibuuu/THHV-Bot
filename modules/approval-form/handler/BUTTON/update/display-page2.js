@@ -19,7 +19,7 @@ module.exports.exec = async (interaction, UUID, message, pageRedirected, modalIn
     if (!data) {
         await interaction.reply({
             ephemeral: true,
-            content: `Đã có lỗi xảy ra. Vui lòng huỷ yêu cầu và thử khai báo lại.`
+            content: `Đã có lỗi xảy ra. Vui lòng huỷ yêu cầu và thử lại.`
         });
         return;
     }
@@ -35,9 +35,9 @@ module.exports.exec = async (interaction, UUID, message, pageRedirected, modalIn
         content: "",
         embeds: [
             new Discord.EmbedBuilder()
-                .setTitle("Form khai báo thông tin - Trang 2")
+                .setTitle("Form cập nhật thông tin - Trang 2")
                 .setDescription(
-                    "**Trang cuối cùng dùng để khai báo các thành tích môn tin học bạn đã có. Gồm:**"
+                    "**Trang cuối cùng dùng để cập nhật các thành tích môn tin học nếu có thay đổi. Gồm:**"
                     + "\n* Các năm học bạn đã tham gia kì thi Học sinh giỏi quốc gia nếu có"
                     + "\n* Các giải thưởng tin học khác nếu có"
 
