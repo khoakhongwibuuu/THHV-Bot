@@ -5,7 +5,10 @@ const { client } = global.variable;
 const isSubmitLocked = (data) => {
     return !data.social.Email
         && !data.social.Codeforces
-        && !data.social.VNOI;
+        && !data.social.VNOI
+        && !data.rewards.VOI
+        && !data.rewards.others
+        && !data.notes;
 }
 
 module.exports.exec = async (interaction, UUID, message, pageRedirected, modalInteraction) => {
@@ -19,6 +22,13 @@ module.exports.exec = async (interaction, UUID, message, pageRedirected, modalIn
             content: `Đã có lỗi xảy ra. Vui lòng huỷ yêu cầu và thử khai báo lại.`
         });
         return;
+    }
+
+    if (!data.host) {
+        memory.modifyData(UUID, {
+            ...data,
+            host: interaction
+        });
     }
 
     let pg2_data = {

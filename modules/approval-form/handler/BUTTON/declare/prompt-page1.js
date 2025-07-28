@@ -10,11 +10,13 @@ module.exports.exec = async (interaction, UUID) => {
         });
         return;
     }
-    
-    memory.modifyData(UUID, {
-        ...data,
-        host: interaction
-    });
+
+    if (!data.host) {
+        memory.modifyData(UUID, {
+            ...data,
+            host: interaction
+        });
+    }
 
     const modal = new Discord.ModalBuilder()
         .setCustomId(`approval-form:MODAL:declare/basic:${UUID}`)

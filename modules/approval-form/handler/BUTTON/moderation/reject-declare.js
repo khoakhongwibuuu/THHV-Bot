@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const { formLib, discordAPI } = global.customLib;
 
-module.exports.exec = async (interaction, clienMemberId) => {
+module.exports.exec = async (interaction, clientMemberId) => {
     if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
         interaction.reply({
             content: "🚫 You do not have permission to run this command.",
@@ -19,7 +19,7 @@ module.exports.exec = async (interaction, clienMemberId) => {
 
     await interaction.message.fetch();
 
-    formLib.removeMemberFromApprovalQueue(interaction.guild.id, clienMemberId);
+    formLib.removeMemberFromApprovalQueue(interaction.guild.id, clientMemberId);
 
     const sentEmbed = Discord.EmbedBuilder.from(interaction.message.embeds[0])
         .setColor(0xb42831)
@@ -38,6 +38,6 @@ module.exports.exec = async (interaction, clienMemberId) => {
 
     await interaction.reply({
         ephemeral: true,
-        content: `Đã từ chối yêu cầu của <@${clienMemberId}>.`
+        content: `Đã từ chối yêu cầu của <@${clientMemberId}>.`
     });
 }

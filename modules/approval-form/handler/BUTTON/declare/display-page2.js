@@ -14,6 +14,12 @@ module.exports.exec = async (interaction, UUID, message, pageRedirected, modalIn
         });
         return;
     }
+    if (!data.host) {
+        memory.modifyData(UUID, {
+            ...data,
+            host: interaction
+        });
+    }
 
     let pg2_data = {
         content: "",

@@ -1,7 +1,18 @@
 const Discord = require('discord.js');
+const { client } = global.variable;
 const { formLib, discordAPI } = global.customLib;
 
-module.exports.exec = async (interaction, clienMemberId) => {
+const isUserInGuild = async (guildId, userId) => {
+    try {
+        const guild = await client.guilds.fetch(guildId);
+        await guild.members.fetch(userId);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+module.exports.exec = async (interaction, clientMemberId) => {
     if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
         interaction.reply({
             content: "🚫 You do not have permission to run this command.",
@@ -19,13 +30,13 @@ module.exports.exec = async (interaction, clienMemberId) => {
 
     await interaction.message.fetch();
 
-    formLib.removeMemberFromApprovalQueue(interaction.guild.id, clienMemberId);
+    formLib.removeMemberFromApprovalQueue(interaction.guild.id, clientMemberId);
 
-    const isMemberOfGuild = await isUserInGuild(interaction.guild.id, clienMemberId);
+    const isMemberOfGuild = await isUserInGuild(interaction.guild.id, clientMemberId);
     if (isMemberOfGuild) {
         const clientMember = discordAPI.GuildMember(
             interaction.guild.id,
-            clienMemberId
+            clientMemberId
         );
         const verifyRole = discordAPI.GuildRole(
             interaction.guild.id,
@@ -51,7 +62,7 @@ module.exports.exec = async (interaction, clienMemberId) => {
 
         await interaction.reply({
             ephemeral: true,
-            content: `Đã thêm Role <@&${verifyRole.id}> cho <@${clienMemberId}>.`
+            content: `Đã thêm Role <@&${verifyRole.id}> cho <@${clientMemberId}>.`
         });
     } else {
         const sentEmbed = Discord.EmbedBuilder.from(interaction.message.embeds[0])
@@ -70,7 +81,7 @@ module.exports.exec = async (interaction, clienMemberId) => {
         });
         await interaction.reply({
             ephemeral: true,
-            content: `<@${clienMemberId}> đã rời khỏi server trước đó.\nKhông thể thêm thêm Role <@&${verifyRole.id}> cho <@${clienMemberId}>.`
+            content: `Không thể duyệt yêu cầu: <@${clientMemberId}> đã rời khỏi server trước đó.`
         });
         return;
     }
