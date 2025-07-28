@@ -15,23 +15,23 @@ module.exports = {
     ,
     async execute(interaction) {
         if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
-            interaction.reply({
+            await interaction.reply({
                 content: "🚫 You do not have permission to run this command.",
                 ephemeral: true
             });
             return;
         }
 
-        const Persist = contestLib.loadPersist();
+        const Persist = await contestLib.loadPersist();
         Persist.channel[interaction.guild.id] = interaction.channel.id;
         Persist.ready[interaction.guild.id] = true;
 
         const roleNotified = interaction.options.getRole('role') ?? { id: "" };
         Persist.role[interaction.guild.id] = roleNotified.id;
 
-        contestLib.savePersist(Persist);
+        await contestLib.savePersist(Persist);
 
-        interaction.reply({
+        await interaction.reply({
             content: `Notification channel has been set at <#${interaction.channel.id}>. I will notify${(roleNotified.id != "")
                 ? ` members this role <@&${roleNotified.id}>`
                 : ""

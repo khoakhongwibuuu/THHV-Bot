@@ -10,13 +10,13 @@ module.exports = {
     ,
     async execute(interaction) {
         if (process.env.OWNER_ID === interaction.user.id) {
-            contestLib.wipePersist();
-            interaction.reply({
+            await contestLib.wipePersist();
+            await interaction.reply({
                 content: `Persist has been reseted.`,
                 ephemeral: true
             });
         } else {
-            interaction.reply({
+            await interaction.reply({
                 content: "🚫 You do not have permission to run this command.",
                 ephemeral: true
             });
