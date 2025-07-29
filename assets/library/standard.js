@@ -119,22 +119,6 @@ String.prototype.codeChunk = function () {
 	return `\`\`\`\n${this}\n\`\`\``;
 }
 
-Array.prototype.argList = function (mode) {
-	let res = "";
-	this.forEach((e, i, a) => {
-		if (mode === "mention")
-			res += `<@${e}>`;
-		else if (mode === "role-mention")
-			res += `<@&${e}>`;
-		else if (mode === "shaded")
-			res += `\`${e}\``;
-		else res += e;
-		if (i < a.length - 1)
-			res += ', '
-	});
-	return res;
-}
-
 Array.prototype.listing = function (prefix, suffix, delimiter) {
 	let res = "";
 	this.forEach((e, i, a) => {
