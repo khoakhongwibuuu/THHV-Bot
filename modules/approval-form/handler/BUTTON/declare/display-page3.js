@@ -44,15 +44,21 @@ module.exports.exec = async (interaction, UUID, message, pageRedirected, modalIn
                 .addFields(
                     {
                         name: "**Các năm tham gia kì thi Học sinh giỏi quốc gia nếu có**",
-                        value: (data.rewards.VOI ? `\`\`\`${data.rewards.VOI}\`\`\`` : "Không có"),
+                        value: data.rewards.VOI
+                            ? data.rewards.VOI.codeChunk()
+                            : "Không có",
                     },
                     {
                         name: "**Các giải thưởng tin học khác (ví dụ: TST, ICPC, APIO, IOI, ...) và năm đạt giải nếu có**",
-                        value: (data.rewards.others ? `\`\`\`${data.rewards.others}\`\`\`` : "Không có"),
+                        value: data.rewards.others
+                            ? data.rewards.others.codeChunk()
+                            : "Không có",
                     },
                     {
                         name: "**Ghi chú thêm nếu có**",
-                        value: (data.notes ? `\`\`\`${data.notes}\`\`\`` : "Không có"),
+                        value: data.notes
+                            ? data.notes.codeChunk()
+                            : "Không có",
                     }
                 )
         ],
