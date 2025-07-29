@@ -21,6 +21,7 @@ module.exports.exec = async (interaction, UUID) => {
                     .setLabel("Các năm tham gia kì thi HSGQG")
                     .setStyle(Discord.TextInputStyle.Paragraph)
                     .setMinLength(1)
+                    .setMaxLength(50)
                     .setRequired(false)
                     .setPlaceholder("Ví dụ: Tham gia học sinh giỏi quốc gia hai năm 2024, 2025 thì điền 24, 25.")
             ),
@@ -30,6 +31,7 @@ module.exports.exec = async (interaction, UUID) => {
                     .setLabel("Các giải thưởng tin học khác")
                     .setStyle(Discord.TextInputStyle.Paragraph)
                     .setMinLength(1)
+                    .setMaxLength(100)
                     .setRequired(false)
                     .setPlaceholder("Ví dụ: TST 2024, APIO 2025, ...")
             ),
@@ -39,6 +41,7 @@ module.exports.exec = async (interaction, UUID) => {
                     .setLabel("Ghi chú thêm")
                     .setStyle(Discord.TextInputStyle.Paragraph)
                     .setMinLength(1)
+                    .setMaxLength(1000)
                     .setRequired(false)
             )
         )

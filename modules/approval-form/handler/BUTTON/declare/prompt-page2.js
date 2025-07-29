@@ -21,6 +21,7 @@ module.exports.exec = async (interaction, UUID) => {
                     .setLabel("Địa chỉ email")
                     .setStyle(Discord.TextInputStyle.Paragraph)
                     .setMinLength(1)
+                    .setMaxLength(100)
                     .setRequired(true)
                     .setPlaceholder("Ví dụ: example@gmail.com, example2@gmail.com")
             ),
@@ -30,6 +31,7 @@ module.exports.exec = async (interaction, UUID) => {
                     .setLabel("Codeforces handle")
                     .setStyle(Discord.TextInputStyle.Paragraph)
                     .setMinLength(1)
+                    .setMaxLength(100)
                     .setRequired(true)
                     .setPlaceholder("Ví dụ: aliceAndBob, Addbeefbob")
             ),
@@ -39,6 +41,7 @@ module.exports.exec = async (interaction, UUID) => {
                     .setLabel("VNOI username")
                     .setStyle(Discord.TextInputStyle.Paragraph)
                     .setMinLength(1)
+                    .setMaxLength(100)
                     .setRequired(true)
                     .setPlaceholder("Ví dụ: aliceAndBob, Addbeefbob")
             )
