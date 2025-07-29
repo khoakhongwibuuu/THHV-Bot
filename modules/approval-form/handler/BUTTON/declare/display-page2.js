@@ -44,16 +44,22 @@ module.exports.exec = async (interaction, UUID, message, pageRedirected, modalIn
                 .addFields(
                     {
                         name: "**Địa chỉ Email**",
-                        value: (data.social.Email ? `\`\`\`${data.social.Email}\`\`\`` : "Chưa có"),
+                        value: data.social.Email
+                            ? data.social.Email.codeChunk()
+                            : "Chưa có",
                     },
                     {
                         name: "**Codeforces handle**",
-                        value: (data.social.Codeforces ? `\`\`\`${data.social.Codeforces}\`\`\`` : "Chưa có"),
+                        value: data.social.Codeforces
+                            ? data.social.Codeforces.codeChunk()
+                            : "Chưa có",
                         inline: true
                     },
                     {
                         name: "**VNOI OJ username**",
-                        value: (data.social.VNOI ? `\`\`\`${data.social.VNOI}\`\`\`` : "Chưa có"),
+                        value: data.social.VNOI
+                            ? data.social.VNOI.codeChunk()
+                            : "Chưa có",
                         inline: true
                     }
                 )

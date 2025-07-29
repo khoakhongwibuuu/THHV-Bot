@@ -19,7 +19,7 @@ module.exports.exec = async (interaction) => {
 
     let sentMessage = "Your public interface will look like this (Accept button will not be shown).";
     if (mod)
-        sentMessage += `\nI will ping ${mod.argList("role-mention")} when a ticket is created.`;
+        sentMessage += `\nI will ping ${mod.listing("<@&", ">", ", ")} when a ticket is created.`;
     sentMessage += "\nIf you accept this modal, click Accept within 15 minutes, else you can safely click `Dimiss message`.";
 
     await interaction.reply({

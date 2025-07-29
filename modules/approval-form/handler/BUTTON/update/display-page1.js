@@ -27,7 +27,6 @@ module.exports.exec = async (interaction, UUID, message, firstTimeDisplay, pageR
                     + "\n* Username tài khoản của bạn trên nền tảng [VNOI Online Judge](https://oj.vnoi.info/)"
 
                     + "\n\n**Lưu ý:**"
-                    + "\n* Các tài khoản trên các nền tảng trên là bắt buộc."
                     + "\n* Username/Handle các tài khoản có phân biệt CHỮ HOA, chữ thường."
                     + "\n* Nếu có nhiều Email/Tài khoản, hãy điền tất cả cách nhau bởi dấu phẩy và dấu cách."
                 )
@@ -38,16 +37,22 @@ module.exports.exec = async (interaction, UUID, message, firstTimeDisplay, pageR
                 .addFields(
                     {
                         name: "**Địa chỉ Email**",
-                        value: (data.social.Email ? `\`\`\`${data.social.Email}\`\`\`` : "Không thay đổi"),
+                        value: data.social.Email
+                            ? data.social.Email.codeChunk()
+                            : "Không thay đổi",
                     },
                     {
                         name: "**Codeforces handle**",
-                        value: (data.social.Codeforces ? `\`\`\`${data.social.Codeforces}\`\`\`` : "Không thay đổi"),
+                        value: data.social.Codeforces
+                            ? data.social.Codeforces.codeChunk()
+                            : "Không thay đổi",
                         inline: true
                     },
                     {
                         name: "**VNOI OJ username**",
-                        value: (data.social.VNOI ? `\`\`\`${data.social.VNOI}\`\`\`` : "Không thay đổi"),
+                        value: data.social.VNOI
+                            ? data.social.VNOI.codeChunk()
+                            : "Không thay đổi",
                         inline: true
                     }
                 )

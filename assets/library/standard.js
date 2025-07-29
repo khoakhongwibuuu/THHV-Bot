@@ -107,30 +107,36 @@ String.prototype.sanitise = function () {
 	return this.replace(/[`"']/g, "");
 }
 
-Array.prototype.argList = function (mode) {
+String.prototype.tokenise = function () {
+	return this.split(/[\s,]+/).filter(Boolean);
+}
+
+String.prototype.hidden = function () {
+	return `||${this}||`;
+}
+
+String.prototype.codeChunk = function () {
+	return `\`\`\`\n${this}\n\`\`\``;
+}
+
+Array.prototype.listing = function (prefix, suffix, delimiter) {
 	let res = "";
 	this.forEach((e, i, a) => {
-		if (mode === "mention")
-			res += `<@${e}>`;
-		else if (mode === "role-mention")
-			res += `<@&${e}>`;
-		else if (mode === "shaded")
-			res += `\`${e}\``;
-		else res += e;
+		res += `${prefix}${e}${suffix}`;
 		if (i < a.length - 1)
-			res += ', '
+			res += delimiter;
 	});
 	return res;
 }
 
-Array.prototype.listing = function (prefix, suffix, delimiter) {
-    let res = "";
-    this.forEach((e, i, a) => {
-        res += (prefix + e + suffix);
-        if (i < a.length - 1)
-            res += delimiter;
-    });
-    return res;
+Array.prototype.linkListing = function (baseURL, delimiter) {
+	let res = "";
+	this.forEach((e, i, a) => {
+		res += `[${e}](${baseURL}${e})`;
+		if (i < a.length - 1)
+			res += delimiter;
+	});
+	return res;
 }
 
 Array.prototype.lastValue = function () {

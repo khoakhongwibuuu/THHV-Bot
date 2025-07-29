@@ -67,7 +67,7 @@ module.exports.exec = async (interaction) => {
         });
         let ticketInitMessage = `<@${interaction.user.id}>`;
         if (modRoles)
-            ticketInitMessage += `,${modRoles.argList("role-mention")}`
+            ticketInitMessage += `,${modRoles.listing("<@&", ">", ", ")}`
         channel.send({
             content: ticketInitMessage,
             embeds: [

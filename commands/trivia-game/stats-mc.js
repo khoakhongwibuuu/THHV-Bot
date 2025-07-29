@@ -66,13 +66,13 @@ module.exports = {
             .setTitle(`Dữ liệu game MultipleChoice`)
             .setDescription(`Dữ liệu sau đây thuộc về <@${target.id}>\n`)
             .addFields(
-                { name: "UUID", value: `\`\`\`${targetStat.uuid}\`\`\``, inline: false },
-                { name: "Điểm hiện tại", value: `\`\`\`${targetStat.current}\`\`\``, inline: true },
-                { name: "Số lượt đã chơi", value: `\`\`\`${targetStat.attempt}\`\`\``, inline: true },
-                { name: "Số lượt đúng", value: `\`\`\`${targetStat.correct}\`\`\``, inline: true },
-                { name: "Tỉ lệ đúng", value: `\`\`\`${targetStat.rate}\`\`\``, inline: true },
-                { name: "Chuỗi đúng dài nhất", value: `\`\`\`${targetStat.streak}\`\`\``, inline: true },
-                { name: "Điểm cao nhất từng đạt", value: `\`\`\`${targetStat.max}\`\`\``, inline: true },
+                { name: "UUID", value: targetStat.uuid.codeChunk(), inline: false },
+                { name: "Điểm hiện tại", value: targetStat.current.codeChunk(), inline: true },
+                { name: "Số lượt đã chơi", value: targetStat.attempt.codeChunk(), inline: true },
+                { name: "Số lượt đúng", value: targetStat.correct.codeChunk(), inline: true },
+                { name: "Tỉ lệ đúng", value: targetStat.rate.codeChunk(), inline: true },
+                { name: "Chuỗi đúng dài nhất", value: targetStat.streak.codeChunk(), inline: true },
+                { name: "Điểm cao nhất từng đạt", value: targetStat.max.codeChunk(), inline: true },
             )
             .setTimestamp()
         await interaction.reply({ embeds: [sentEmbed], ephemeral: !gameLib.isInRoom(interaction.guild.id, interaction.channel.id) | gameLib.isRunning(interaction.guild.id) });

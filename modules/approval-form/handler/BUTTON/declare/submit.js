@@ -1,30 +1,6 @@
 const Discord = require('discord.js');
 const { memory, formLib, discordAPI } = global.customLib;
 
-const emailTokenBreak = (tokens) => {
-    let result = '';
-    for (i = 0; i < tokens.length; i++) {
-        let trimmed = tokens[i].trim()
-        result += trimmed;
-        if (i !== tokens.length - 1) {
-            result += '\n';
-        }
-    }
-    return result;
-}
-
-const socialTokenBreak = (prefix, tokens) => {
-    let result = '';
-    for (i = 0; i < tokens.length; i++) {
-        let trimmed = tokens[i].trim()
-        result += `[${trimmed}](${prefix}${trimmed})`
-        if (i !== tokens.length - 1) {
-            result += '\n';
-        }
-    }
-    return result;
-}
-
 module.exports.exec = async (interaction, UUID) => {
     const data = memory.getData(UUID);
     if (!data) {
@@ -54,6 +30,11 @@ module.exports.exec = async (interaction, UUID) => {
 
     await interaction.message.delete();
 
+    const { fullName, schoolYear } = data.basic;
+    const { Email, Codeforces, VNOI } = data.social;
+    const { VOI, others } = data.rewards;
+    const { notes } = data;
+
     await discordAPI.GuildChannel(data.guildId, formLib.getGuildConfig(data.guildId).receive).send({
         embeds: [
             new Discord.EmbedBuilder()
@@ -68,47 +49,47 @@ module.exports.exec = async (interaction, UUID) => {
                 .addFields(
                     {
                         name: "**Họ và tên**",
-                        value: `||\`\`\`${data.basic.fullName}\`\`\`||`,
+                        value: fullName.codeChunk().hidden(),
                         inline: false
                     },
                     {
                         name: "**Khoá**",
-                        value: `\`\`\`${data.basic.schoolYear}\`\`\``,
+                        value: schoolYear.codeChunk(),
                         inline: false
                     },
                     {
                         name: "**Địa chỉ Email**",
-                        value: `||\`\`\`${emailTokenBreak(data.social.Email.split(','))}\`\`\`||`,
+                        value: Email.tokenise().listing("", "", "\n").codeChunk().hidden(),
                         inline: false
                     },
                     {
                         name: "**Codeforces**",
-                        value: socialTokenBreak('https://codeforces.com/profile/', data.social.Codeforces.split(',')),
+                        value: Codeforces.tokenise().linkListing("https://codeforces.com/profile/", "\n"),
                         inline: true
                     },
                     {
                         name: "**VNOI OJ**",
-                        value: socialTokenBreak('https://oj.vnoi.info/user/', data.social.VNOI.split(',')),
+                        value: VNOI.tokenise().linkListing("https://oj.vnoi.info/user/", "\n"),
                         inline: true
                     },
                     {
                         name: "**Các năm tham gia kì thi HSGQG**",
-                        value: data.rewards.VOI
-                            ? `\`\`\`${data.rewards.VOI}\`\`\``
+                        value: VOI
+                            ? VOI.tokenise().listing("", "", "\n").codeChunk()
                             : "Không có",
                         inline: false
                     },
                     {
                         name: "**Các giải thưởng tin học khác**",
-                        value: data.rewards.others
-                            ? `\`\`\`${data.rewards.others}\`\`\``
+                        value: others
+                            ? others.tokenise().listing("", "", "\n").codeChunk()
                             : "Không có",
                         inline: false
                     },
                     {
                         name: "**Ghi chú thêm**",
-                        value: data.notes
-                            ? `\`\`\`${data.notes}\`\`\``
+                        value: notes
+                            ? notes.codeChunk()
                             : "Không có",
                         inline: false
                     },

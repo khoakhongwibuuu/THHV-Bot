@@ -1,30 +1,6 @@
 const Discord = require('discord.js');
 const { memory, formLib, discordAPI } = global.customLib;
 
-const emailTokenBreak = (tokens) => {
-    let result = '';
-    for (i = 0; i < tokens.length; i++) {
-        let trimmed = tokens[i].trim()
-        result += trimmed;
-        if (i !== tokens.length - 1) {
-            result += '\n';
-        }
-    }
-    return result;
-}
-
-const socialTokenBreak = (prefix, tokens) => {
-    let result = '';
-    for (i = 0; i < tokens.length; i++) {
-        let trimmed = tokens[i].trim()
-        result += `[${trimmed}](${prefix}${trimmed})`
-        if (i !== tokens.length - 1) {
-            result += '\n';
-        }
-    }
-    return result;
-}
-
 module.exports.exec = async (interaction, UUID) => {
     const data = memory.getData(UUID);
     if (!data) {
@@ -52,6 +28,10 @@ module.exports.exec = async (interaction, UUID) => {
 
     await interaction.message.delete();
 
+    const { Email, Codeforces, VNOI } = data.social;
+    const { VOI, others } = data.rewards;
+    const { notes } = data;
+
     await discordAPI.GuildChannel(data.guildId, formLib.getGuildConfig(data.guildId).receive).send({
         embeds: [
             new Discord.EmbedBuilder()
@@ -66,43 +46,43 @@ module.exports.exec = async (interaction, UUID) => {
                 .addFields(
                     {
                         name: "**Địa chỉ Email**",
-                        value: data.social.Email
-                            ? `||\`\`\`${emailTokenBreak(data.social.Email.split(','))}\`\`\`||`
+                        value: Email
+                            ? Email.tokenise().listing("", "", "\n").codeChunk().hidden()
                             : "Không thay đổi",
                         inline: false
                     },
                     {
                         name: "**Codeforces**",
-                        value: data.social.Codeforces
-                            ? socialTokenBreak('https://codeforces.com/profile/', data.social.Codeforces.split(','))
+                        value: Codeforces
+                            ? Codeforces.tokenise().linkListing("https://codeforces.com/profile/", "\n")
                             : "Không thay đổi",
                         inline: true
                     },
                     {
                         name: "**VNOI OJ**",
-                        value: data.social.VNOI
-                            ? socialTokenBreak('https://oj.vnoi.info/user/', data.social.VNOI.split(','))
+                        value: VNOI
+                            ? VNOI.tokenise().linkListing("https://oj.vnoi.info/user/", "\n")
                             : "Không thay đổi",
                         inline: true
                     },
                     {
                         name: "**Các năm tham gia kì thi HSGQG**",
-                        value: data.rewards.VOI
-                            ? `\`\`\`${data.rewards.VOI}\`\`\``
+                        value: VOI
+                            ? VOI.tokenise().listing("", "", "\n").codeChunk()
                             : "Không thay đổi",
                         inline: false
                     },
                     {
                         name: "**Các giải thưởng tin học khác**",
-                        value: data.rewards.others
-                            ? `\`\`\`${data.rewards.others}\`\`\``
+                        value: others
+                            ? others.tokenise().listing("", "", "\n").codeChunk()
                             : "Không thay đổi",
                         inline: false
                     },
                     {
                         name: "**Ghi chú thêm**",
                         value: data.notes
-                            ? `\`\`\`${data.notes}\`\`\``
+                            ? notes.codeChunk()
                             : "Không thay đổi",
                         inline: false
                     },

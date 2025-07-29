@@ -23,11 +23,11 @@ module.exports.execute = async (interaction, responseData, key, difficulty, type
     let Content = `:alarm_clock:  Hết giờ! Đáp án là \`${key}\`\n`;
 
     if (correct.length > 0) {
-        Content += `Các người chơi trả lời đúng và nhận được \`${up}\` điểm ${emojiTable.up}: ${correct.argList("mention")}\n`;
+        Content += `Các người chơi trả lời đúng và nhận được \`${up}\` điểm ${emojiTable.up}: ${correct.listing("<@", ">", ", ")}\n`;
     }
 
     if (incorrect.length > 0) {
-        Content += `Các người chơi trả lời sai và bị trừ \`${Math.abs(down)}\` điểm ${emojiTable.down}: ${incorrect.argList("mention")}\n`;
+        Content += `Các người chơi trả lời sai và bị trừ \`${Math.abs(down)}\` điểm ${emojiTable.down}: ${incorrect.listing("<@", ">", ", ")}\n`;
     }
 
     if (!responseData.hasOwnProperty(interaction.user.id)) {

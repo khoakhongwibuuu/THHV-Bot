@@ -37,12 +37,16 @@ module.exports.exec = async (interaction, UUID, message, firstTimeDisplay, pageR
                 .addFields(
                     {
                         name: "**Họ và tên**",
-                        value: (data.basic.fullName ? `\`\`\`${data.basic.fullName}\`\`\`` : "Chưa có"),
+                        value: data.basic.fullName
+                            ? data.basic.fullName.codeChunk()
+                            : "Chưa có",
                         inline: true
                     },
                     {
                         name: "**Khoá của bạn tại trường**",
-                        value: (data.basic.schoolYear ? `\`\`\`${data.basic.schoolYear}\`\`\`` : "Chưa có"),
+                        value: data.basic.schoolYear
+                            ? data.basic.schoolYear.codeChunk()
+                            : "Chưa có",
                         inline: true
                     }
                 )
