@@ -41,10 +41,20 @@ module.exports = {
 			if (!interaction.customId.includes(":"))
 				return;
 
-			const interactionToken = interaction.customId.split(":");
-			const [moduleName, handlerType, handlerName, UUID] = interactionToken;
-			const handlersPath = moduleLookup[moduleName].handlersPath;
-			await require(path.join(handlersPath, handlerType, handlerName)).exec(interaction, UUID);
+			try {
+				const interactionToken = interaction.customId.split(":");
+				const [moduleName, handlerType, handlerName, UUID] = interactionToken;
+				const handlersPath = moduleLookup[moduleName].handlersPath;
+				await require(path.join(handlersPath, handlerType, handlerName)).exec(interaction, UUID);
+			} catch (error) {
+				console.error(error);
+				const content = `There was an error while executing this command!`;
+				if (interaction.replied || interaction.deferred) {
+					await interaction.followUp({ content: content, ephemeral: true });
+				} else {
+					await interaction.reply({ content: content, ephemeral: true });
+				}
+			}
 		}
 
 		if (interaction.isModalSubmit()) {
