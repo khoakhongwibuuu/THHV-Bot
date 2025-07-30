@@ -3,8 +3,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { dirname } = global.variable;
 
-const handlersPath = path.join(dirname, 'modules/ticket/handler');
-
 let guildsConfig = {};
 
 const getGuildFilePath = (guildId) =>
@@ -70,7 +68,6 @@ const getGuildConfig = (guildId) =>
     isSetup(guildId) ? guildsConfig[guildId] : null;
 
 module.exports = {
-    handlersPath,
     getGuildFilePath,
     isSetup,
     loadGuildFile,

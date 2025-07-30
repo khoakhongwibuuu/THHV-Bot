@@ -4,8 +4,6 @@ const path = require('node:path');
 const { dirname } = global.variable;
 const { discordAPI } = global.customLib;
 
-const handlersPath = path.join(dirname, 'modules/approval-form/handler');
-
 let guildsConfig = {};
 const cachedFormsRequests = {};
 
@@ -100,7 +98,6 @@ const usageData = (guildId) => {
 }
 
 module.exports = {
-    handlersPath,
     getGuildFilePath,
     isSetup,
     loadGuildFile,
