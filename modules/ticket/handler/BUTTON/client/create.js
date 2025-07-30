@@ -33,6 +33,8 @@ module.exports.exec = async (interaction) => {
         return;
     }
 
+    await interaction.deferReply({ ephemeral: true });
+
     let overrideSetting = [
         {
             id: interaction.guild.roles.everyone.id,
@@ -59,16 +61,16 @@ module.exports.exec = async (interaction) => {
         name: `🎫-ticket-${interaction.user.username}`,
         type: Discord.ChannelType.GuildText,
         parent: interaction.channel.parentId, permissionOverwrites: overrideSetting
-    }).then(channel => {
+    }).then(async (channel) => {
         ticketLib.addOccupation(interaction.guild.id, channel.id, interaction.user.id);
-        interaction.reply({
+        await interaction.editReply({
             ephemeral: true,
             content: `Successfully created <#${channel.id}> for you.`
         });
         let ticketInitMessage = `<@${interaction.user.id}>`;
         if (modRoles)
             ticketInitMessage += `,${modRoles.listing("<@&", ">", ", ")}`
-        channel.send({
+        await channel.send({
             content: ticketInitMessage,
             embeds: [
                 new Discord.EmbedBuilder()
