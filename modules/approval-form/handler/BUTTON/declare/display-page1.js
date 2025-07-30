@@ -75,7 +75,7 @@ module.exports.exec = async (interaction, UUID, message, firstTimeDisplay, pageR
 
     await message.edit(pg1_data).then(msg => {
         if (firstTimeDisplay) {
-            interaction.reply({
+            interaction.editReply({
                 ephemeral: true,
                 content: `[Form khai báo](https://discord.com/channels/@me/${msg.channel.id}/${msg.id}) đã được gửi tới DM của bạn.`
             })

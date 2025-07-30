@@ -9,14 +9,16 @@ module.exports.exec = async (interaction) => {
         });
         return;
     }
+
+    await interaction.deferReply({ ephemeral: true });
     if (!formLib.memberIsVerified(interaction.guild.id, interaction.user.id)) {
         if (formLib.memberIsInApprovalQueue(interaction.guild.id, interaction.user.id))
-            await interaction.reply({
+            await interaction.editReply({
                 ephemeral: true,
                 content: "Bạn đang có một yêu cầu đang chờ xác thực."
             });
         else if (formLib.memberIsInCache(interaction.guild.id, interaction.user.id))
-            await interaction.reply({
+            await interaction.editReply({
                 ephemeral: true,
                 content: "Bạn đã tạo một yêu cầu trước đó."
             });
@@ -25,12 +27,13 @@ module.exports.exec = async (interaction) => {
         }
     } else {
         if (formLib.memberIsInCache(interaction.guild.id, interaction.user.id))
-            await interaction.reply({
+            await interaction.editReply({
                 ephemeral: true,
                 content: "Bạn đã tạo một yêu cầu trước đó."
             });
-        else
+        else {
             await require('./../update-info.js').exec(interaction);
+        }
     }
 }
 
