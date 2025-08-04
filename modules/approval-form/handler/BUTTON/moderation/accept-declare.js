@@ -12,6 +12,22 @@ const isUserInGuild = async (guildId, userId) => {
     }
 }
 
+const getRolesByName = async (guildId, roleName) => {
+    try {
+        const guild = await client.guilds.fetch(guildId);
+        if (!guild) return null;
+
+        const roles = await guild.roles.fetch();
+        const matchingRoles = roles.filter(role => role.name === roleName);
+
+        return Array.from(matchingRoles.values());
+    } catch (error) {
+        return [];
+    }
+}
+
+const extractValue = (str) => str.slice("\`\`\`\n".length, str.lastIndexOf("\n\`\`\`"));
+
 module.exports.exec = async (interaction, clientMemberId) => {
     if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
         interaction.reply({
@@ -64,6 +80,20 @@ module.exports.exec = async (interaction, clientMemberId) => {
             ephemeral: true,
             content: `Đã thêm Role <@&${verifyRole.id}> cho <@${clientMemberId}>.`
         });
+
+        const additionalRoles = await getRolesByName(interaction.guild.id, `k${extractValue(interaction.message.embeds[0].fields[1].value)}`);
+        if (additionalRoles && additionalRoles.length) {
+            let followUpContent = `Đã thêm role: `;
+            additionalRoles.forEach(async role => {
+                followUpContent += `<@&${role.id}> `;
+                await clientMember.roles.add(role);
+            });
+            followUpContent += `cho <@${clientMemberId}>.`
+            await interaction.followUp({
+                ephemeral: true,
+                content: followUpContent
+            });
+        }
     } else {
         const sentEmbed = Discord.EmbedBuilder.from(interaction.message.embeds[0])
             .setColor(0xffc114)
