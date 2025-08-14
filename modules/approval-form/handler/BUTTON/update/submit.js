@@ -45,31 +45,41 @@ module.exports.exec = async (interaction, UUID) => {
                 )
                 .addFields(
                     {
-                        name: "**Địa chỉ Email**",
-                        value: Email
-                            ? Email.tokenise().listing("", "", "\n").codeChunk().hidden()
-                            : "Không thay đổi",
-                        inline: false
-                    },
-                    {
                         name: "**Codeforces**",
                         value: Codeforces
-                            ? Codeforces.tokenise().linkListing("https://codeforces.com/profile/", "\n")
+                            ? Codeforces.tokenise().linkListing("https://codeforces.com/profile/", ", ")
                             : "Không thay đổi",
                         inline: true
                     },
                     {
                         name: "**VNOI OJ**",
                         value: VNOI
-                            ? VNOI.tokenise().linkListing("https://oj.vnoi.info/user/", "\n")
+                            ? VNOI.tokenise().linkListing("https://oj.vnoi.info/user/", ", ")
                             : "Không thay đổi",
                         inline: true
                     },
                     {
                         name: "**Các năm tham gia kì thi HSGQG**",
                         value: VOI
-                            ? VOI.tokenise().listing("", "", "\n").codeChunk()
+                            ? VOI.tokenise().listing("", "", ", ").codeChunk()
                             : "Không thay đổi",
+                        inline: false
+                    },
+                    {
+                        name: "**Địa chỉ Email**",
+                        value: Email
+                            ? Email.tokenise().listing("", "", ", ").codeChunk().hidden()
+                            : "Không thay đổi",
+                        inline: false
+                    },
+                    {
+                        name: "**Discord username**",
+                        value: interaction.user.username.codeChunk().hidden(),
+                        inline: false
+                    },
+                    {
+                        name: "**Discord identifier**",
+                        value: interaction.user.id.codeChunk().hidden(),
                         inline: false
                     },
                     {
