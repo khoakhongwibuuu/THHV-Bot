@@ -5,7 +5,7 @@ const { reactLib } = global.customLib;
 module.exports = {
 	name: Discord.Events.MessageDelete,
 	async execute(msg) {
-		if (msg.bot || msg.system) return;
-		reactLib.removeMessage(msg);
+		if (msg.author.bot || msg.system || msg.tts) return;
+		await reactLib.removeMessage(msg);
 	},
 };
