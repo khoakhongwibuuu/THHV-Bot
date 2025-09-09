@@ -7,3 +7,4 @@ debug/*
 .ideas/*
 commands/interactions-debug/*
 **/**.env
+.vs/*
