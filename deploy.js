@@ -11,7 +11,6 @@ global.customLib.formLib = require('./modules/approval-form/lib/formLib.js');
 global.customLib.reactLib = require('./modules/auto-reactor/lib/reactLib.js');
 global.customLib.codeforcesLib = require('./modules/codeforces-utils/lib/codeforcesLib.js');
 global.customLib.contestLib = require('./modules/contest/lib/contestLib.js');
-global.customLib.autoPinLib = require('./modules/react-2-pin/lib/autoPinLib.js');
 global.customLib.ticketLib = require('./modules/ticket/lib/ticketLib.js');
 global.customLib.gameLib = require('./modules/trivia-game/lib/gameLib.js');
 global.customLib.wordLib = require('./modules/word-match/lib/wordLib.js');
