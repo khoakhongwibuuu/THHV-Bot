@@ -46,24 +46,6 @@ const loadGuildFile = (guildId) => JSON.parse(fs.readFileSync(getGuildFilePath(g
 // Write new data to the guild configuration file
 const writeGuildFile = (guildId, newData) => fs.writeFileSync(getGuildFilePath(guildId), JSON.stringify(newData), 'utf8');
 
-// Remove a tracked message
-const removeMessage = (msg) => {
-    if (!msg.guild) return;
-    const { guild, channel, id: messageId } = msg;
-    if (!isInRoom(guild.id, channel.id)) return;
-
-    if (isListened(guild.id, messageId)) {
-        delete listenMessage[guild.id][messageId];
-
-        // Remove from configuration file
-        const guildData = loadGuildFile(guild.id);
-        if (guildData) {
-            delete guildData.listenMessage[messageId];
-            writeGuildFile(guild.id, guildData);
-        }
-    }
-}
-
 // Flush all tracked messages for a guild
 const flushGuild = (guildId) => {
     if (!isSetup(guildId)) return;
@@ -162,6 +144,7 @@ const initialiseInput = (msg) => {
 
 // Handle reaction events & prevent double-voting
 const handleReaction = async (reaction, user) => {
+    if (!reaction.message.guildId) return;
     if (user.bot || !isListened(reaction.message.guildId, reaction.message.id)) return;
 
     try {
@@ -184,6 +167,24 @@ const handleReaction = async (reaction, user) => {
         }
     } catch (error) {
         console.error(error);
+    }
+}
+
+// Remove a tracked message
+const removeMessage = (msg) => {
+    if (!msg.guild || !msg.guild.id) return;
+    const { guild, channel, id: messageId } = msg;
+    if (!isInRoom(guild.id, channel.id)) return;
+
+    if (isListened(guild.id, messageId)) {
+        delete listenMessage[guild.id][messageId];
+
+        // Remove from configuration file
+        const guildData = loadGuildFile(guild.id);
+        if (guildData) {
+            delete guildData.listenMessage[messageId];
+            writeGuildFile(guild.id, guildData);
+        }
     }
 }
 

@@ -110,6 +110,7 @@ const allPlayerList = (guildId) => {
 }
 
 const handleInput = (msg) => {
+    if (!msg || !msg.guild || !msg.guild.id) return;
     if (isInRoom(msg.guild.id, msg.channel.id)) {
         let guildData = loadGuildFile(msg.guild.id);
         if (msg.author.id === guildData.recentUser) {
