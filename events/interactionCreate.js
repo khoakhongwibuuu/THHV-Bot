@@ -27,7 +27,14 @@ module.exports = {
 				} else {
 					console.log(`[${new Date().toISOString()}] [COMMAND] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: /${command.data.name}`);
 				}
-				await command.execute(interaction);
+				if (!command.deprecated) {
+					await command.execute(interaction);
+				} else {
+					await interaction.reply({
+						content: "⛔ This command is no longer available.",
+						ephemeral: true
+					});
+				}
 			} catch (error) {
 				console.error(error);
 				if (interaction.replied || interaction.deferred) {

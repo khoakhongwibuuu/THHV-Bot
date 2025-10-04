@@ -7,6 +7,5 @@ module.exports = {
     async execute(reaction, user) {
         if (user.bot || user.system) return;
         await reactLib.handleReaction(reaction, user);
-        await autoPinLib.handleRequest(reaction, user);
     },
 };
