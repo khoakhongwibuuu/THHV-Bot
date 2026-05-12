@@ -1,20 +1,14 @@
-FROM node:alpine
+FROM node:22-alpine
 
-# Create app directory
+RUN apk add --no-cache yarn
+
 RUN mkdir -p /usr/src/bot
 WORKDIR /usr/src/bot
 ENV TZ="Asia/Ho_Chi_Minh"
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY ./package*.json ./
+COPY ./package*.json ./yarn.lock* ./
 COPY . .
 
-RUN yarn 
-# If you are building your code for production
-# RUN npm --omit=dev
-
-# Bundle app source
+RUN yarn install --frozen-lockfile || yarn install
 
 CMD [ "yarn", "start" ]
