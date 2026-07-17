@@ -12,7 +12,4 @@ services:
         condition: unless-stopped
         delay: 10s
         window: 120s
-    environment:
-      - TOKEN=${TOKEN}
-      - CLIENT_ID=${CLIENT_ID}
-      - OWNER_ID=${OWNER_ID}
+

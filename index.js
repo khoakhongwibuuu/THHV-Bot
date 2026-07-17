@@ -6,22 +6,6 @@ const path = require('node:path');
 const dotenv = require('dotenv');
 const Discord = require('discord.js');
 
-const tokenPath = path.join(__dirname, 'auth');
-if (!fs.existsSync(tokenPath)) {
-	fs.mkdirSync(tokenPath, { recursive: true });
-}
-
-if (!fs.existsSync(path.join(tokenPath, 'login.env'))) {
-	fs.writeFileSync(path.join(tokenPath, 'login.env'), "TOKEN=\nCLIENT_ID=\nOWNER_ID=", 'utf8');
-	console.log("Login file created!");
-	process.exit(0);
-}
-
-if (!process.env.TOKEN) {
-	dotenv.config({ path: "./auth/login.env" });
-	console.info("Loaded config from login.env");
-}
-
 global.variable = {};
 global.variable.BotStartTime = BotStartTime;
 global.variable.dirname = __dirname;
