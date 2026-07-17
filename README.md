@@ -42,13 +42,7 @@ At this point, make sure you have the following things:
 -   **Application ID**: Required to install commands to your bot.
 -   **Your User ID in Discord**: Required to use high-risk commands.
 
-Run the following command, the file `login.env` will be automatically in `auth` directory.
-
-```bash
-node index.js
-```
-
-In the created file, provide the following configuration.
+Create an environment file `.env` and place that file in the same directory as the `index.js` file.
 
 ```env
 TOKEN=<the-login-token-of-the-bot>
@@ -64,10 +58,10 @@ Deploy commands using:
 node deploy.js
 ```
 
-If `login.env` was configured correctly, the following message should appear.
+If `.env` was configured correctly, the following message should appear.
 
 ```bash
-Loaded config from login.env
+Loaded config from .env
 Started refreshing 22 application (/) commands.
 Successfully reloaded 22 application (/) commands.
 ```
