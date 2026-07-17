@@ -92,7 +92,7 @@ module.exports.exec = async (interaction, UUID) => {
                     {
                         name: "**Các giải thưởng tin học khác**",
                         value: others
-                            ? others.tokenise().listing("", "", "\n").codeChunk()
+                            ? others.tokeniseV2().noSpaceListing("", "", "\n").codeChunk()
                             : "Không có",
                         inline: false
                     },

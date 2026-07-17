@@ -111,6 +111,10 @@ String.prototype.tokenise = function () {
 	return this.split(/[\s,]+/).filter(Boolean);
 }
 
+String.prototype.tokeniseV2 = function () {
+	return this.split(/[,]+/).filter(Boolean);
+}
+
 String.prototype.hidden = function () {
 	return `||${this}||`;
 }
@@ -123,6 +127,16 @@ Array.prototype.listing = function (prefix, suffix, delimiter) {
 	let res = "";
 	this.forEach((e, i, a) => {
 		res += `${prefix}${e}${suffix}`;
+		if (i < a.length - 1)
+			res += delimiter;
+	});
+	return res;
+}
+
+Array.prototype.noSpaceListing = function (prefix, suffix, delimiter) {
+	let res = "";
+	this.forEach((e, i, a) => {
+		res += `${prefix}${e.trim()}${suffix}`;
 		if (i < a.length - 1)
 			res += delimiter;
 	});
