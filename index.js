@@ -6,6 +6,11 @@ const path = require('node:path');
 const dotenv = require('dotenv');
 const Discord = require('discord.js');
 
+if (!process.env.TOKEN) {
+	dotenv.config({ path: "./auth/login.env" });
+	console.info("Loaded config from login.env");
+}
+
 global.variable = {};
 global.variable.BotStartTime = BotStartTime;
 global.variable.dirname = __dirname;
