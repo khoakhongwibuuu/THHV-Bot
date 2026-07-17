@@ -16,8 +16,8 @@ global.customLib.gameLib = require('./modules/trivia-game/lib/gameLib.js');
 global.customLib.wordLib = require('./modules/word-match/lib/wordLib.js');
 
 if (!process.env.TOKEN) {
-    dotenv.config({ path: "./auth/login.env" });
-    console.info("Loaded config from login.env");
+    dotenv.config({ path: ".env" });
+    console.info("Loaded config from .env");
 }
 
 const commands = [];

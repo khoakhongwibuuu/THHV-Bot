@@ -2,9 +2,8 @@ const Discord = require('discord.js');
 const dotenv = require('dotenv');
 
 if (!process.env.TOKEN) {
-	// load config from login.env
-	dotenv.config({ path: "./auth/login.env" });
-	console.info("Loaded config from login.env");
+	dotenv.config({ path: ".env" });
+	console.info("Loaded config from .env");
 }
 
 new Discord.REST()
