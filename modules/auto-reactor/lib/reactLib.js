@@ -174,18 +174,19 @@ const handleReaction = async (reaction, user) => {
 
 // Remove a tracked message
 const removeMessage = (msg) => {
-    if (!msg.guild || !msg.guild.id) return;
-    const { guild, channel, id: messageId } = msg;
-    if (!isInRoom(guild.id, channel.id)) return;
+    if (!msg || !msg.guild || !msg.guild.id ||
+        !msg.channel || !msg.channel.id) return;
 
-    if (isListened(guild.id, messageId)) {
-        delete listenMessage[guild.id][messageId];
+    if (!isInRoom(msg.guild.id, msg.channel.id)) return;
+
+    if (isListened(msg.guild.id, msg.id)) {
+        delete listenMessage[msg.guild.id][msg.id];
 
         // Remove from configuration file
-        const guildData = loadGuildFile(guild.id);
+        const guildData = loadGuildFile(msg.guild.id);
         if (guildData) {
-            delete guildData.listenMessage[messageId];
-            writeGuildFile(guild.id, guildData);
+            delete guildData.listenMessage[msg.id];
+            writeGuildFile(msg.guild.id, guildData);
         }
     }
 }
