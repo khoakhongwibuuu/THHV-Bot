@@ -1,10 +1,10 @@
 const Discord = require('discord.js');
-const { contestLib, discordAPI } = global.customLib;
+const { contestLib, discordAPI, discordAPIv2 } = global.customLib;
 const { client } = global.variable;
 
 const CLOCK_INTERVAL_MINUTES = 5;
-const DEBUG_MODE = false;
-const NOTIFY_BEFORE_HOURS = 24;
+const DEBUG_MODE = true;
+const NOTIFY_BEFORE_HOURS = 24000;
 const CODEFORCES_API = 'http://codeforces.com/api/contest.list';
 
 let hasStarted = false;
@@ -66,7 +66,9 @@ const notify = async (domain, id, name, contestURL, registerURL, startTime, hour
 			? `<@&${persist.role[guildId]}>, a contest is open for registration!`
 			: "A contest is open for registration!";
 
-		await discordAPI.GuildChannel(guildId, persist.channel[guildId]).send({
+		const broadcastChannel = await discordAPIv2.GuildChannel(guildId, persist.channel[guildId]);
+
+		await broadcastChannel.send({
 			content,
 			embeds: [embed],
 			components: [components]

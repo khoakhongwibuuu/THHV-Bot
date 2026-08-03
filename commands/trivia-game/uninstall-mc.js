@@ -1,6 +1,6 @@
 // Packages
 const Discord = require('discord.js');
-const { gameLib, discordAPI } = global.customLib;
+const { gameLib, discordAPI, discordAPIv2 } = global.customLib;
 
 const defaultBtnRow = new Discord.ActionRowBuilder()
     .addComponents(
@@ -18,7 +18,9 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+        const isMod = await discordAPIv2.isModerator(interaction.guild.id, interaction.user.id);
+        // if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+        if (!isMod) {
             await interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
             return;
         }

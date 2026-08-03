@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { ticketLib, discordAPI } = global.customLib;
+const { ticketLib, discordAPI, discordAPIv2 } = global.customLib;
 
 const DEFAULT_TICKET_PERM_ALLOW = [
     Discord.PermissionFlagsBits.ViewChannel,
@@ -57,7 +57,9 @@ module.exports.exec = async (interaction) => {
         });
     }
 
-    await discordAPI.Guild(interaction.guild.id).channels.create({
+    const destinationGuild = await discordAPIv2.Guild(interaction.guild.id);
+
+    await destinationGuild.channels.create({
         name: `🎫-ticket-${interaction.user.username}`,
         type: Discord.ChannelType.GuildText,
         parent: interaction.channel.parentId, permissionOverwrites: overrideSetting

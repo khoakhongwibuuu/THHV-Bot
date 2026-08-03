@@ -11,7 +11,9 @@ module.exports.exec = async (interaction) => {
     }
 
     await interaction.deferReply({ ephemeral: true });
-    if (!formLib.memberIsVerified(interaction.guild.id, interaction.user.id)) {
+
+    const isMemberVerified = await formLib.memberIsVerified(interaction.guild.id, interaction.user.id);
+    if (!isMemberVerified) {
         if (formLib.memberIsInApprovalQueue(interaction.guild.id, interaction.user.id))
             await interaction.editReply({
                 ephemeral: true,
