@@ -1,6 +1,4 @@
-FROM node:22-alpine
-
-RUN apk add --no-cache yarn
+FROM node:24.16.0-alpine3.23
 
 RUN mkdir -p /usr/src/bot
 WORKDIR /usr/src/bot
