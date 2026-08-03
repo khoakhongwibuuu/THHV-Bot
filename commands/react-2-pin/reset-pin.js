@@ -1,6 +1,6 @@
 // Packages
 const Discord = require('discord.js');
-const { autoPinLib, discordAPI } = global.customLib;
+const { autoPinLib, discordAPI, discordAPIv2 } = global.customLib;
 
 module.exports = {
     deprecated: true,

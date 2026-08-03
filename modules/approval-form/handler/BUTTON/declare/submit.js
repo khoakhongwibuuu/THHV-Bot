@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { memory, formLib, discordAPI } = global.customLib;
+const { memory, formLib, discordAPI, discordAPIv2 } = global.customLib;
 
 module.exports.exec = async (interaction, UUID) => {
     const data = memory.getData(UUID);
@@ -35,7 +35,10 @@ module.exports.exec = async (interaction, UUID) => {
     const { VOI, others } = data.rewards;
     const { notes } = data;
 
-    await discordAPI.GuildChannel(data.guildId, formLib.getGuildConfig(data.guildId).receive).send({
+    const broadcastChannel = await discordAPIv2.GuildChannel(data.guildId, formLib.getGuildConfig(data.guildId).receive);
+
+    // await discordAPI.GuildChannel(data.guildId, formLib.getGuildConfig(data.guildId).receive).send({
+    await broadcastChannel.send({
         embeds: [
             new Discord.EmbedBuilder()
                 .setFooter({

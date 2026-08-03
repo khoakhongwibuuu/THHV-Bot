@@ -1,35 +1,19 @@
 const Discord = require('discord.js');
 const { client } = global.variable;
-const { formLib, discordAPI } = global.customLib;
-
-const isUserInGuild = async (guildId, userId) => {
-    try {
-        const guild = await client.guilds.fetch(guildId);
-        await guild.members.fetch(userId);
-        return true;
-    } catch (error) {
-        return false;
-    }
-}
+const { formLib, discordAPI, discordAPIv2 } = global.customLib;
 
 const getRolesByName = async (guildId, roleName) => {
-    try {
-        const guild = await client.guilds.fetch(guildId);
-        if (!guild) return null;
-
-        const roles = await guild.roles.fetch();
-        const matchingRoles = roles.filter(role => role.name === roleName);
-
-        return Array.from(matchingRoles.values());
-    } catch (error) {
-        return [];
-    }
+    const allRoles = await discordAPIv2.AllRolesOfGuild(guildId);
+    if (!allRoles) return [];
+    return allRoles.filter(role => role.name === roleName);
 }
 
-const extractValue = (str) => str.slice("\`\`\`\n".length, str.lastIndexOf("\n\`\`\`"));
+const extract_K_Value = (str) => str.slice("\`\`\`\n".length, str.lastIndexOf("\n\`\`\`"));
 
 module.exports.exec = async (interaction, clientMemberId) => {
-    if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+    const isMod = await discordAPIv2.isModerator(interaction.guild.id, interaction.user.id);
+    // if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+    if (!isMod) {
         interaction.reply({
             content: "🚫 You do not have permission to run this command.",
             ephemeral: true
@@ -48,13 +32,14 @@ module.exports.exec = async (interaction, clientMemberId) => {
 
     formLib.removeMemberFromApprovalQueue(interaction.guild.id, clientMemberId);
 
-    const isMemberOfGuild = await isUserInGuild(interaction.guild.id, clientMemberId);
+    const isMemberOfGuild = await discordAPIv2.isMember(interaction.guild.id, clientMemberId);
+
     if (isMemberOfGuild) {
-        const clientMember = discordAPI.GuildMember(
+        const clientMember = await discordAPIv2.GuildMember(
             interaction.guild.id,
             clientMemberId
         );
-        const verifyRole = discordAPI.GuildRole(
+        const verifyRole = await discordAPIv2.GuildRole(
             interaction.guild.id,
             formLib.getGuildConfig(interaction.guild.id).role
         );
@@ -81,8 +66,8 @@ module.exports.exec = async (interaction, clientMemberId) => {
             content: `Đã thêm Role <@&${verifyRole.id}> cho <@${clientMemberId}>.`
         });
 
-        const additionalRoles = await getRolesByName(interaction.guild.id, `k${extractValue(interaction.message.embeds[0].fields[1].value)}`);
-        if (additionalRoles && additionalRoles.length) {
+        const additionalRoles = await getRolesByName(interaction.guild.id, `k${extract_K_Value(interaction.message.embeds[0].fields[1].value)}`);
+        if (additionalRoles && additionalRoles.length && additionalRoles.length > 0) {
             let followUpContent = `Đã thêm role: `;
             additionalRoles.forEach(async role => {
                 followUpContent += `<@&${role.id}> `;

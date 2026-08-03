@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { formLib, memory, discordAPI } = global.customLib;
+const { formLib, memory, discordAPI, discordAPIv2 } = global.customLib;
 const { client } = global.variable;
 
 module.exports.exec = async (interaction, UUID) => {
@@ -12,7 +12,10 @@ module.exports.exec = async (interaction, UUID) => {
         waitApproval: {}
     });
 
-    await discordAPI.GuildChannel(interaction.guild.id, wizardSession.data.send).send({
+    const broadcastChannel = await discordAPIv2.GuildChannel(interaction.guild.id, wizardSession.data.send);
+
+    // await discordAPI.GuildChannel(interaction.guild.id, wizardSession.data.send).send({
+    await broadcastChannel.send({
         embeds: [
             new Discord.EmbedBuilder()
                 .setColor(0xf6630d)

@@ -1,6 +1,6 @@
 // Packages
 const Discord = require('discord.js');
-const { formLib, discordAPI } = global.customLib;
+const { formLib, discordAPI, discordAPIv2 } = global.customLib;
 
 
 module.exports = {
@@ -10,7 +10,9 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+        const isMod = await discordAPIv2.isModerator(interaction.guild.id, interaction.user.id);
+        // if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+        if (!isMod) {
             await interaction.reply({
                 content: "🚫 You do not have permission to run this command.",
                 ephemeral: true

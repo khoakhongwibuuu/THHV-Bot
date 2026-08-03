@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const { client } = global.variable;
-const { ticketLib, memory, discordAPI } = global.customLib;
+const { ticketLib, memory, discordAPI, discordAPIv2 } = global.customLib;
 
 module.exports.exec = async (interaction, UUID) => {
     const data = memory.getData(UUID);
@@ -18,7 +18,7 @@ module.exports.exec = async (interaction, UUID) => {
     } else {
         memory.deleteData(UUID);
 
-        const broadcastChannel = discordAPI.GuildChannel(guildId, channelId);
+        const broadcastChannel = await discordAPIv2.GuildChannel(guildId, channelId);
         const categoryId = broadcastChannel.parentId;
 
         ticketLib.guildSetup(interaction.guild.id, {

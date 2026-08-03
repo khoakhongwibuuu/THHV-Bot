@@ -1,6 +1,6 @@
 // Packages
 const Discord = require('discord.js');
-const { contestLib, discordAPI } = global.customLib;
+const { contestLib, discordAPI, discordAPIv2 } = global.customLib;
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -14,7 +14,9 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+        const isMod = await discordAPIv2.isModerator(interaction.guild.id, interaction.user.id);
+        // if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
+        if (!isMod) {
             await interaction.reply({
                 content: "🚫 You do not have permission to run this command.",
                 ephemeral: true

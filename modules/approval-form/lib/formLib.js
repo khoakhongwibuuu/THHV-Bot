@@ -2,7 +2,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { dirname } = global.variable;
-const { discordAPI } = global.customLib;
+const { discordAPI, discordAPIv2 } = global.customLib;
 
 let guildsConfig = {};
 const cachedFormsRequests = {};
@@ -46,8 +46,8 @@ const isUninstallable = (guildId) => {
 
 const getGuildConfig = (guildId) => isSetup(guildId) ? guildsConfig[guildId] : null;
 
-const memberIsVerified = (guildId, userId) => {
-    const member = discordAPI.GuildMember(guildId, userId);
+const memberIsVerified = async (guildId, userId) => {
+    const member = await discordAPIv2.GuildMember(guildId, userId);
     return member.roles.cache.has(guildsConfig[guildId].role);
 }
 

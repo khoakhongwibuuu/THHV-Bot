@@ -1,6 +1,8 @@
 const Discord = require('discord.js');
 const { client } = global.variable;
 
+// Note: This API is planned to be removed and completely replaced by discordAPI v2.
+
 /**
  * Fetches a guild by its ID.
  * @param {string} id - The ID of the guild.

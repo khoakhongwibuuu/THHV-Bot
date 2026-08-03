@@ -42,7 +42,7 @@ global.customLib = {};
 global.customLib.memory = require('./assets/api/memory.api.js');
 global.customLib.stdlib = require('./assets/library/standard.js');
 global.customLib.discordAPI = require('./assets/api/discord.api.js');
-
+global.customLib.discordAPIv2 = require('./assets/api/discord.api.v2.js');
 
 (async () => {
 	// Load offline modules

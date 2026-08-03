@@ -1,6 +1,6 @@
 // Packages
 const Discord = require('discord.js');
-const { formLib, discordAPI } = global.customLib;
+const { formLib, discordAPI, discordAPIv2 } = global.customLib;
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -9,7 +9,9 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!discordAPI.isAdmin(interaction.guild.id, interaction.user.id)) {
+        const isAdmin = await discordAPIv2.isAdmin(interaction.guild.id, interaction.user.id);
+        // if (!discordAPI.isAdmin(interaction.guild.id, interaction.user.id)) {
+        if (!isAdmin) {
             await interaction.reply({
                 content: "🚫 You do not have permission to run this command.",
                 ephemeral: true
