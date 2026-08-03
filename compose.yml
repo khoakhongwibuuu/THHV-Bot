@@ -1,8 +1,6 @@
 services:
   chv-bot:
     build: .
-    env_file:
-      - .env
     volumes:
       - ./logs:/usr/src/bot/logs
       - ./configs:/usr/src/bot/configs
