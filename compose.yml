@@ -7,12 +7,15 @@ services:
       - ./logs:/usr/src/bot/logs
       - ./configs:/usr/src/bot/configs
       - ./modules:/usr/src/bot/modules
-    deploy:
-      restart_policy:
-        condition: unless-stopped
-        delay: 10s
-        window: 120s
+    restart: unless-stopped
     environment:
       - TOKEN=${TOKEN}
       - CLIENT_ID=${CLIENT_ID}
       - OWNER_ID=${OWNER_ID}
+    networks:
+      - multi-domain
+
+networks:
+  multi-domain:
+    external: true
+    name: multi-domain
