@@ -141,6 +141,7 @@ vite.config.ts.timestamp-*
 # Module configs and caches
 modules/*/config/
 modules/*/cache/
+configs/
 
 # Node dependencies
 node_modules/
