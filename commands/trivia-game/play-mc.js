@@ -24,8 +24,8 @@ module.exports = {
             return;
         }
         gameLib.guildLock(interaction.guild.id);
-        let booleanRate = stdlib.randomPercent(50);
-        const questionBlock = (booleanRate) ? gameLib.booleanReader() : gameLib.multipleReader();
+        const hardModeRate = stdlib.randomPercent(90);
+        const questionBlock = (hardModeRate) ? gameLib.easyReader() : gameLib.hardReader();
         await require(path.join(dirname, "modules/trivia-game/handler", questionBlock.type)).execute(interaction, questionBlock);
     },
 };

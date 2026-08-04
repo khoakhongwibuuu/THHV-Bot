@@ -114,43 +114,43 @@ const handleInput = (msg) => {
     if (isInRoom(msg.guild.id, msg.channel.id)) {
         let guildData = loadGuildFile(msg.guild.id);
         if (msg.author.id === guildData.recentUser) {
-            msg.reply("Bạn đã nối từ trước đó. Trừ 2 điểm.");
+            msg.reply("Bạn đã nối từ trước đó. Trừ 1 điểm.");
             msg.react(emojiTable.not_ok);
-            modifyPlayerScore(msg.guild.id, msg.author.id, -2, guildData);
+            modifyPlayerScore(msg.guild.id, msg.author.id, -1, guildData);
             writeGuildFile(msg.guild.id, guildData);
             return;
         }
         if (msg.createdTimestamp - guildData.recentSentTime < 3000) {
-            msg.reply("Bạn sử dụng bot hơi nhanh rồi, hãy chậm lại. Trừ 3 điểm.");
+            msg.reply("Bạn sử dụng bot hơi nhanh rồi, hãy chậm lại. Trừ 2 điểm.");
             msg.react("⏳");
-            modifyPlayerScore(msg.guild.id, msg.author.id, -3, guildData);
+            modifyPlayerScore(msg.guild.id, msg.author.id, -2, guildData);
             writeGuildFile(msg.guild.id, guildData);
             return;
         }
         if (guildData.recentSentTime !== 0 && msg.content.toLowerCase().firstDigit() !== guildData.recentWord) {
-            msg.reply(`Từ mới phải bắt đầu bằng \`${guildData.recentWord}\`. Trừ 3 điểm.`);
-            msg.react(emojiTable.not_ok);
-            modifyPlayerScore(msg.guild.id, msg.author.id, -3, guildData);
-            writeGuildFile(msg.guild.id, guildData);
-            return;
-        }
-        if (!dict.hasOwnProperty(msg.content.toLowerCase())) {
-            msg.reply(`Từ \`${msg.content.toLowerCase()}\` không tồn tại trong từ điển. Trừ 3 điểm.`);
-            msg.react(emojiTable.not_ok);
-            modifyPlayerScore(msg.guild.id, msg.author.id, -3, guildData);
-            writeGuildFile(msg.guild.id, guildData);
-            return;
-        }
-        if (guildData.used.hasOwnProperty(msg.content.toLowerCase())) {
-            msg.reply(`Từ \`${msg.content.toLowerCase()}\` đã được nối. Trừ 2 điểm.`);
+            msg.reply(`Từ mới phải bắt đầu bằng \`${guildData.recentWord}\`. Trừ 2 điểm.`);
             msg.react(emojiTable.not_ok);
             modifyPlayerScore(msg.guild.id, msg.author.id, -2, guildData);
             writeGuildFile(msg.guild.id, guildData);
             return;
         }
+        if (!dict.hasOwnProperty(msg.content.toLowerCase())) {
+            msg.reply(`Từ \`${msg.content.toLowerCase()}\` không tồn tại trong từ điển. Trừ 2 điểm.`);
+            msg.react(emojiTable.not_ok);
+            modifyPlayerScore(msg.guild.id, msg.author.id, -2, guildData);
+            writeGuildFile(msg.guild.id, guildData);
+            return;
+        }
+        if (guildData.used.hasOwnProperty(msg.content.toLowerCase())) {
+            msg.reply(`Từ \`${msg.content.toLowerCase()}\` đã được nối. Trừ 1 điểm.`);
+            msg.react(emojiTable.not_ok);
+            modifyPlayerScore(msg.guild.id, msg.author.id, -1, guildData);
+            writeGuildFile(msg.guild.id, guildData);
+            return;
+        }
 
-        modifyPlayerScore(msg.guild.id, msg.author.id, 1, guildData);
-        guildData.used[msg.content.toLowerCase()] = 1;
+        modifyPlayerScore(msg.guild.id, msg.author.id, 2, guildData);
+        guildData.used[msg.content.toLowerCase()] = 2;
         guildData.recentWord = msg.content.toLowerCase().lastDigit();
         guildData.recentSentTime = msg.createdTimestamp;
         guildData.recentUser = msg.author.id;

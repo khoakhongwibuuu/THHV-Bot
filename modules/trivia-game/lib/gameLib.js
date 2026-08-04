@@ -4,15 +4,21 @@ const path = require('node:path');
 const { dirname } = global.variable;
 
 // Database
-const qsDB = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/trivia-game/database/processed.database.min.json'), 'utf-8'));
-const booleanDB = qsDB.results.filter(qs => qs.type === 'boolean');
-const multiDB = qsDB.results.filter(qs => qs.type === 'multiple');
+const raw_easy_boolean = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/trivia-game/database/boolean.easy.database.min.json'), 'utf-8'));
+const raw_medium_boolean = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/trivia-game/database/boolean.medium.database.min.json'), 'utf-8'));
+const raw_hard_boolean = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/trivia-game/database/boolean.hard.database.min.json'), 'utf-8'));
+const raw_easy_multiple = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/trivia-game/database/multiple.easy.database.min.json'), 'utf-8'));
+const raw_medium_multiple = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/trivia-game/database/multiple.medium.database.min.json'), 'utf-8'));
+const raw_hard_multiple = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/trivia-game/database/multiple.hard.database.min.json'), 'utf-8'));
+
+const easy_med_list = [].concat(raw_easy_boolean.results, raw_easy_multiple.results, raw_medium_boolean.results, raw_medium_multiple.results);
+const hard_list = [].concat(raw_hard_boolean.results, raw_hard_multiple.results);
 
 const getGuildFilePath = (guildId) => path.join(dirname, "modules/trivia-game/config", `${guildId}.json`);
 
 const penalty = {
-    boolean: { easy: { up: 2, down: -2 }, medium: { up: 3, down: -2 }, hard: { up: 4, down: -2 } },
-    multiple: { easy: { up: 2, down: -2 }, medium: { up: 3, down: -2 }, hard: { up: 4, down: -2 } }
+    boolean: { easy: { up: 1, down: -1 }, medium: { up: 2, down: -1 }, hard: { up: 3, down: -1 } },
+    multiple: { easy: { up: 2, down: -1 }, medium: { up: 3, down: -1 }, hard: { up: 4, down: -1 } }
 }
 
 const timeAllowed = {
@@ -162,12 +168,12 @@ const guildUnlock = (guildId) =>
     guildState[guildId].running = false;
 
 
-const booleanReader = () =>
-    booleanDB.randomValue();
+const easyReader = () =>
+    easy_med_list.randomValue();
 
 
-const multipleReader = () =>
-    multiDB.randomValue();
+const hardReader = () =>
+    hard_list.randomValue();
 
 
 module.exports = {
@@ -191,6 +197,6 @@ module.exports = {
     isRunning,
     guildLock,
     guildUnlock,
-    booleanReader,
-    multipleReader
+    easyReader,
+    hardReader
 }
