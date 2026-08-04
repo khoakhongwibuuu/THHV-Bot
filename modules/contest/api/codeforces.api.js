@@ -3,7 +3,7 @@ const { contestLib, discordAPI, discordAPIv2 } = global.customLib;
 const { client } = global.variable;
 
 const CLOCK_INTERVAL_MINUTES = 5;
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 const NOTIFY_BEFORE_HOURS = 24000;
 const CODEFORCES_API = 'http://codeforces.com/api/contest.list';
 
