@@ -10,6 +10,6 @@ COPY ./package*.json ./yarn.lock* ./
 
 COPY . .
 
-RUN yarn install --frozen-lockfile || yarn install
+RUN npm ci
 
-CMD [ "yarn", "start" ]
+CMD ["npm", "start"]
