@@ -5,7 +5,7 @@ const Discord = require('discord.js');
 const { dirname, client } = global.variable;
 
 const cleanModule = async (moduleName, joined) => {
-    const configDir = path.join(dirname, 'modules', moduleName, 'config');
+    const configDir = path.join(dirname, 'configs', moduleName, 'config');
     const unusedConfigFiles = fs.readdirSync(configDir)
         .filter(file => path.extname(file) === '.json')
         .map(file => path.basename(file, '.json'))
@@ -37,6 +37,7 @@ module.exports = {
         .setName('cleanup')
         .setDescription('[Hosts Only] - Cleanup unused configuration files.')
     ,
+    deprecated: true,
     async execute(interaction) {
         if (process.env.OWNER_ID === interaction.user.id) {
             await interaction.reply({

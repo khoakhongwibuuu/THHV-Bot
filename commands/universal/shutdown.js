@@ -6,6 +6,7 @@ module.exports = {
         .setName('shutdown')
         .setDescription('[Hosts Only] - Remotely turn off the bot.')
     ,
+    deprecated: true,
     async execute(interaction) {
         if (process.env.OWNER_ID === interaction.user.id) {
             interaction.reply({

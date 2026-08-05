@@ -8,6 +8,7 @@ module.exports = {
         .setDescription('[Debug Only] - Export this server Trivia game data. Used for debugging.')
         .setDMPermission(false)
     ,
+    deprecated: true,
     async execute(interaction) {
         if (process.env.OWNER_ID !== interaction.user.id) {
             await interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
