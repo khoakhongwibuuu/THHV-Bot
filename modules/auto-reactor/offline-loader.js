@@ -6,7 +6,7 @@ const { dirname } = global.variable;
 const reactLib = require(path.join(dirname, '/modules/auto-reactor/lib/reactLib.js'));
 global.customLib.reactLib = reactLib;
 
-const configPath = path.join(dirname, 'modules/auto-reactor/config');
+const configPath = path.join(dirname, 'configs/auto-reactor/config');
 if (!fs.existsSync(configPath)) {
     fs.mkdirSync(configPath, { recursive: true });
 }

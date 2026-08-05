@@ -6,7 +6,7 @@ const { dirname } = global.variable;
 const gameLib = require(path.join(dirname, '/modules/trivia-game/lib/gameLib.js'));
 global.customLib.gameLib = gameLib;
 
-const configPath = path.join(dirname, 'modules/trivia-game/config');
+const configPath = path.join(dirname, 'configs/trivia-game/config');
 if (!fs.existsSync(configPath)) {
     fs.mkdirSync(configPath, { recursive: true });
 }

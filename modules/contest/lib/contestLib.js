@@ -4,7 +4,7 @@ const path = require('node:path');
 const { dirname } = global.variable;
 
 // Persist Controller
-const persistPath = path.join(dirname, 'modules/contest/config/persist.json');
+const persistPath = path.join(dirname, 'configs/contest/config/persist.json');
 const loadPersist = async () => {
     if (!fs.existsSync(persistPath))
         return 0;

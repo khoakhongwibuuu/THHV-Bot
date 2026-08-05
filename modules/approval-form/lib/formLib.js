@@ -8,7 +8,7 @@ let guildsConfig = {};
 const cachedFormsRequests = {};
 
 const getGuildFilePath = (guildId) =>
-    path.join(dirname, 'modules/approval-form/config', `${guildId}.json`);
+    path.join(dirname, 'configs/approval-form/config', `${guildId}.json`);
 
 const isSetup = (guildId) =>
     guildsConfig.hasOwnProperty(guildId);

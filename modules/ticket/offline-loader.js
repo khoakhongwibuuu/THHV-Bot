@@ -6,7 +6,7 @@ const { dirname } = global.variable;
 const ticketLib = require(path.join(dirname, '/modules/ticket/lib/ticketLib.js'));
 global.customLib.ticketLib = ticketLib;
 
-const configPath = path.join(dirname, 'modules/ticket/config');
+const configPath = path.join(dirname, 'configs/ticket/config');
 if (!fs.existsSync(configPath)) {
     fs.mkdirSync(configPath, { recursive: true });
 }

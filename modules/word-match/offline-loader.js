@@ -6,7 +6,7 @@ const { dirname } = global.variable;
 const wordLib = require(path.join(dirname, '/modules/word-match/lib/wordLib.js'));
 global.customLib.wordLib = wordLib;
 
-const configPath = path.join(dirname, 'modules/word-match/config');
+const configPath = path.join(dirname, 'configs/word-match/config');
 if (!fs.existsSync(configPath)) {
     fs.mkdirSync(configPath, { recursive: true });
 }

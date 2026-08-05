@@ -4,7 +4,7 @@ const { client } = global.variable;
 
 const CLOCK_INTERVAL_MINUTES = 5;
 const DEBUG_MODE = false;
-const NOTIFY_BEFORE_HOURS = 24000;
+const NOTIFY_BEFORE_HOURS = 24;
 const CODEFORCES_API = 'http://codeforces.com/api/contest.list';
 
 let hasStarted = false;

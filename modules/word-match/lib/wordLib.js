@@ -4,7 +4,7 @@ const path = require('node:path');
 const { dirname } = global.variable;
 
 // Module based
-const configDirPath = path.join(dirname, "modules/word-match/config");
+const configDirPath = path.join(dirname, 'configs/word-match/config');
 const dict = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/word-match/database/default.dict.min.json'), 'utf-8'));
 
 // Configuration

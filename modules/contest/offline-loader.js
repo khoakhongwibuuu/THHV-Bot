@@ -6,12 +6,12 @@ const { dirname } = global.variable;
 const contestLib = require(path.join(dirname, '/modules/contest/lib/contestLib.js'));
 global.customLib.contestLib = contestLib;
 
-const configPath = path.join(dirname, 'modules/contest/config');
+const configPath = path.join(dirname, 'configs/contest/config');
 if (!fs.existsSync(configPath)) {
     fs.mkdirSync(configPath, { recursive: true });
 }
 
-const persistPath = path.join(dirname, 'modules/contest/config/persist.json');
+const persistPath = path.join(configPath, 'persist.json');
 if (!fs.existsSync(persistPath)) {
     fs.writeFileSync(persistPath, JSON.stringify({
         ready: {},

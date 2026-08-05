@@ -33,7 +33,7 @@ listenMessage = {
 
 // Utility to get the guild config file path
 const getGuildFilePath = (guildId) =>
-    path.join(dirname, 'modules/auto-reactor/config', `${guildId}.json`);
+    path.join(dirname, 'configs/auto-reactor/config', `${guildId}.json`);
 
 // Check if the guild has a config file
 const isSetup = (guildId) =>

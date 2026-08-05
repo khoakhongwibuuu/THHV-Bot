@@ -14,7 +14,7 @@ const raw_hard_multiple = JSON.parse(fs.readFileSync(path.join(dirname, 'modules
 const easy_med_list = [].concat(raw_easy_boolean.results, raw_easy_multiple.results, raw_medium_boolean.results, raw_medium_multiple.results);
 const hard_list = [].concat(raw_hard_boolean.results, raw_hard_multiple.results);
 
-const getGuildFilePath = (guildId) => path.join(dirname, "modules/trivia-game/config", `${guildId}.json`);
+const getGuildFilePath = (guildId) => path.join(dirname, 'configs/trivia-game/config', `${guildId}.json`);
 
 const penalty = {
     boolean: { easy: { up: 1, down: -1 }, medium: { up: 2, down: -1 }, hard: { up: 3, down: -1 } },

@@ -6,7 +6,7 @@ const { dirname } = global.variable;
 const formLib = require(path.join(dirname, '/modules/approval-form/lib/formLib.js'));
 global.customLib.formLib = formLib;
 
-const configPath = path.join(dirname, 'modules/approval-form/config');
+const configPath = path.join(dirname, 'configs/approval-form/config');
 if (!fs.existsSync(configPath)) {
     fs.mkdirSync(configPath, { recursive: true });
 }

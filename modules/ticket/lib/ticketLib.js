@@ -6,7 +6,7 @@ const { dirname } = global.variable;
 let guildsConfig = {};
 
 const getGuildFilePath = (guildId) =>
-    path.join(dirname, 'modules/ticket/config', `${guildId}.json`);
+    path.join(dirname, 'configs/ticket/config', `${guildId}.json`);
 
 const isSetup = (guildId) =>
     guildsConfig.hasOwnProperty(guildId);
