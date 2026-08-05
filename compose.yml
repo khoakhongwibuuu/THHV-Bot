@@ -4,7 +4,6 @@ services:
     volumes:
       - ./logs:/usr/src/bot/logs
       - ./configs:/usr/src/bot/configs
-      - ./modules:/usr/src/bot/modules
     restart: unless-stopped
     environment:
       - TOKEN=${TOKEN}
