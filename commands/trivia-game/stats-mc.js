@@ -55,12 +55,12 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!gameLib.isSetup(interaction.guild.id)) {
+        if (!await gameLib.isSetup(interaction.guild.id)) {
             await interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
         const target = interaction.options.getUser('member') ?? interaction.user;
-        const targetScore = gameLib.readPlayerScore(interaction.guildId, target.id);
+        const targetScore = await gameLib.readPlayerScore(interaction.guildId, target.id);
         const targetStat = statBuilder(target.id, targetScore);
         const sentEmbed = new Discord.EmbedBuilder()
             .setTitle(`Dữ liệu Trivia Game`)
@@ -75,6 +75,6 @@ module.exports = {
                 { name: "Điểm cao nhất từng đạt", value: targetStat.max.codeChunk(), inline: true },
             )
             .setTimestamp()
-        await interaction.reply({ embeds: [sentEmbed], ephemeral: !gameLib.isInRoom(interaction.guild.id, interaction.channel.id) | gameLib.isRunning(interaction.guild.id) });
+        await interaction.reply({ embeds: [sentEmbed], ephemeral: !await gameLib.isInRoom(interaction.guild.id, interaction.channel.id) | await gameLib.isRunning(interaction.guild.id) });
     },
 };

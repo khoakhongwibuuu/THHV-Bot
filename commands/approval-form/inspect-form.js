@@ -18,14 +18,14 @@ module.exports = {
             });
             return;
         }
-        if (!formLib.isSetup(interaction.guild.id)) {
+        if (!await .(interaction.guild.id)) {
             await interaction.reply({
                 content: `⚠️ Member\'s information management panel has not been installed in this server.`,
                 ephemeral: true
             });
             return;
         }
-        const usageData = formLib.usageData(interaction.guild.id);
+        const usageData = await .(interaction.guild.id);
         if (usageData.length > 0) {
             await interaction.reply({
                 embeds: [

@@ -18,14 +18,14 @@ module.exports = {
             });
             return;
         }
-        if (!formLib.isSetup(interaction.guild.id)) {
+        if (!await .(interaction.guild.id)) {
             await interaction.reply({
                 content: `⚠️ Member\'s information management panel has not been installed in this server.`,
                 ephemeral: true
             });
             return;
         }
-        if (!formLib.isUninstallable(interaction.guild.id)) {
+        if (!await .(interaction.guild.id)) {
             await interaction.reply({
                 content: `⚠️ This module is currently in use, you cannot uninstall it.`,
                 ephemeral: true
@@ -33,7 +33,7 @@ module.exports = {
             return;
         }
 
-        formLib.guildUninstall(interaction.guild.id);
+        await .(interaction.guild.id);
         await interaction.reply({
             ephemeral: true,
             content: "Success."

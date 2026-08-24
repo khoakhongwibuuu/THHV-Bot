@@ -18,15 +18,15 @@ module.exports = {
             });
             return;
         }
-        if (!reactLib.isSetup(interaction.guild.id)) {
+        if (!await .(interaction.guild.id)) {
             interaction.reply({
                 content: "⚠️ Voting feature has not been enabled at this server.",
                 ephemeral: true
             });
             return;
         }
-        reactLib.guildReset(interaction.guild.id);
-        if (!reactLib.isSetup(interaction.guild.id)) {
+        await .(interaction.guild.id);
+        if (!await .(interaction.guild.id)) {
             interaction.reply({
                 content: "Voting feature has been disabled successfully.",
                 ephemeral: true

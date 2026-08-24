@@ -24,18 +24,18 @@ module.exports = {
             interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
             return;
         }
-        if (!wordLib.isSetup(interaction.guild.id)) {
+        if (!await wordLib.isSetup(interaction.guild.id)) {
             interaction.reply({ content: "🔍 Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
-        if (!wordLib.isInRoom(interaction.guild.id, interaction.channel.id)) {
-            interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại <#${wordLib.getRoomId(interaction.guild.id)}>.`, ephemeral: true });
+        if (!await wordLib.isInRoom(interaction.guild.id, interaction.channel.id)) {
+            interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại <#${await wordLib.getRoomId(interaction.guild.id)}>.`, ephemeral: true });
             return;
         }
         const sentEmbed = new Discord.EmbedBuilder();
 
         let content = "⚠️ **Bạn đang xóa dữ liệu WordMatch game của server này. Bạn chắc chứ?**\n";
-        const affected = wordLib.allPlayerList(interaction.guild.id);
+        const affected = await wordLib.allPlayerList(interaction.guild.id);
 
         content += `\nNếu bạn tiếp tục, điểm của những người chơi sau đây sẽ bị xóa.\n`;
         if (affected.length > 0)
@@ -55,8 +55,8 @@ module.exports = {
         let executed = false;
         const filter = (interaction) => interaction.isButton() && interaction.customId === "wm-accept-uninstall";
         const collector = interaction.channel.createMessageComponentCollector({ filter, time: 10000 });
-        collector.on('collect', () => {
-            wordLib.guildUninstall(interaction.guild.id);
+        collector.on('collect', async () => {
+            await wordLib.guildUninstall(interaction.guild.id);
             executed = true;
             interaction.editReply({
                 embeds: [sentEmbed.setFooter({ text: "✅ Đã xóa dữ liệu thành công." })],
