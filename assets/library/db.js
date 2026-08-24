@@ -5,7 +5,7 @@ const { createClient } = require('redis');
 
 // Set up Prisma Postgres Adapter
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://root:secret_password@localhost:5432/thhv_bot_db?schema=public'
+    connectionString: process.env.DATABASE_URL || 'postgresql://thhv_bot_user:change_this_password@localhost:5432/thhv_bot_db?schema=public'
 });
 const adapter = new PrismaPg(pool);
 
