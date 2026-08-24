@@ -19,10 +19,10 @@ const fetchData = async (url) => {
 
 		if (data?.status === 'OK') return data.result;
 
-		console.warn(`[${new Date().toISOString()}] [WARN] Invalid response from codeforces API.`);
+		console.warn(`[${new Date().toISOString()}] [WARN] module/contest: Invalid response from codeforces API.`);
 		return null;
 	} catch (error) {
-		console.warn(`[${new Date().toISOString()}] [WARN] Unable to fetch data: ${error.message}`);
+		console.warn(`[${new Date().toISOString()}] [WARN] module/contest: Unable to fetch data: ${error.message}`);
 		return null;
 	}
 };
@@ -82,7 +82,7 @@ const notify = async (domain, id, name, contestURL, registerURL, startTime, hour
 
 const runClock = async () => {
 	if (!hasStarted) {
-		console.log(`[${new Date().toISOString()}] [INFO] Clock started.`);
+		console.log(`[${new Date().toISOString()}] [INFO] module/contest: Clock started.`);
 		hasStarted = true;
 	}
 
@@ -143,6 +143,6 @@ module.exports.exec = async () => {
 		? "0m-1s-0ms"
 		: `${Math.floor(delay / 60000)}m-${Math.floor((delay % 60000) / 1000)}s-${delay % 1000}ms`;
 
-	console.log(`[${new Date().toISOString()}] [INFO] Clock will start in ${readableDelay}.`);
+	console.log(`[${new Date().toISOString()}] [INFO] module/contest: Clock will start in ${readableDelay}.`);
 	setTimeout(runClock, delay);
 }

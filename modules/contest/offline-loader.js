@@ -13,6 +13,7 @@ if (!fs.existsSync(configPath)) {
 
 const persistPath = path.join(configPath, 'persist.json');
 if (!fs.existsSync(persistPath)) {
+    console.log(`[${new Date().toISOString()}] [INFO] module/contest: persist file is not found. Creating new...`);
     fs.writeFileSync(persistPath, JSON.stringify({
         ready: {},
         channel: {},
