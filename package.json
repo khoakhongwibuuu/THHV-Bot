@@ -17,6 +17,11 @@
     "name": "thhv-bot-rewrite",
     "version": "1.0.0",
     "main": "index.js",
+    "imports": {
+        "#assets/*": "./assets/*",
+        "#modules/*": "./modules/*",
+        "#root/*": "./*"
+    },
     "directories": {},
     "scripts": {
         "start": "node ./index.js",
