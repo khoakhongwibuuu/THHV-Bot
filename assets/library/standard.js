@@ -68,6 +68,23 @@ const formatString = (format, ...args) => {
 	});
 }
 
+/**
+ * Deep freezes an object
+ * @param {*} obj - The object to be deep freezed
+ * @returns {object} The deep freezed object
+ */
+const deepFreeze = (obj) => {
+	Object.freeze(obj);
+
+	for (const value of Object.values(obj)) {
+		if (value && typeof value === "object" && !Object.isFrozen(value)) {
+			deepFreeze(value);
+		}
+	}
+
+	return obj;
+}
+
 module.exports = {
 	trueRnd,
 	shuffle,
