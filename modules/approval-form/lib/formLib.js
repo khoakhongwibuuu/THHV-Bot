@@ -1,107 +1,124 @@
-// Packages
-const fs = require('node:fs');
-const path = require('node:path');
-const { dirname } = global.variable;
-const { discordAPI, discordAPIv2 } = global.customLib;
+const { discordAPIv2, db } = global.customLib;
+const { prisma, redisClient } = db;
 
-let guildsConfig = {};
-const cachedFormsRequests = {};
+const MODULE_NAME = 'approval-form';
 
-const getGuildFilePath = (guildId) =>
-    path.join(dirname, 'configs/approval-form/config', `${guildId}.json`);
+// --- CONFIGURATION CACHE (Prisma + Redis) ---
 
-const isSetup = (guildId) =>
-    guildsConfig.hasOwnProperty(guildId);
+const getGuildConfig = async (guildId) => {
+    const cached = await redisClient.get(`config:${MODULE_NAME}:${guildId}`);
+    if (cached) return JSON.parse(cached);
 
-const loadGuildFile = (guildId) => JSON.parse(fs.readFileSync(getGuildFilePath(guildId), 'utf-8'));
+    const record = await prisma.guildConfig.findUnique({
+        where: { guildId_module: { guildId, module: MODULE_NAME } }
+    });
 
-const writeGuildFile = (guildId, newData) => fs.writeFileSync(getGuildFilePath(guildId), JSON.stringify(newData), 'utf8');
+    if (record) {
+        await redisClient.set(`config:${MODULE_NAME}:${guildId}`, JSON.stringify(record.data));
+        return record.data;
+    }
+    return null;
+};
 
-const preLoad = (guildId) => {
-    const guildData = loadGuildFile(guildId);
-    guildsConfig[guildId] = guildData;
-    cachedFormsRequests[guildId] = {};
-}
+const saveGuildConfig = async (guildId, data) => {
+    await prisma.guildConfig.upsert({
+        where: { guildId_module: { guildId, module: MODULE_NAME } },
+        update: { data },
+        create: { guildId, module: MODULE_NAME, data }
+    });
+    await redisClient.set(`config:${MODULE_NAME}:${guildId}`, JSON.stringify(data));
+};
+
+const isSetup = async (guildId) => {
+    const config = await getGuildConfig(guildId);
+    return config !== null;
+};
 
 // Installation-Uninstallation
-const guildSetup = (guildId, data) => {
-    if (isSetup(guildId)) return false;
-    guildsConfig[guildId] = data;
-    cachedFormsRequests[guildId] = {};
-    writeGuildFile(guildId, data);
+const guildSetup = async (guildId, data) => {
+    if (await isSetup(guildId)) return false;
+    await saveGuildConfig(guildId, data);
     return true;
-}
+};
 
-const guildUninstall = (guildId) => {
-    if (!isSetup(guildId)) return false;
-    delete guildsConfig[guildId];
-    fs.unlinkSync(getGuildFilePath(guildId));
+const guildUninstall = async (guildId) => {
+    if (!(await isSetup(guildId))) return false;
+    
+    await prisma.guildConfig.delete({
+        where: { guildId_module: { guildId, module: MODULE_NAME } }
+    });
+    await redisClient.del(`config:${MODULE_NAME}:${guildId}`);
+    await redisClient.del(`cache:${MODULE_NAME}:${guildId}`);
+    
     return true;
-}
+};
 
-const isUninstallable = (guildId) => {
-    if (!isSetup(guildId)) return false;
-    return (Object.keys(cachedFormsRequests[guildId]).length === 0 && Object.keys(guildsConfig[guildId].waitApproval).length === 0);
-}
-
-const getGuildConfig = (guildId) => isSetup(guildId) ? guildsConfig[guildId] : null;
+const isUninstallable = async (guildId) => {
+    const config = await getGuildConfig(guildId);
+    if (!config) return false;
+    
+    const usage = await usageData(guildId);
+    return usage.length === 0 && Object.keys(config.waitApproval || {}).length === 0;
+};
 
 const memberIsVerified = async (guildId, userId) => {
+    const config = await getGuildConfig(guildId);
+    if (!config) return false;
+    
     const member = await discordAPIv2.GuildMember(guildId, userId);
-    return member.roles.cache.has(guildsConfig[guildId].role);
-}
+    return member.roles.cache.has(config.role);
+};
 
-const addMemberToApprovalQueue = (guildId, userId) => {
-    if (isSetup(guildId)) {
-        guildsConfig[guildId].waitApproval[userId] = 1;
-        writeGuildFile(guildId, guildsConfig[guildId]);
+// --- WAIT APPROVAL QUEUE (Persistent - DB) ---
+
+const addMemberToApprovalQueue = async (guildId, userId) => {
+    const config = await getGuildConfig(guildId);
+    if (config) {
+        config.waitApproval = config.waitApproval || {};
+        config.waitApproval[userId] = 1;
+        await saveGuildConfig(guildId, config);
     }
-}
+};
 
-const removeMemberFromApprovalQueue = (guildId, userId) => {
-    if (isSetup(guildId)) {
-        if (guildsConfig[guildId].waitApproval.hasOwnProperty(userId))
-            delete guildsConfig[guildId].waitApproval[userId];
-        writeGuildFile(guildId, guildsConfig[guildId]);
+const removeMemberFromApprovalQueue = async (guildId, userId) => {
+    const config = await getGuildConfig(guildId);
+    if (config && config.waitApproval && config.waitApproval[userId]) {
+        delete config.waitApproval[userId];
+        await saveGuildConfig(guildId, config);
     }
-}
+};
 
-const memberIsInApprovalQueue = (guildId, userId) => {
-    if (!isSetup(guildId)) return false;
-    else return guildsConfig[guildId].waitApproval.hasOwnProperty(userId);
-}
+const memberIsInApprovalQueue = async (guildId, userId) => {
+    const config = await getGuildConfig(guildId);
+    return config && config.waitApproval && config.waitApproval[userId] ? true : false;
+};
 
-const addMemberToCache = (guildId, userId) => {
-    if (isSetup(guildId)) {
-        cachedFormsRequests[guildId][userId] = 1;
+// --- RUNTIME EPHEMERAL STATE (Redis Sets) ---
+
+const addMemberToCache = async (guildId, userId) => {
+    if (await isSetup(guildId)) {
+        await redisClient.sAdd(`cache:${MODULE_NAME}:${guildId}`, userId);
     }
-}
+};
 
-const removeMemberFromCache = (guildId, userId) => {
-    if (isSetup(guildId)) {
-        if (cachedFormsRequests.hasOwnProperty(guildId)) {
-            if (cachedFormsRequests[guildId].hasOwnProperty(userId))
-                delete cachedFormsRequests[guildId][userId];
-        }
+const removeMemberFromCache = async (guildId, userId) => {
+    if (await isSetup(guildId)) {
+        await redisClient.sRem(`cache:${MODULE_NAME}:${guildId}`, userId);
     }
-}
+};
 
-const memberIsInCache = (guildId, userId) => {
-    if (!isSetup(guildId)) return false;
-    else return (cachedFormsRequests[guildId]
-        && cachedFormsRequests[guildId][userId]);
-}
+const memberIsInCache = async (guildId, userId) => {
+    if (!(await isSetup(guildId))) return false;
+    return await redisClient.sIsMember(`cache:${MODULE_NAME}:${guildId}`, userId);
+};
 
-const usageData = (guildId) => {
-    if (!cachedFormsRequests[guildId] || !isSetup(guildId)) return [];
-    else return Object.keys(cachedFormsRequests[guildId]);
-}
+const usageData = async (guildId) => {
+    if (!(await isSetup(guildId))) return [];
+    return await redisClient.sMembers(`cache:${MODULE_NAME}:${guildId}`);
+};
 
 module.exports = {
-    getGuildFilePath,
     isSetup,
-    loadGuildFile,
-    preLoad,
     guildSetup,
     guildUninstall,
     isUninstallable,
@@ -114,4 +131,4 @@ module.exports = {
     removeMemberFromCache,
     memberIsInCache,
     usageData
-}
+};

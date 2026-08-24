@@ -1,83 +1,94 @@
-// Packages
-const fs = require('node:fs');
-const path = require('node:path');
-const { dirname } = global.variable;
+const { db } = global.customLib;
+const { prisma, redisClient } = db;
 
-let guildsConfig = {};
+const MODULE_NAME = 'ticket';
 
-const getGuildFilePath = (guildId) =>
-    path.join(dirname, 'configs/ticket/config', `${guildId}.json`);
+// --- CONFIGURATION CACHE (Prisma + Redis) ---
 
-const isSetup = (guildId) =>
-    guildsConfig.hasOwnProperty(guildId);
+const getGuildConfig = async (guildId) => {
+    const cached = await redisClient.get(`config:${MODULE_NAME}:${guildId}`);
+    if (cached) return JSON.parse(cached);
 
+    const record = await prisma.guildConfig.findUnique({
+        where: { guildId_module: { guildId, module: MODULE_NAME } }
+    });
 
-// File operations
-const loadGuildFile = (guildId) =>
-    JSON.parse(fs.readFileSync(getGuildFilePath(guildId)));
-
-
-const writeGuildFile = (guildId, newData) =>
-    fs.writeFileSync(getGuildFilePath(guildId), JSON.stringify(newData), 'utf8');
-
-// Module startup
-const preLoad = (guildId) => {
-    const guildData = loadGuildFile(guildId);
-    guildsConfig[guildId] = guildData;
-}
-
-// (un)installation
-const guildSetup = (guildId, data) => {
-    if (!isSetup(guildId)) {
-        guildsConfig[guildId] = data;
-        writeGuildFile(guildId, guildsConfig[guildId]);
+    if (record) {
+        await redisClient.set(`config:${MODULE_NAME}:${guildId}`, JSON.stringify(record.data));
+        return record.data;
     }
-}
+    return null;
+};
 
-const guildUninstall = (guildId) => {
-    if (!isSetup(guildId)) return false;
-    delete guildsConfig[guildId];
-    fs.unlinkSync(getGuildFilePath(guildId));
+const saveGuildConfig = async (guildId, data) => {
+    await prisma.guildConfig.upsert({
+        where: { guildId_module: { guildId, module: MODULE_NAME } },
+        update: { data },
+        create: { guildId, module: MODULE_NAME, data }
+    });
+    await redisClient.set(`config:${MODULE_NAME}:${guildId}`, JSON.stringify(data));
+};
+
+const isSetup = async (guildId) => {
+    const config = await getGuildConfig(guildId);
+    return config !== null;
+};
+
+const guildSetup = async (guildId, data) => {
+    if (!(await isSetup(guildId))) {
+        await saveGuildConfig(guildId, data);
+    }
+};
+
+const guildUninstall = async (guildId) => {
+    if (!(await isSetup(guildId))) return false;
+    await prisma.guildConfig.delete({
+        where: { guildId_module: { guildId, module: MODULE_NAME } }
+    });
+    await redisClient.del(`config:${MODULE_NAME}:${guildId}`);
     return true;
-}
+};
 
-const getRootChannel = (guildId) =>
-    isSetup(guildId) ? guildsConfig[guildId].rootChannel : null;
+const getRootChannel = async (guildId) => {
+    const config = await getGuildConfig(guildId);
+    return config ? config.rootChannel : null;
+};
 
-const getExistingTickets = (guildId) =>
-    isSetup(guildId) ? Object.keys(guildsConfig[guildId].running) : [];
+const getExistingTickets = async (guildId) => {
+    const config = await getGuildConfig(guildId);
+    return config && config.running ? Object.keys(config.running) : [];
+};
 
-const isOccupied = (guildId, userId) =>
-    isSetup(guildId) ? Object.values(guildsConfig[guildId].running).includes(userId) : false;
+const isOccupied = async (guildId, userId) => {
+    const config = await getGuildConfig(guildId);
+    return config && config.running ? Object.values(config.running).includes(userId) : false;
+};
 
-const addOccupation = (guildId, channelId, userId) => {
-    if (isSetup(guildId)) {
-        guildsConfig[guildId].running[channelId] = userId;
-        writeGuildFile(guildId, guildsConfig[guildId]);
+const addOccupation = async (guildId, channelId, userId) => {
+    const config = await getGuildConfig(guildId);
+    if (config) {
+        config.running = config.running || {};
+        config.running[channelId] = userId;
+        await saveGuildConfig(guildId, config);
     }
-}
+};
 
-const removeOccupation = (guildId, channelId) => {
-    if (isSetup(guildId)) {
-        delete guildsConfig[guildId].running[channelId];
-        writeGuildFile(guildId, guildsConfig[guildId]);
+const removeOccupation = async (guildId, channelId) => {
+    const config = await getGuildConfig(guildId);
+    if (config && config.running && config.running[channelId]) {
+        delete config.running[channelId];
+        await saveGuildConfig(guildId, config);
     }
-}
-
-const getGuildConfig = (guildId) =>
-    isSetup(guildId) ? guildsConfig[guildId] : null;
+};
 
 module.exports = {
-    getGuildFilePath,
     isSetup,
-    loadGuildFile,
-    preLoad,
+    getGuildConfig,
     guildSetup,
     guildUninstall,
     getRootChannel,
     getExistingTickets,
     isOccupied,
     addOccupation,
-    removeOccupation,
-    getGuildConfig
-}
+    removeOccupation
+};

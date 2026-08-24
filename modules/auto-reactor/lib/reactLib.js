@@ -1,160 +1,121 @@
-// Packages
-const fs = require('node:fs');
-const path = require('node:path');
-const { dirname } = global.variable;
+const { db } = global.customLib;
+const { prisma, redisClient } = db;
 
-// In-memory channel-ids for each guilds storage
-let channelIdList = {};
-/*
-channelIdList = {
-    "guild-id-1": "channel-id-1",
-    "guild-id-2": "channel-id-2",
-    ...
-}
-*/
+const MODULE_NAME = 'auto-reactor';
 
-// In-memory tracking for listened messages
-let listenMessage = {};
-/*
-listenMessage = {
-    "guild-id-1": {
-        "message-id-1" : 1,
-        "message-id-2" : 1,
-        ...
-    },
-    "guild-id-2": {
-        "message-id-1" : 1,
-        "message-id-2" : 1,
-        ...
-    },
-    ...
-}
-*/
+// --- CONFIGURATION CACHE (Prisma + Redis) ---
 
-// Utility to get the guild config file path
-const getGuildFilePath = (guildId) =>
-    path.join(dirname, 'configs/auto-reactor/config', `${guildId}.json`);
+const getGuildConfig = async (guildId) => {
+    const cached = await redisClient.get(`config:${MODULE_NAME}:${guildId}`);
+    if (cached) return JSON.parse(cached);
 
-// Check if the guild has a config file
-const isSetup = (guildId) =>
-    channelIdList.hasOwnProperty(guildId)
-    && listenMessage.hasOwnProperty(guildId);
-
-// Load guild configuration file
-const loadGuildFile = (guildId) => JSON.parse(fs.readFileSync(getGuildFilePath(guildId), 'utf-8'));
-
-// Write new data to the guild configuration file
-const writeGuildFile = (guildId, newData) => fs.writeFileSync(getGuildFilePath(guildId), JSON.stringify(newData), 'utf8');
-
-// Flush all tracked messages for a guild
-const flushGuild = (guildId) => {
-    if (!isSetup(guildId)) return;
-    listenMessage[guildId] = {};
-
-    const guildData = loadGuildFile(guildId);
-    if (guildData) {
-        guildData.listenMessage = {};
-        writeGuildFile(guildId, guildData);
-    }
-}
-
-// Load autio-reaction channelId for each set up guilds
-const preLoad = (guildId) => {
-    const guildData = loadGuildFile(guildId);
-    channelIdList[guildId] = guildData.channelId;
-    listenMessage[guildId] = {};
-    Object.keys(guildData.listenMessage).forEach(messageId => {
-        listenMessage[guildId][messageId] = 1;
+    const record = await prisma.guildConfig.findUnique({
+        where: { guildId_module: { guildId, module: MODULE_NAME } }
     });
-}
 
-// Set up guild configuration
-const guildSetup = (guildId, channelId, upvoteToken, downvoteToken) => {
-    channelIdList[guildId] = channelId;
-    listenMessage[guildId] = {};
-    writeGuildFile(guildId, {
+    if (record) {
+        await redisClient.set(`config:${MODULE_NAME}:${guildId}`, JSON.stringify(record.data));
+        return record.data;
+    }
+    return null;
+};
+
+const saveGuildConfig = async (guildId, data) => {
+    await prisma.guildConfig.upsert({
+        where: { guildId_module: { guildId, module: MODULE_NAME } },
+        update: { data },
+        create: { guildId, module: MODULE_NAME, data }
+    });
+    await redisClient.set(`config:${MODULE_NAME}:${guildId}`, JSON.stringify(data));
+};
+
+const isSetup = async (guildId) => {
+    const config = await getGuildConfig(guildId);
+    return config !== null;
+};
+
+const flushGuild = async (guildId) => {
+    const config = await getGuildConfig(guildId);
+    if (config) {
+        config.listenMessage = {};
+        await saveGuildConfig(guildId, config);
+    }
+};
+
+const guildSetup = async (guildId, channelId, upvoteToken, downvoteToken) => {
+    await saveGuildConfig(guildId, {
         channelId,
         upvoteToken,
         downvoteToken,
         listenMessage: {}
     });
-}
-
-// Reset guild configuration
-const guildReset = (guildId) => {
-    if (isSetup(guildId)) fs.unlinkSync(getGuildFilePath(guildId));
-    delete listenMessage[guildId];
-    delete channelIdList[guildId];
-}
-
-// Check if a channel is configured for auto-reactions
-const isInRoom = (guildId, channelId) => isSetup(guildId) ? channelIdList[guildId] === channelId : false;
-
-// Check if a string starts with a specific prefix (case insensitive)
-const isPrefix = (str, prefix) => str.toLowerCase().startsWith(prefix.toLowerCase());
-
-// Check if a message is being tracked
-const isListened = (guildId, messageId) => {
-    if (!isSetup(guildId)) return false;
-    else return listenMessage[guildId].hasOwnProperty(messageId);
 };
 
-// Extract token name from custom emoji format
+const guildReset = async (guildId) => {
+    if (await isSetup(guildId)) {
+        await prisma.guildConfig.delete({
+            where: { guildId_module: { guildId, module: MODULE_NAME } }
+        });
+        await redisClient.del(`config:${MODULE_NAME}:${guildId}`);
+    }
+};
+
+const isInRoom = async (guildId, channelId) => {
+    const config = await getGuildConfig(guildId);
+    return config ? config.channelId === channelId : false;
+};
+
+const isPrefix = (str, prefix) => str.toLowerCase().startsWith(prefix.toLowerCase());
+
+const isListened = async (guildId, messageId) => {
+    const config = await getGuildConfig(guildId);
+    return config && config.listenMessage && config.listenMessage[messageId] ? true : false;
+};
+
 const getTokenName = (token) => {
     const start = token.indexOf(':') + 1;
     const end = token.lastIndexOf(':');
-
-    if (start >= 0 && end > start) {
-        return token.slice(start, end);
-    }
+    if (start >= 0 && end > start) return token.slice(start, end);
     return token;
-}
+};
 
-// Extract token ID from custom emoji format
 const getTokenId = (token) => {
     const start = token.lastIndexOf(':') + 1;
     const end = token.lastIndexOf('>');
-
-    if (start >= 0 && end > start) {
-        return token.slice(start, end);
-    }
+    if (start >= 0 && end > start) return token.slice(start, end);
     return token;
-}
+};
 
-// Initialize auto-reactions on a message
-const initialiseInput = (msg) => {
-    if (!msg || !msg.guild || !msg.guild.id ||
-        !msg.channel || !msg.channel.id) return;
-
-    if (!isInRoom(msg.guild.id, msg.channel.id)) return;
+const initialiseInput = async (msg) => {
+    if (!msg || !msg.guild || !msg.guild.id || !msg.channel || !msg.channel.id) return;
+    if (!(await isInRoom(msg.guild.id, msg.channel.id))) return;
     if (!isPrefix(msg.content, "suggest") && !isPrefix(msg.content, "vote")) return;
 
-    const guildData = loadGuildFile(msg.guild.id);
-    if (!guildData) return;
+    const config = await getGuildConfig(msg.guild.id);
+    if (!config) return;
 
     try {
-        msg.react(guildData.upvoteToken);
-        msg.react(guildData.downvoteToken);
+        await msg.react(config.upvoteToken);
+        await msg.react(config.downvoteToken);
 
-        listenMessage[msg.guild.id][msg.id] = 1;
-        guildData.listenMessage[msg.id] = 1;
-        writeGuildFile(msg.guild.id, guildData);
+        config.listenMessage = config.listenMessage || {};
+        config.listenMessage[msg.id] = 1;
+        await saveGuildConfig(msg.guild.id, config);
     } catch (error) {
         console.error(error);
     }
-}
+};
 
-// Handle reaction events & prevent double-voting
 const handleReaction = async (reaction, user) => {
     if (!reaction.message.guildId) return;
-    if (user.bot || !isListened(reaction.message.guildId, reaction.message.id)) return;
+    if (user.bot || !(await isListened(reaction.message.guildId, reaction.message.id))) return;
 
     try {
         await reaction.message.fetch();
-        const guildData = loadGuildFile(reaction.message.guildId);
-        if (!guildData) return;
+        const config = await getGuildConfig(reaction.message.guildId);
+        if (!config) return;
 
-        const { upvoteToken, downvoteToken } = guildData;
+        const { upvoteToken, downvoteToken } = config;
         if (![getTokenName(upvoteToken), getTokenName(downvoteToken)].includes(reaction.emoji.name)) return;
 
         const oppositeToken = reaction.emoji.name === getTokenName(upvoteToken)
@@ -170,32 +131,24 @@ const handleReaction = async (reaction, user) => {
     } catch (error) {
         console.error(error);
     }
-}
+};
 
-// Remove a tracked message
-const removeMessage = (msg) => {
-    if (!msg || !msg.guild || !msg.guild.id ||
-        !msg.channel || !msg.channel.id) return;
+const removeMessage = async (msg) => {
+    if (!msg || !msg.guild || !msg.guild.id || !msg.channel || !msg.channel.id) return;
+    if (!(await isInRoom(msg.guild.id, msg.channel.id))) return;
 
-    if (!isInRoom(msg.guild.id, msg.channel.id)) return;
-
-    if (isListened(msg.guild.id, msg.id)) {
-        delete listenMessage[msg.guild.id][msg.id];
-
-        // Remove from configuration file
-        const guildData = loadGuildFile(msg.guild.id);
-        if (guildData) {
-            delete guildData.listenMessage[msg.id];
-            writeGuildFile(msg.guild.id, guildData);
+    if (await isListened(msg.guild.id, msg.id)) {
+        const config = await getGuildConfig(msg.guild.id);
+        if (config && config.listenMessage && config.listenMessage[msg.id]) {
+            delete config.listenMessage[msg.id];
+            await saveGuildConfig(msg.guild.id, config);
         }
     }
-}
+};
 
 module.exports = {
-    getGuildFilePath,
     isSetup,
-    loadGuildFile,
-    preLoad,
+    getGuildConfig,
     guildSetup,
     guildReset,
     isInRoom,
