@@ -1,7 +1,7 @@
 const { formLib } = global.customLib;
 
 module.exports.exec = async (interaction) => {
-    if (!formLib.isSetup(interaction.guild.id)) {
+    if (!await formLib.isSetup(interaction.guild.id)) {
         interaction.reply({
             ephemeral: true,
             content: "This server Approval form profile has been uninstalled before."
@@ -14,12 +14,12 @@ module.exports.exec = async (interaction) => {
 
     const isMemberVerified = await formLib.memberIsVerified(interaction.guild.id, interaction.user.id);
     if (!isMemberVerified) {
-        if (formLib.memberIsInApprovalQueue(interaction.guild.id, interaction.user.id))
+        if (await formLib.memberIsInApprovalQueue(interaction.guild.id, interaction.user.id))
             await interaction.editReply({
                 ephemeral: true,
                 content: "Bạn đang có một yêu cầu đang chờ xác thực."
             });
-        else if (formLib.memberIsInCache(interaction.guild.id, interaction.user.id))
+        else if (await formLib.memberIsInCache(interaction.guild.id, interaction.user.id))
             await interaction.editReply({
                 ephemeral: true,
                 content: "Bạn đã tạo một yêu cầu trước đó."
@@ -28,7 +28,7 @@ module.exports.exec = async (interaction) => {
             await require('./../declare-info').exec(interaction);
         }
     } else {
-        if (formLib.memberIsInCache(interaction.guild.id, interaction.user.id))
+        if (await formLib.memberIsInCache(interaction.guild.id, interaction.user.id))
             await interaction.editReply({
                 ephemeral: true,
                 content: "Bạn đã tạo một yêu cầu trước đó."

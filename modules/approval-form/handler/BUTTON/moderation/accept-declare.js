@@ -20,7 +20,7 @@ module.exports.exec = async (interaction, clientMemberId) => {
         });
         return;
     }
-    if (!formLib.isSetup(interaction.guild.id)) {
+    if (!await formLib.isSetup(interaction.guild.id)) {
         await interaction.reply({
             ephemeral: true,
             content: `Đã có lỗi nghiêm trọng xảy ra.`
@@ -30,7 +30,7 @@ module.exports.exec = async (interaction, clientMemberId) => {
 
     await interaction.message.fetch();
 
-    formLib.removeMemberFromApprovalQueue(interaction.guild.id, clientMemberId);
+    await formLib.removeMemberFromApprovalQueue(interaction.guild.id, clientMemberId);
 
     const isMemberOfGuild = await discordAPIv2.isMember(interaction.guild.id, clientMemberId);
 
@@ -41,7 +41,7 @@ module.exports.exec = async (interaction, clientMemberId) => {
         );
         const verifyRole = await discordAPIv2.GuildRole(
             interaction.guild.id,
-            formLib.getGuildConfig(interaction.guild.id).role
+            (await formLib.getGuildConfig(interaction.guild.id)).role
         );
 
         clientMember.roles.add(verifyRole);

@@ -10,7 +10,7 @@ module.exports.exec = async (interaction) => {
 
     const mod = (modtmp ? modtmp.split(',').filter(str => str !== "") : null);
 
-    const UUID = memory.setData({
+    const UUID = await memory.setData({
         "ticket-interface-title": title,
         "ticket-interface-desc": desc,
         "ticket-interface-btn": btn,

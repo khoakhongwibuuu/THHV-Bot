@@ -3,7 +3,7 @@ const { client } = global.variable;
 const { ticketLib, memory, discordAPI, discordAPIv2 } = global.customLib;
 
 module.exports.exec = async (interaction, UUID) => {
-    const data = memory.getData(UUID);
+    const data = await memory.getData(UUID);
 
     const channelId = interaction.channel.id;
     const guildId = interaction.guild.id;
@@ -11,17 +11,17 @@ module.exports.exec = async (interaction, UUID) => {
     if (!data) {
         await interaction.reply({
             ephemeral: true,
-            content: ticketLib.isSetup(guildId)
+            content: await ticketLib.isSetup(guildId)
                 ? "Ticket interface has been broadcasted before, this button is no longer usable."
                 : "Your 15-minute decision time is up. Please click `Dimiss message` and use `/ticket-setup` again."
         });
     } else {
-        memory.deleteData(UUID);
+        await memory.deleteData(UUID);
 
         const broadcastChannel = await discordAPIv2.GuildChannel(guildId, channelId);
         const categoryId = broadcastChannel.parentId;
 
-        ticketLib.guildSetup(interaction.guild.id, {
+        await ticketLib.guildSetup(interaction.guild.id, {
             "rootChannel": channelId,
             "rootCategory": categoryId,
             "modRoles": data['ticket-moderator-role-id'],

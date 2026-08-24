@@ -11,7 +11,7 @@ module.exports.exec = async (interaction, clientMemberId) => {
         });
         return;
     }
-    if (!formLib.isSetup(interaction.guild.id)) {
+    if (!await formLib.isSetup(interaction.guild.id)) {
         await interaction.reply({
             ephemeral: true,
             content: `Đã có lỗi nghiêm trọng xảy ra.`

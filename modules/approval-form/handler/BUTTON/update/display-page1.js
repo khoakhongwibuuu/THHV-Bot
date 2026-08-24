@@ -6,7 +6,7 @@ module.exports.exec = async (interaction, UUID, message, firstTimeDisplay, pageR
     if (!pageRedirected && pageRedirected !== false) pageRedirected = true;
     if (!message) message = interaction.message;
 
-    const data = memory.getData(UUID);
+    const data = await memory.getData(UUID);
     if (!data) {
         await interaction.reply({
             ephemeral: true,

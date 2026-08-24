@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { contestLib, discordAPI, discordAPIv2 } = global.customLib;
+const { contestLib, discordAPIv2 } = global.customLib;
 const { client } = global.variable;
 
 const CLOCK_INTERVAL_MINUTES = 5;
@@ -28,26 +28,6 @@ const fetchData = async (url) => {
 };
 
 const notify = async (domain, id, name, contestURL, registerURL, startTime, hours) => {
-	const persist = await contestLib.loadPersist();
-	if (persist === -1 || persist === 0) {
-		await contestLib.wipePersist();
-		throw new Error("Persist file is corrupted or inaccessible. Restart the bot.");
-	}
-
-	const notifiableGuilds = client.guilds.cache
-		.map(guild => guild.id)
-		.filter(guildId => {
-			persist[domain] ??= {};
-			persist[domain][guildId] ??= {};
-			persist[domain][guildId][hours] ??= [];
-
-			return !persist[domain][guildId][hours].includes(id) &&
-				persist.ready?.[guildId] &&
-				persist.channel?.[guildId];
-		});
-
-	if (!notifiableGuilds.length) return;
-
 	const embed = new Discord.EmbedBuilder()
 		.setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
 		.setTitle(name)
@@ -61,23 +41,36 @@ const notify = async (domain, id, name, contestURL, registerURL, startTime, hour
 		new Discord.ButtonBuilder().setLabel('View detail').setURL(contestURL).setStyle(Discord.ButtonStyle.Link)
 	);
 
-	await Promise.all(notifiableGuilds.map(async (guildId) => {
-		const content = persist.role?.[guildId]
-			? `<@&${persist.role[guildId]}>, a contest is open for registration!`
+    const guilds = client.guilds.cache.map(guild => guild.id);
+
+	await Promise.all(guilds.map(async (guildId) => {
+        if (!(await contestLib.isSetup(guildId))) return;
+        
+        const hasBeenNotified = await contestLib.hasBeenNotified(guildId, domain, hours, id);
+        if (hasBeenNotified) return;
+
+        const config = await contestLib.getGuildConfig(guildId);
+        if (!config || !config.channel) return;
+
+		const content = config.role
+			? `<@&${config.role}>, a contest is open for registration!`
 			: "A contest is open for registration!";
 
-		const broadcastChannel = await discordAPIv2.GuildChannel(guildId, persist.channel[guildId]);
-
-		await broadcastChannel.send({
-			content,
-			embeds: [embed],
-			components: [components]
-		});
-
-		persist[domain][guildId][hours].push(id);
+        try {
+		    const broadcastChannel = await discordAPIv2.GuildChannel(guildId, config.channel);
+            if (broadcastChannel) {
+                await broadcastChannel.send({
+                    content,
+                    embeds: [embed],
+                    components: [components]
+                });
+                
+                await contestLib.markAsNotified(guildId, domain, hours, id);
+            }
+        } catch (err) {
+            console.error(`[ERROR] module/contest: Failed to send notification to guild ${guildId}:`, err);
+        }
 	}));
-
-	await contestLib.savePersist(persist);
 };
 
 const runClock = async () => {

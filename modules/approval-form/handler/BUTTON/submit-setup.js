@@ -3,11 +3,11 @@ const { formLib, memory, discordAPI, discordAPIv2 } = global.customLib;
 const { client } = global.variable;
 
 module.exports.exec = async (interaction, UUID) => {
-    const wizardSession = memory.getData(UUID);
+    const wizardSession = await memory.getData(UUID);
     interaction.message.delete();
-    memory.deleteData(UUID);
+    await memory.deleteData(UUID);
 
-    formLib.guildSetup(interaction.guild.id, {
+    await formLib.guildSetup(interaction.guild.id, {
         ...wizardSession.data,
         waitApproval: {}
     });

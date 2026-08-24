@@ -19,11 +19,11 @@ module.exports.exec = async (interaction) => {
         notes: null
     }
 
-    const UUID = memory.setData(userData, 1000 * 60 * 15);
+    const UUID = await memory.setData(userData, 1000 * 60 * 15);
 
-    formLib.addMemberToCache(interaction.guild.id, interaction.user.id);
-    setTimeout(() => {
-        formLib.removeMemberFromCache(interaction.guild.id, interaction.user.id);
+    await formLib.addMemberToCache(interaction.guild.id, interaction.user.id);
+    setTimeout(async () => {
+        await formLib.removeMemberFromCache(interaction.guild.id, interaction.user.id);
     }, 1000 * 60 * 15);
     await interaction.user.send({
         content: "Đang khởi tạo form khai báo."

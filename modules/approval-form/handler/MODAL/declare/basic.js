@@ -1,7 +1,7 @@
 const { memory } = global.customLib;
 
 module.exports.exec = async (interaction, UUID) => {
-    const data = memory.getData(UUID);
+    const data = await memory.getData(UUID);
     if (data) {
         data.basic.fullName = interaction.fields.getTextInputValue('fullName')
             ? interaction.fields.getTextInputValue('fullName').sanitise()

@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const { memory, formLib, discordAPI, discordAPIv2 } = global.customLib;
 
 module.exports.exec = async (interaction, UUID) => {
-    const data = memory.getData(UUID);
+    const data = await memory.getData(UUID);
     if (!data) {
         await interaction.reply({
             ephemeral: true,
@@ -10,7 +10,7 @@ module.exports.exec = async (interaction, UUID) => {
         });
         return;
     }
-    if (!formLib.isSetup(data.guildId)) {
+    if (!await formLib.isSetup(data.guildId)) {
         await interaction.reply({
             ephemeral: true,
             content: `Đã có lỗi nghiêm trọng xảy ra.`
@@ -18,8 +18,8 @@ module.exports.exec = async (interaction, UUID) => {
         return;
     }
 
-    memory.deleteData(UUID);
-    formLib.removeMemberFromCache(data.guildId, interaction.user.id);
+    await memory.deleteData(UUID);
+    await formLib.removeMemberFromCache(data.guildId, interaction.user.id);
 
     await interaction.reply({
         ephemeral: true,
@@ -32,7 +32,7 @@ module.exports.exec = async (interaction, UUID) => {
     const { VOI, others } = data.rewards;
     const { notes } = data;
 
-    const broadcastChannel = await discordAPIv2.GuildChannel(data.guildId, formLib.getGuildConfig(data.guildId).receive);
+    const broadcastChannel = await discordAPIv2.GuildChannel(data.guildId, (await formLib.getGuildConfig(data.guildId)).receive);
 
     await broadcastChannel.send({
         embeds: [

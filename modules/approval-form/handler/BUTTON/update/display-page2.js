@@ -15,7 +15,7 @@ module.exports.exec = async (interaction, UUID, message, pageRedirected, modalIn
     if (!pageRedirected && pageRedirected !== false) pageRedirected = true;
     if (!message) message = interaction.message;
 
-    const data = memory.getData(UUID);
+    const data = await memory.getData(UUID);
     if (!data) {
         await interaction.reply({
             ephemeral: true,
@@ -25,7 +25,7 @@ module.exports.exec = async (interaction, UUID, message, pageRedirected, modalIn
     }
 
     if (!data.host) {
-        memory.modifyData(UUID, {
+        await memory.modifyData(UUID, {
             ...data,
             host: interaction
         });

@@ -2,7 +2,7 @@ const { memory } = global.customLib;
 
 module.exports.exec = async (interaction, UUID) => {
     const verifiedSChannelId = interaction.values[0];
-    const wizardSession = memory.getData(UUID);
+    const wizardSession = await memory.getData(UUID);
     if (wizardSession) {
         wizardSession.embed.fields[0].value = `<#${verifiedSChannelId}>`;
         wizardSession.data.send = verifiedSChannelId;
@@ -20,7 +20,7 @@ module.exports.exec = async (interaction, UUID) => {
             });
         }
 
-        memory.modifyData(UUID, wizardSession);
+        await memory.modifyData(UUID, wizardSession);
 
         await interaction.reply({
             content: `Đã đổi Kênh gửi yêu cầu xác thực thành <#${verifiedSChannelId}>`,
