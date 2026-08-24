@@ -15,34 +15,15 @@ global.variable = {};
 global.variable.BotStartTime = BotStartTime;
 global.variable.dirname = __dirname;
 
-const client = new Discord.Client({
-	intents: [
-		Discord.GatewayIntentBits.Guilds,
-		Discord.GatewayIntentBits.GuildMessages,
-		Discord.GatewayIntentBits.MessageContent,
-		Discord.GatewayIntentBits.GuildMembers,
-		Discord.GatewayIntentBits.GuildVoiceStates,
-		Discord.GatewayIntentBits.GuildMessageReactions,
-		Discord.GatewayIntentBits.GuildMessageTyping,
-		Discord.GatewayIntentBits.GuildPresences,
-		Discord.GatewayIntentBits.GuildEmojisAndStickers,
-		Discord.GatewayIntentBits.DirectMessages,
-		Discord.GatewayIntentBits.DirectMessageReactions,
-		Discord.GatewayIntentBits.DirectMessageTyping
-	],
-	partials: [
-		Discord.Partials.Message,
-		Discord.Partials.Reaction,
-		Discord.Partials.User
-	]
-});
-
+const client = require('./assets/library/client.js');
 global.variable.client = client;
+
 global.customLib = {};
 global.customLib.memory = require('./assets/api/memory.api.js');
 global.customLib.stdlib = require('./assets/library/standard.js');
 global.customLib.discordAPI = require('./assets/api/discord.api.js');
 global.customLib.discordAPIv2 = require('./assets/api/discord.api.v2.js');
+global.customLib.db = require('./assets/library/db.js');
 
 (async () => {
 	// Guard
