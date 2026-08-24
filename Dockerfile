@@ -1,4 +1,4 @@
-FROM node:26.6.0
+FROM node:22-alpine
 
 RUN mkdir -p /usr/src/bot
 
@@ -6,10 +6,10 @@ WORKDIR /usr/src/bot
 
 ENV TZ="Asia/Ho_Chi_Minh"
 
-COPY ./package*.json ./yarn.lock* ./
-
-COPY . .
+COPY ./package*.json ./
 
 RUN npm ci
 
-CMD ["npm", "start"]
+COPY . .
+
+CMD ["node", "index.js"]
