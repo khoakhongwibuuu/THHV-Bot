@@ -56,7 +56,7 @@ module.exports = {
     ,
     async execute(interaction) {
         if (!await gameLib.isSetup(interaction.guild.id)) {
-            await interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
+            await interaction.reply({ content: "🔍 Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
         const target = interaction.options.getUser('member') ?? interaction.user;

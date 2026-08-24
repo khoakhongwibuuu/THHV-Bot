@@ -19,7 +19,7 @@ module.exports = {
             });
             return;
         }
-        if (!await .(interaction.guild.id)) {
+        if (!(await formLib.isSetup(interaction.guild.id))) {
             await interaction.reply({
                 content: `⚠️ Member\'s information management panel has not been installed in this server.`,
                 ephemeral: true

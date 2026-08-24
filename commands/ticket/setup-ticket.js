@@ -18,9 +18,9 @@ module.exports = {
             });
             return;
         }
-        if (await .(interaction.guild.id)) {
+        if (await ticketLib.isSetup(interaction.guild.id)) {
             await interaction.reply({
-                content: `⚠️ Ticket module has been installed at <#${await .(interaction.guild.id)}>.`,
+                content: `⚠️ Ticket module has been installed at <#${await ticketLib.getRootChannel(interaction.guild.id)}>.`,
                 ephemeral: true
             });
             return;

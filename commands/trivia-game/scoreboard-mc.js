@@ -15,7 +15,7 @@ module.exports = {
     ,
     async execute(interaction) {
         if (!await gameLib.isSetup(interaction.guild.id)) {
-            await interaction.reply({ content: "⚠️ Không tìm thấy dữ liệu của server này.", ephemeral: true });
+            await interaction.reply({ content: "🔍 Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
         const numOfEntries = interaction.options.getInteger('number-of-players') ?? 5;

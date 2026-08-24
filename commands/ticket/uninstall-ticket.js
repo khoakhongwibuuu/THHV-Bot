@@ -27,7 +27,7 @@ module.exports = {
         }
         if ((await ticketLib.getExistingTickets(interaction.guild.id).length) !== 0) {
             await interaction.reply({
-                content: `⚠️ You still have ${await .(interaction.guild.id).length} un-closed tickets.`
+                content: `⚠️ You still have ${await ticketLib.getExistingTickets(interaction.guild.id).length} un-closed tickets.`
                     + `\nPlease close them before uninstalling.`,
                 ephemeral: true
             });
