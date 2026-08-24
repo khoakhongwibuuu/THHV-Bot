@@ -5,7 +5,7 @@ const { wordLib, discordAPI, discordAPIv2 } = global.customLib;
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('wm-setup')
-        .setDescription('[Moderators Only] - Create a server profile and set Word Match game room at this channel.')
+        .setDescription('[Moderators Only] - Create a server profile and set WordMatch game room at this channel.')
         .setDMPermission(false)
     ,
     async execute(interaction) {

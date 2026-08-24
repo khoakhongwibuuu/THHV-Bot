@@ -14,7 +14,7 @@ const defaultBtnRow = new Discord.ActionRowBuilder()
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-uninstall')
-        .setDescription('[Moderators Only] - Delete this server Trivia game profile.')
+        .setDescription('[Moderators Only] - Delete this server Trivia Game profile.')
         .setDMPermission(false)
     ,
     async execute(interaction) {
@@ -29,7 +29,7 @@ module.exports = {
             return;
         }
         if (!gameLib.isInRoom(interaction.guild.id, interaction.channel.id)) {
-            await interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại phòng chơi <#${gameLib.getRoom(interaction.guild.id)}>`, ephemeral: true });
+            await interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại phòng chơi <#${gameLib.getRoomId(interaction.guild.id)}>`, ephemeral: true });
             return;
         }
         if (gameLib.isRunning(interaction.guild.id)) {
@@ -38,7 +38,7 @@ module.exports = {
         }
         const sentEmbed = new Discord.EmbedBuilder();
 
-        let content = "⚠️ **Bạn đang xóa dữ liệu Trivia game của server này. Bạn chắc chứ?**\n";
+        let content = "⚠️ **Bạn đang xóa dữ liệu Trivia Game của server này. Bạn chắc chứ?**\n";
         const affected = gameLib.allPlayerList(interaction.guild.id);
 
         content += `\nNếu bạn tiếp tục, điểm của những người chơi sau đây sẽ bị xóa.\n`;

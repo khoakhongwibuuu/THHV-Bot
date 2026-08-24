@@ -14,7 +14,7 @@ const defaultBtnRow = new Discord.ActionRowBuilder()
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('wm-uninstall')
-        .setDescription('[Moderators Only] - Delete this server Word Match game profile.')
+        .setDescription('[Moderators Only] - Delete this server WordMatch game profile.')
         .setDMPermission(false)
     ,
     async execute(interaction) {
@@ -34,7 +34,7 @@ module.exports = {
         }
         const sentEmbed = new Discord.EmbedBuilder();
 
-        let content = "⚠️ **Bạn đang xóa dữ liệu Word Match game của server này. Bạn chắc chứ?**\n";
+        let content = "⚠️ **Bạn đang xóa dữ liệu WordMatch game của server này. Bạn chắc chứ?**\n";
         const affected = wordLib.allPlayerList(interaction.guild.id);
 
         content += `\nNếu bạn tiếp tục, điểm của những người chơi sau đây sẽ bị xóa.\n`;

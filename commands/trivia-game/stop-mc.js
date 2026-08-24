@@ -5,7 +5,7 @@ const { gameLib, discordAPI, discordAPIv2 } = global.customLib;
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-stop')
-        .setDescription('[Moderators Only] - Force stop the running Trivia game an instance in this server.')
+        .setDescription('[Moderators Only] - Force stop the running Trivia Game an instance in this server.')
         .setDMPermission(false)
     ,
     async execute(interaction) {
@@ -20,7 +20,7 @@ module.exports = {
             return;
         }
         if (!gameLib.isInRoom(interaction.guild.id, interaction.channel.id)) {
-            await interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại phòng chơi <#${gameLib.getRoom(interaction.guild.id)}>`, ephemeral: true });
+            await interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại phòng chơi <#${gameLib.getRoomId(interaction.guild.id)}>`, ephemeral: true });
             return;
         }
         if (!gameLib.isRunning(interaction.guild.id)) {

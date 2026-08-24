@@ -5,7 +5,7 @@ const { gameLib, discordAPI, discordAPIv2 } = global.customLib;
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-changeroom')
-        .setDescription('[Moderators Only] - Change Trivia game room at this channel.')
+        .setDescription('[Moderators Only] - Change Trivia Game room at this channel.')
         .setDMPermission(false)
     ,
     async execute(interaction) {

@@ -46,7 +46,7 @@ const statBuilder = (playerId, playerScore) => {
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-statistic')
-        .setDescription('View your Trivia game statistics or anyone else.')
+        .setDescription('View your Trivia Game statistics or anyone else.')
         .addUserOption(option =>
             option.setName("member")
                 .setDescription("Member whose statistics you want to view")
@@ -63,10 +63,10 @@ module.exports = {
         const targetScore = gameLib.readPlayerScore(interaction.guildId, target.id);
         const targetStat = statBuilder(target.id, targetScore);
         const sentEmbed = new Discord.EmbedBuilder()
-            .setTitle(`Dữ liệu game MultipleChoice`)
+            .setTitle(`Dữ liệu Trivia Game`)
             .setDescription(`Dữ liệu sau đây thuộc về <@${target.id}>\n`)
             .addFields(
-                { name: "UUID", value: targetStat.uuid.codeChunk(), inline: false },
+                { name: "UID", value: targetStat.uuid.codeChunk(), inline: false },
                 { name: "Điểm hiện tại", value: targetStat.current.codeChunk(), inline: true },
                 { name: "Số lượt đã chơi", value: targetStat.attempt.codeChunk(), inline: true },
                 { name: "Số lượt đúng", value: targetStat.correct.codeChunk(), inline: true },

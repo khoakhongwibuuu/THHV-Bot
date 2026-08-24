@@ -5,7 +5,7 @@ const { wordLib, discordAPI, discordAPIv2 } = global.customLib;
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('wm-reset')
-        .setDescription('[Moderators Only] - Reset Word Match used words.')
+        .setDescription('[Moderators Only] - Reset WordMatch used words.')
         .addBooleanOption(option =>
             option.setName("remove-all-player-scores")
                 .setDescription("Delete all player scores?")
@@ -30,7 +30,7 @@ module.exports = {
         }
         wordLib.guildReset(interaction.guild.id, interaction.options.getBoolean('remove-all-player-scores'));
         interaction.reply({
-            content: `Dữ liệu trò chơi ${(interaction.options.getBoolean('remove-all-player-scores')) ? "và điểm của người chơi" : ""} đã được reset!\n`
+            content: `Dữ liệu trò chơi ${(interaction.options.getBoolean('remove-all-player-scores')) ? "và điểm của tất cả người chơi " : ""}đã được reset!\n`
                 + `Trò chơi bắt đầu! Vui lòng nhập 1 từ bất kỳ!`,
             ephemeral: false
         });

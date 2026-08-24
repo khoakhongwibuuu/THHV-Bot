@@ -5,7 +5,7 @@ const { gameLib, discordAPI, discordAPIv2 } = global.customLib;
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-setup')
-        .setDescription('[Moderators Only] - Create a server profile and set Trivia game room at this channel.')
+        .setDescription('[Moderators Only] - Create a server profile and set Trivia Game room at this channel.')
         .setDMPermission(false)
     ,
     async execute(interaction) {
@@ -17,7 +17,7 @@ module.exports = {
         }
         if (gameLib.isSetup(interaction.guild.id)) {
             await interaction.reply({
-                content: `⚠️ Phòng chơi đã được đặt trước đó tại <#${gameLib.getRoom(interaction.guild.id)}>\n`
+                content: `⚠️ Phòng chơi đã được đặt trước đó tại <#${gameLib.getRoomId(interaction.guild.id)}>\n`
                     + `Vui lòng sử dụng \`/mc-changeroom\` tại phòng chơi mới nếu bạn muốn đổi phòng.`,
                 ephemeral: true
             });

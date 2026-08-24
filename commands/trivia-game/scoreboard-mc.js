@@ -5,7 +5,7 @@ const { gameLib } = global.customLib;
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('mc-scoreboard')
-        .setDescription('View the top players of Trivia game in this server.')
+        .setDescription('View the top players of Trivia Game in this server.')
         .addIntegerOption(option =>
             option.setName("number-of-players")
                 .setDescription("The number of players to be displayed.")
@@ -19,8 +19,8 @@ module.exports = {
             return;
         }
         const numOfEntries = interaction.options.getInteger('number-of-players') ?? 5;
-        if (numOfEntries < 1 || numOfEntries > 10) {
-            await interaction.reply({ content: "⚠️ Số lượng người chơi tối thiểu là 1 và tối đa là 10.", ephemeral: true });
+        if (numOfEntries < 1 || numOfEntries > 20) {
+            await interaction.reply({ content: "⚠️ Số lượng người chơi tối thiểu là 1 và tối đa là 20.", ephemeral: true });
             return;
         }
         let rawmap = new Map();
@@ -35,7 +35,7 @@ module.exports = {
         const topList = new Map(sortedEntries.slice(0, lim));
         let content = ``;
         const sentEmbed = new Discord.EmbedBuilder();
-        sentEmbed.setTitle(`Danh sách ${lim} người chơi có điểm MultipleChoice cao nhất server.`);
+        sentEmbed.setTitle(`Danh sách ${lim} người chơi có điểm Trivia Game cao nhất server.`);
         sentEmbed.setFooter({ text: `Đang hiển thị ${lim} trong tổng số ${sortedEntries.length} người chơi đã ghi điểm.` });
         topList.forEach((v, k) => content += `* <@${k}> : \`${v} điểm\`.\n`);
         sentEmbed.setDescription(content);
