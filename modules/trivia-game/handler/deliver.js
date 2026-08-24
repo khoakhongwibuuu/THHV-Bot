@@ -9,7 +9,6 @@ const dictionary = {
 }
 
 module.exports.execute = async (interaction, cat, difficulty, quest, key, cont, type, time) => {
-    console.log(key);
     const embed = new Discord.EmbedBuilder()
         .setTitle(quest)
         .setDescription(cont);

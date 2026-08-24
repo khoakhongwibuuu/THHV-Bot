@@ -71,7 +71,6 @@ module.exports = {
     getGuildFilePath,
     isSetup,
     loadGuildFile,
-    writeGuildFile,
     preLoad,
     guildSetup,
     guildUninstall,

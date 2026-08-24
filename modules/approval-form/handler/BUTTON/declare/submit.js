@@ -47,7 +47,7 @@ module.exports.exec = async (interaction, UUID) => {
                 .setTitle("Yêu cầu khai báo thông tin thành viên")
                 .setDescription(
                     `* Người tạo yêu cầu: <@${interaction.user.id}> `
-                    + `\n * Thời điểm tạo yêu cầu: <t:${Math.floor(interaction.createdTimestamp / 1000)}:F>`
+                    + `\n* Thời điểm tạo yêu cầu: <t:${Math.floor(interaction.createdTimestamp / 1000)}:F>`
                 )
                 .addFields(
                     {
