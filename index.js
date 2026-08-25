@@ -8,7 +8,7 @@ const Discord = require('discord.js');
 
 if (!process.env.TOKEN) {
 	dotenv.config({ path: ".env" });
-	console.info(`[${new Date().toISOString()}] [SUCCESS] root/index: Loaded login token from .env`);
+	console.info(`[${new Date().toISOString()}] [INFO] root/index: Loaded login token from .env`);
 }
 
 const client = require('./assets/library/state.js').client;
@@ -25,37 +25,8 @@ const client = require('./assets/library/state.js').client;
 		process.exit(1);
 	}
 
-	// Offline modules are now imported directly where needed
-	client.commands = new Discord.Collection();
-	const foldersPath = path.join(__dirname, 'commands');
-	const commandFolders = fs.readdirSync(foldersPath);
-
-	for (const folder of commandFolders) {
-		const commandsPath = path.join(foldersPath, folder);
-		const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-		for (const file of commandFiles) {
-			const filePath = path.join(commandsPath, file);
-			const command = require(filePath);
-			if ('data' in command && 'execute' in command) {
-				client.commands.set(command.data.name, command);
-			} else {
-				console.log(`[${new Date().toISOString()}] [WARN] root/index: The command at ${filePath} is missing a required "data" or "execute" property.`);
-			}
-		}
-	}
-
-	const eventsPath = path.join(__dirname, 'events');
-	const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
-
-	for (const file of eventFiles) {
-		const filePath = path.join(eventsPath, file);
-		const event = require(filePath);
-		if (event.once) {
-			client.once(event.name, (...args) => event.execute(...args));
-		} else {
-			client.on(event.name, (...args) => event.execute(...args));
-		}
-	}
+	// Load Commands and Events handlers
+	require('./assets/instruction/discord-handler.js').loadHandlers();
 
 	client.on('error', (err) => {
 		console.log(`[${new Date().toISOString()}] [WARN] root/index: Error occured. Please review.`);

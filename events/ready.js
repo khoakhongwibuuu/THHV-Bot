@@ -8,13 +8,13 @@ module.exports = {
     once: true,
     async execute(client) {
         // Login success event
-        console.log(`[${new Date().toISOString()}] [SUCCESS] Client: Ready! Logged in as ${client.user.tag}`);
+        console.log(`[${new Date().toISOString()}] [INFO] Client: Ready! Logged in as ${client.user.tag}`);
 
-        // Load online modules
-        await require('#assets/instruction/post-login.js').loadModules();
+        // Start cronjobs
+        await require('#assets/instruction/start-cronjob.js').start();
 
         // Set client presence
-        client.user.setPresence({
+        await client.user.setPresence({
             activities: [{
                 name: 'credit khoa06, david0403.',
                 type: Discord.ActivityType.Playing
