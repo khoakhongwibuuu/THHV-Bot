@@ -14,12 +14,14 @@ module.exports = {
         await require('#assets/instruction/start-cronjob.js').start();
 
         // Set client presence
-        await client.user.setPresence({
-            activities: [{
-                name: 'credit khoa06, david0403.',
-                type: Discord.ActivityType.Playing
-            }],
-            status: 'online'
-        });
+        if (process.env.ONLINE_STATUS) {
+            await client.user.setPresence({
+                activities: [{
+                    name: process.env.ONLINE_STATUS,
+                    type: Discord.ActivityType.Playing
+                }],
+                status: 'online'
+            });
+        }
     },
 };
