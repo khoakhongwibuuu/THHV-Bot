@@ -46,7 +46,7 @@ module.exports.exec = async (interaction) => {
         }
     ]
 
-    const { modRoles } = await .(interaction.guild.id);
+    const { modRoles } = await ticketLib.getGuildConfig(interaction.guild.id);
 
     if (modRoles) {
         modRoles.forEach(id => {
