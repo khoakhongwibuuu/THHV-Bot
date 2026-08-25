@@ -4,9 +4,6 @@ services:
     depends_on:
       - postgres
       - redis
-    volumes:
-      - ./logs:/usr/src/bot/logs
-      - ./configs:/usr/src/bot/configs
     restart: unless-stopped
     environment:
       - TOKEN=${TOKEN}
