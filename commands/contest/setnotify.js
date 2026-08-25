@@ -26,14 +26,14 @@ module.exports = {
 
         const roleNotified = interaction.options.getRole('role');
         const roleId = roleNotified ? roleNotified.id : null;
-        
+
         await contestLib.guildSetup(interaction.guild.id, interaction.channel.id, roleId);
 
         await interaction.reply({
             content: `Notification channel has been set at <#${interaction.channel.id}>. I will notify${roleId
                 ? ` members with this role <@&${roleId}>`
                 : ""
-                } \`24\` hours before a contest.`,
+                } when a contest is scheduled.`,
             ephemeral: true
         });
     },
