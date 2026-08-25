@@ -1,6 +1,8 @@
 // Packages
 const Discord = require('discord.js');
-const { wordLib, discordAPI, discordAPIv2 } = global.customLib;
+const wordLib = require('#modules/word-match/lib/wordLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -20,15 +22,15 @@ module.exports = {
             interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
             return;
         }
-        if (!wordLib.isSetup(interaction.guild.id)) {
+        if (!await wordLib.isSetup(interaction.guild.id)) {
             interaction.reply({ content: "🔍 Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
-        if (!wordLib.isInRoom(interaction.guild.id, interaction.channel.id)) {
-            interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại <#${wordLib.getRoomId(interaction.guild.id)}>.`, ephemeral: true });
+        if (!await wordLib.isInRoom(interaction.guild.id, interaction.channel.id)) {
+            interaction.reply({ content: `⚠️ Vui lòng sử dụng lệnh tại <#${await wordLib.getRoomId(interaction.guild.id)}>.`, ephemeral: true });
             return;
         }
-        wordLib.guildReset(interaction.guild.id, interaction.options.getBoolean('remove-all-player-scores'));
+        await wordLib.guildReset(interaction.guild.id, interaction.options.getBoolean('remove-all-player-scores'));
         interaction.reply({
             content: `Dữ liệu trò chơi ${(interaction.options.getBoolean('remove-all-player-scores')) ? "và điểm của tất cả người chơi " : ""}đã được reset!\n`
                 + `Trò chơi bắt đầu! Vui lòng nhập 1 từ bất kỳ!`,

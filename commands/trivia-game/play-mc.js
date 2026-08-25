@@ -1,8 +1,8 @@
 // Packages
 const Discord = require('discord.js');
-const path = require('node:path');
-const { dirname } = global.variable;
-const { gameLib, stdlib } = global.customLib;
+const { dirname } = require('#assets/library/state.js');
+const gameLib = require('#modules/trivia-game/lib/gameLib.js');
+const stdlib = require('#assets/library/standard.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -11,21 +11,21 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!gameLib.isSetup(interaction.guild.id)) {
+        if (!await gameLib.isSetup(interaction.guild.id)) {
             await interaction.reply({ content: '⚠️ Phòng chơi chưa được cài đặt trên server này. Vui lòng sử dụng `/mc-setup` để đặt phòng chơi.', ephemeral: true });
             return;
         }
-        if (!gameLib.isInRoom(interaction.guild.id, interaction.channel.id)) {
-            await interaction.reply({ content: `Vui lòng sử dụng lệnh tại phòng chơi <#${gameLib.getRoomId(interaction.guild.id)}>`, ephemeral: true });
+        if (!await gameLib.isInRoom(interaction.guild.id, interaction.channel.id)) {
+            await interaction.reply({ content: `Vui lòng sử dụng lệnh tại phòng chơi <#${await gameLib.getRoomId(interaction.guild.id)}>`, ephemeral: true });
             return;
         }
-        if (gameLib.isRunning(interaction.guild.id)) {
+        if (await gameLib.isRunning(interaction.guild.id)) {
             await interaction.reply({ content: 'Có một lượt chơi đang diễn ra, vui lòng chờ lượt chơi đó hoàn tất.', ephemeral: true });
             return;
         }
-        gameLib.guildLock(interaction.guild.id);
+        await gameLib.guildLock(interaction.guild.id);
         const hardModeRate = stdlib.randomPercent(90);
         const questionBlock = (hardModeRate) ? gameLib.easyReader() : gameLib.hardReader();
-        await require(path.join(dirname, "modules/trivia-game/handler", questionBlock.type)).execute(interaction, questionBlock);
+        await require(`#modules/trivia-game/handler/${questionBlock.type}.js`).execute(interaction, questionBlock);
     },
 };

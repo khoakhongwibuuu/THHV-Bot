@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
-const { client } = global.variable;
-const { memory } = global.customLib;
+const { client } = require('#assets/library/state.js');
+const memory = require('#assets/api/memory.api.js');
 
 module.exports.exec = async (interaction) => {
     const title = interaction.fields.getTextInputValue('ticket-interface-title'),
@@ -10,7 +10,7 @@ module.exports.exec = async (interaction) => {
 
     const mod = (modtmp ? modtmp.split(',').filter(str => str !== "") : null);
 
-    const UUID = memory.setData({
+    const UUID = await memory.setData({
         "ticket-interface-title": title,
         "ticket-interface-desc": desc,
         "ticket-interface-btn": btn,

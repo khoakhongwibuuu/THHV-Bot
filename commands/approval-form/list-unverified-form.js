@@ -1,6 +1,8 @@
 // Packages
 const Discord = require('discord.js');
-const { formLib, discordAPI, discordAPIv2 } = global.customLib;
+const formLib = require('#modules/approval-form/lib/formLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 
 module.exports = {
@@ -19,7 +21,7 @@ module.exports = {
             });
             return;
         }
-        if (!formLib.isSetup(interaction.guild.id)) {
+        if (!(await formLib.isSetup(interaction.guild.id))) {
             await interaction.reply({
                 content: `⚠️ Member\'s information management panel has not been installed in this server.`,
                 ephemeral: true

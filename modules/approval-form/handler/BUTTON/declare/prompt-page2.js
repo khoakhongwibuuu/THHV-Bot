@@ -1,8 +1,8 @@
 const Discord = require('discord.js');
-const { memory } = global.customLib;
+const memory = require('#assets/api/memory.api.js');
 
 module.exports.exec = async (interaction, UUID) => {
-    const data = memory.getData(UUID);
+    const data = await memory.getData(UUID);
     if (!data) {
         await interaction.reply({
             ephemeral: true,

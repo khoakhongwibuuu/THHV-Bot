@@ -1,6 +1,8 @@
 // Packages
 const Discord = require('discord.js');
-const { ticketLib, discordAPI, discordAPIv2 } = global.customLib;
+const ticketLib = require('#modules/ticket/lib/ticketLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -18,9 +20,9 @@ module.exports = {
             });
             return;
         }
-        if (ticketLib.isSetup(interaction.guild.id)) {
+        if (await ticketLib.isSetup(interaction.guild.id)) {
             await interaction.reply({
-                content: `⚠️ Ticket module has been installed at <#${ticketLib.getRootChannel(interaction.guild.id)}>.`,
+                content: `⚠️ Ticket module has been installed at <#${await ticketLib.getRootChannel(interaction.guild.id)}>.`,
                 ephemeral: true
             });
             return;

@@ -1,23 +1,34 @@
 // Packages
 const Discord = require('discord.js');
-const { contestLib } = global.customLib;
+const contestLib = require('#modules/contest/lib/contestLib.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
         .setName('unsetnotify')
-        .setDescription('[Hosts Only] - Reset every configured notification instances.')
+        .setDescription('[Moderators Only] - Turn off Codeforces contests notification module for this server.')
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (process.env.OWNER_ID === interaction.user.id) {
-            await contestLib.wipePersist();
+        const isMod = await discordAPIv2.isModerator(interaction.guild.id, interaction.user.id);
+        if (!isMod) {
             await interaction.reply({
-                content: `Persist has been reseted.`,
+                content: "🚫 You do not have permission to run this command.",
+                ephemeral: true
+            });
+            return;
+        }
+
+        const success = await contestLib.guildUninstall(interaction.guild.id);
+        
+        if (success) {
+            await interaction.reply({
+                content: `Notification module has been turned off for this server.`,
                 ephemeral: true
             });
         } else {
             await interaction.reply({
-                content: "🚫 You do not have permission to run this command.",
+                content: `Notification module is not currently set up for this server.`,
                 ephemeral: true
             });
         }

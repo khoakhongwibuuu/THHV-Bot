@@ -1,6 +1,8 @@
 const Discord = require('discord.js');
-const { client } = global.variable;
-const { formLib, discordAPI, discordAPIv2 } = global.customLib;
+const { client } = require('#assets/library/state.js');
+const formLib = require('#modules/approval-form/lib/formLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 const getRolesByName = async (guildId, roleName) => {
     const allRoles = await discordAPIv2.AllRolesOfGuild(guildId);
@@ -20,7 +22,7 @@ module.exports.exec = async (interaction, clientMemberId) => {
         });
         return;
     }
-    if (!formLib.isSetup(interaction.guild.id)) {
+    if (!await formLib.isSetup(interaction.guild.id)) {
         await interaction.reply({
             ephemeral: true,
             content: `Đã có lỗi nghiêm trọng xảy ra.`
@@ -30,7 +32,7 @@ module.exports.exec = async (interaction, clientMemberId) => {
 
     await interaction.message.fetch();
 
-    formLib.removeMemberFromApprovalQueue(interaction.guild.id, clientMemberId);
+    await formLib.removeMemberFromApprovalQueue(interaction.guild.id, clientMemberId);
 
     const isMemberOfGuild = await discordAPIv2.isMember(interaction.guild.id, clientMemberId);
 
@@ -41,7 +43,7 @@ module.exports.exec = async (interaction, clientMemberId) => {
         );
         const verifyRole = await discordAPIv2.GuildRole(
             interaction.guild.id,
-            formLib.getGuildConfig(interaction.guild.id).role
+            (await formLib.getGuildConfig(interaction.guild.id)).role
         );
 
         clientMember.roles.add(verifyRole);

@@ -1,6 +1,7 @@
 // Packages
 const Discord = require('discord.js');
-const { contestLib, discordAPI, discordAPIv2 } = global.customLib;
+const contestLib = require('#modules/contest/lib/contestLib.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -15,7 +16,6 @@ module.exports = {
     ,
     async execute(interaction) {
         const isMod = await discordAPIv2.isModerator(interaction.guild.id, interaction.user.id);
-        // if (!discordAPI.isModerator(interaction.guild.id, interaction.user.id)) {
         if (!isMod) {
             await interaction.reply({
                 content: "🚫 You do not have permission to run this command.",
@@ -24,18 +24,14 @@ module.exports = {
             return;
         }
 
-        const Persist = await contestLib.loadPersist();
-        Persist.channel[interaction.guild.id] = interaction.channel.id;
-        Persist.ready[interaction.guild.id] = true;
-
-        const roleNotified = interaction.options.getRole('role') ?? { id: "" };
-        Persist.role[interaction.guild.id] = roleNotified.id;
-
-        await contestLib.savePersist(Persist);
+        const roleNotified = interaction.options.getRole('role');
+        const roleId = roleNotified ? roleNotified.id : null;
+        
+        await contestLib.guildSetup(interaction.guild.id, interaction.channel.id, roleId);
 
         await interaction.reply({
-            content: `Notification channel has been set at <#${interaction.channel.id}>. I will notify${(roleNotified.id != "")
-                ? ` members this role <@&${roleNotified.id}>`
+            content: `Notification channel has been set at <#${interaction.channel.id}>. I will notify${roleId
+                ? ` members with this role <@&${roleId}>`
                 : ""
                 } \`24\` hours before a contest.`,
             ephemeral: true

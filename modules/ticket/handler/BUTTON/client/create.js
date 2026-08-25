@@ -1,5 +1,7 @@
 const Discord = require('discord.js');
-const { ticketLib, discordAPI, discordAPIv2 } = global.customLib;
+const ticketLib = require('#modules/ticket/lib/ticketLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 const DEFAULT_TICKET_PERM_ALLOW = [
     Discord.PermissionFlagsBits.ViewChannel,
@@ -15,7 +17,7 @@ const DEFAULT_TICKET_PERM_ALLOW = [
 ];
 
 module.exports.exec = async (interaction) => {
-    if (!ticketLib.isSetup(interaction.guild.id)) {
+    if (!await ticketLib.isSetup(interaction.guild.id)) {
         await interaction.reply({
             ephemeral: true,
             content: "This server ticket profile has been uninstalled before."
@@ -24,7 +26,7 @@ module.exports.exec = async (interaction) => {
         return;
     }
 
-    if (ticketLib.isOccupied(interaction.guild.id, interaction.user.id)) {
+    if (await ticketLib.isOccupied(interaction.guild.id, interaction.user.id)) {
         await interaction.reply({
             ephemeral: true,
             content: "You cannot have more than 1 ticket open at the same time."
@@ -46,7 +48,7 @@ module.exports.exec = async (interaction) => {
         }
     ]
 
-    const { modRoles } = ticketLib.getGuildConfig(interaction.guild.id);
+    const { modRoles } = await ticketLib.getGuildConfig(interaction.guild.id);
 
     if (modRoles) {
         modRoles.forEach(id => {
@@ -64,7 +66,7 @@ module.exports.exec = async (interaction) => {
         type: Discord.ChannelType.GuildText,
         parent: interaction.channel.parentId, permissionOverwrites: overrideSetting
     }).then(async (channel) => {
-        ticketLib.addOccupation(interaction.guild.id, channel.id, interaction.user.id);
+        await ticketLib.addOccupation(interaction.guild.id, channel.id, interaction.user.id);
         await interaction.editReply({
             ephemeral: true,
             content: `Successfully created <#${channel.id}> for you.`

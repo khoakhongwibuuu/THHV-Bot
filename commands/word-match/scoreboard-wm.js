@@ -1,6 +1,6 @@
 // Packages
 const Discord = require('discord.js');
-const { wordLib } = global.customLib;
+const wordLib = require('#modules/word-match/lib/wordLib.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -14,7 +14,7 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!wordLib.isSetup(interaction.guild.id)) {
+        if (!await wordLib.isSetup(interaction.guild.id)) {
             interaction.reply({ content: "🔍 Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
@@ -24,7 +24,7 @@ module.exports = {
             return;
         }
         let rawmap = new Map();
-        const playerdata = wordLib.loadGuildFile(interaction.guild.id).playerScore;
+        const playerdata = await wordLib.getGuildConfig(interaction.guild.id).playerScore;
         Object.keys(playerdata).forEach(key => rawmap.set(key, playerdata[key].lastValue()));
         const sortedEntries = Array.from(rawmap.entries()).sort((a, b) => b[1] - a[1]);
         if (sortedEntries.length === 0) {
@@ -39,6 +39,6 @@ module.exports = {
         sentEmbed.setFooter({ text: `Đang hiển thị ${lim} trong tổng số ${sortedEntries.length} người chơi đã ghi điểm.` });
         topList.forEach((v, k) => { content += `* <@${k}> : \`${v} điểm\`.\n` });
         sentEmbed.setDescription(content);
-        interaction.reply({ embeds: [sentEmbed], ephemeral: !wordLib.isInRoom(interaction.guild.id, interaction.channel.id) });
+        interaction.reply({ embeds: [sentEmbed], ephemeral: !await wordLib.isInRoom(interaction.guild.id, interaction.channel.id) });
     },
 };

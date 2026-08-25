@@ -1,6 +1,8 @@
 // Packages
 const Discord = require('discord.js');
-const { wordLib, discordAPI, discordAPIv2 } = global.customLib;
+const wordLib = require('#modules/word-match/lib/wordLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -15,8 +17,8 @@ module.exports = {
             interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
             return;
         }
-        const status = wordLib.isSetup(interaction.guild.id);
-        wordLib.guildSetup(interaction.guild.id, interaction.channel.id);
+        const status = await wordLib.isSetup(interaction.guild.id);
+        await wordLib.guildSetup(interaction.guild.id, interaction.channel.id);
         interaction.reply({
             content: `Đã ${status ? "thay đổi sang" : "chọn"} phòng chơi: <#${interaction.channel.id}>.\n`
                 + `Trò chơi bắt đầu! Vui lòng nhập 1 từ bất kỳ!`,

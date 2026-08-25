@@ -1,5 +1,5 @@
 // Packages
-const { gameLib } = global.customLib;
+const gameLib = require('#modules/trivia-game/lib/gameLib.js');
 
 module.exports.execute = async (interaction, questionBlock) => {
     const time = gameLib.getTimeAllowed(questionBlock.difficulty);

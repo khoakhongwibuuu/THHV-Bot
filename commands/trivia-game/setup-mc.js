@@ -1,6 +1,8 @@
 // Packages
 const Discord = require('discord.js');
-const { gameLib, discordAPI, discordAPIv2 } = global.customLib;
+const gameLib = require('#modules/trivia-game/lib/gameLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -15,15 +17,15 @@ module.exports = {
             await interaction.reply({ content: "🚫 Bạn không có quyền sử dụng lệnh này.", ephemeral: true });
             return;
         }
-        if (gameLib.isSetup(interaction.guild.id)) {
+        if (await gameLib.isSetup(interaction.guild.id)) {
             await interaction.reply({
-                content: `⚠️ Phòng chơi đã được đặt trước đó tại <#${gameLib.getRoomId(interaction.guild.id)}>\n`
+                content: `⚠️ Phòng chơi đã được đặt trước đó tại <#${await gameLib.getRoomId(interaction.guild.id)}>\n`
                     + `Vui lòng sử dụng \`/mc-changeroom\` tại phòng chơi mới nếu bạn muốn đổi phòng.`,
                 ephemeral: true
             });
             return;
         }
-        gameLib.guildSetup(interaction.guild.id, interaction.channel.id);
+        await gameLib.guildSetup(interaction.guild.id, interaction.channel.id);
         await interaction.reply({
             content: `Đã chọn phòng chơi: <#${interaction.channel.id}>.`,
             ephemeral: false

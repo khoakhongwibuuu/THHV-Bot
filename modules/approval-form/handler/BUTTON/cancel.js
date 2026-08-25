@@ -1,10 +1,11 @@
-const { memory, formLib } = global.customLib;
+const memory = require('#assets/api/memory.api.js');
+const formLib = require('#modules/approval-form/lib/formLib.js');
 
 module.exports.exec = async (interaction, UUID) => {
-    const data = memory.getData(UUID);
+    const data = await memory.getData(UUID);
     if (data && data.guildId && interaction.user.id)
-        formLib.removeMemberFromCache(data.guildId, interaction.user.id);
-    memory.deleteData(UUID);
+        await formLib.removeMemberFromCache(data.guildId, interaction.user.id);
+    await memory.deleteData(UUID);
     try {
         const channelId = interaction.channelId;
         const messageId = interaction.message.id;

@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { client } = global.variable;
+const { client } = require('#assets/library/state.js');
 
 // Note: This API is planned to be removed and completely replaced by discordAPI v2.
 

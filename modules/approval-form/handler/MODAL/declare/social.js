@@ -1,7 +1,7 @@
-const { memory } = global.customLib;
+const memory = require('#assets/api/memory.api.js');
 
 module.exports.exec = async (interaction, UUID) => {
-    const data = memory.getData(UUID);
+    const data = await memory.getData(UUID);
     if (data) {
         data.social.Email = interaction.fields.getTextInputValue('email')
             ? interaction.fields.getTextInputValue('email').sanitise()

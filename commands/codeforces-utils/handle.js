@@ -1,6 +1,6 @@
 // Packages
 const Discord = require('discord.js');
-const { codeforcesLib } = global.customLib;
+const codeforcesLib = require('#modules/codeforces-utils/lib/codeforcesLib.js');
 
 const solvedCount = (data) => {
     const solvedProblems = new Set();

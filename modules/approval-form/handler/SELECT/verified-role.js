@@ -1,8 +1,8 @@
-const { memory } = global.customLib;
+const memory = require('#assets/api/memory.api.js');
 
 module.exports.exec = async (interaction, UUID) => {
     const verifiedRoleId = interaction.values[0];
-    const wizardSession = memory.getData(UUID);
+    const wizardSession = await memory.getData(UUID);
     if (wizardSession) {
         wizardSession.embed.fields[2].value = `<@&${verifiedRoleId}>`;
         wizardSession.data.role = verifiedRoleId;
@@ -20,7 +20,7 @@ module.exports.exec = async (interaction, UUID) => {
             });
         }
 
-        memory.modifyData(UUID, wizardSession);
+        await memory.modifyData(UUID, wizardSession);
 
         await interaction.reply({
             content: `Đã đổi Role xác thực thành <@&${verifiedRoleId}>`,

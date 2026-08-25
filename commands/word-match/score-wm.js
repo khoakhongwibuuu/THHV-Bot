@@ -1,6 +1,6 @@
 // Packages
 const Discord = require('discord.js');
-const { wordLib } = global.customLib;
+const wordLib = require('#modules/word-match/lib/wordLib.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -14,25 +14,25 @@ module.exports = {
         .setDMPermission(false)
     ,
     async execute(interaction) {
-        if (!wordLib.isSetup(interaction.guild.id)) {
+        if (!await wordLib.isSetup(interaction.guild.id)) {
             interaction.reply({ content: "🔍 Không tìm thấy dữ liệu của server này.", ephemeral: true });
             return;
         }
 
         const targetUser = interaction.options.getUser('member') ?? interaction.user;
-        const targetScore = wordLib.readPlayerScore(interaction.guild.id, targetUser.id);
+        const targetScore = await wordLib.readPlayerScore(interaction.guild.id, targetUser.id);
 
         if (!targetScore) {
             await interaction.reply({
                 embeds: [new Discord.EmbedBuilder().setDescription(`<@${targetUser.id}>: Không tìm thấy dữ liệu.`)],
-                ephemeral: !wordLib.isInRoom(interaction.guild.id, interaction.channel.id)
+                ephemeral: !await wordLib.isInRoom(interaction.guild.id, interaction.channel.id)
             });
             return;
         }
 
         await interaction.reply({
             embeds: [new Discord.EmbedBuilder().setDescription(`<@${targetUser.id}>: ${targetScore.lastValue()} điểm.`)],
-            ephemeral: !wordLib.isInRoom(interaction.guild.id, interaction.channel.id)
+            ephemeral: !await wordLib.isInRoom(interaction.guild.id, interaction.channel.id)
         });
     },
 };

@@ -1,12 +1,12 @@
 const Discord = require('discord.js');
-const { memory } = global.customLib;
-const { client } = global.variable;
+const memory = require('#assets/api/memory.api.js');
+const { client } = require('#assets/library/state.js');
 
 module.exports.exec = async (interaction, UUID, message, firstTimeDisplay, pageRedirected, modalInteraction) => {
     if (!pageRedirected && pageRedirected !== false) pageRedirected = true;
     if (!message) message = interaction.message;
 
-    const data = memory.getData(UUID);
+    const data = await memory.getData(UUID);
     if (!data) {
         await interaction.reply({
             ephemeral: true,

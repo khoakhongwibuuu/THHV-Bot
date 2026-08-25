@@ -1,6 +1,8 @@
 // Packages
 const Discord = require('discord.js');
-const { reactLib, discordAPI, discordAPIv2 } = global.customLib;
+const reactLib = require('#modules/auto-reactor/lib/reactLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -18,20 +20,18 @@ module.exports = {
             });
             return;
         }
-        if (!reactLib.isSetup(interaction.guild.id)) {
+        if (!(await reactLib.isSetup(interaction.guild.id))) {
             interaction.reply({
                 content: "⚠️ Voting feature has not been enabled at this server.",
                 ephemeral: true
             });
             return;
         }
-        reactLib.guildReset(interaction.guild.id);
-        if (!reactLib.isSetup(interaction.guild.id)) {
-            interaction.reply({
-                content: "Voting feature has been disabled successfully.",
-                ephemeral: true
-            });
-            return;
-        }
+
+        await reactLib.guildReset(interaction.guild.id);
+        interaction.reply({
+            content: "Voting feature has been disabled successfully.",
+            ephemeral: true
+        });
     },
 };

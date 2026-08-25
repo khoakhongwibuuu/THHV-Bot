@@ -1,6 +1,6 @@
 // Packages
 const Discord = require('discord.js');
-const { gameLib } = global.customLib;
+const gameLib = require('#modules/trivia-game/lib/gameLib.js');
 
 const dictionary = {
     easy: "Dễ",
@@ -64,7 +64,7 @@ module.exports.execute = async (interaction, cat, difficulty, quest, key, cont, 
         if (responseData.hasOwnProperty(subInteraction.user.id)) {
             await subInteraction.reply({ content: 'Bạn chỉ được phép trả lời một lần.', ephemeral: true });
         } else {
-            if (!gameLib.isRunning(interaction.guildId)) {
+            if (!await gameLib.isRunning(interaction.guildId)) {
                 await subInteraction.reply({ content: 'Không thể ghi nhận câu trả lời của bạn. Lượt chơi này đã bị một người điều phối hủy bỏ.', ephemeral: true })
                     .then(thisMessage => setTimeout(() => thisMessage.delete(), 3000));
             } else {

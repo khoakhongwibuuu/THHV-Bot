@@ -1,16 +1,13 @@
-// Packages
+const db = require('#assets/library/db.js');
+const { prisma, redisClient } = db;
 const fs = require('node:fs');
 const path = require('node:path');
-const { dirname } = global.variable;
+const { dirname } = require('#assets/library/state.js');
 
-// Database
 const dict = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/word-match/database/default.dict.min.json'), 'utf-8'));
 
-// Module based
-const configDirPath = path.join(dirname, 'configs/word-match/config');
-const getGuildFilePath = (guildId) => path.join(configDirPath, `${guildId}.json`);
+const MODULE_NAME = 'word-match';
 
-// Configuration
 const emojiTable = Object.freeze({
     ok: '✅',
     not_ok: '❌',
@@ -26,28 +23,38 @@ const penalty = Object.freeze({
     REWARD: 2
 });
 
-// In-memory caching
-let channelIdList = {};
+const getGuildConfig = async (guildId) => {
+    const cached = await redisClient.get(`config:${MODULE_NAME}:${guildId}`);
+    if (cached) return JSON.parse(cached);
 
-// Functions
-const isSetup = (guildId) =>
-    channelIdList.hasOwnProperty(guildId);
+    const record = await prisma.guildConfig.findUnique({
+        where: { guildId_module: { guildId, module: MODULE_NAME } }
+    });
 
-const loadRawGuildFile = (guildId) =>
-    fs.readFileSync(getGuildFilePath(guildId), 'utf-8');
+    if (record) {
+        await redisClient.set(`config:${MODULE_NAME}:${guildId}`, JSON.stringify(record.data));
+        return record.data;
+    }
+    return null;
+};
 
-const loadGuildFile = (guildId) =>
-    JSON.parse(loadRawGuildFile(guildId));
+const saveGuildConfig = async (guildId, data) => {
+    await prisma.guildConfig.upsert({
+        where: { guildId_module: { guildId, module: MODULE_NAME } },
+        update: { data },
+        create: { guildId, module: MODULE_NAME, data }
+    });
+    await redisClient.set(`config:${MODULE_NAME}:${guildId}`, JSON.stringify(data));
+};
 
-const writeGuildFile = (guildId, newData) =>
-    fs.writeFileSync(getGuildFilePath(guildId), JSON.stringify(newData), 'utf8');
+const isSetup = async (guildId) => {
+    const config = await getGuildConfig(guildId);
+    return config !== null;
+};
 
-const guildSetup = (guildId, channelId) => {
-    if (isSetup(guildId)) return;
-
-    channelIdList[guildId] = channelId;
-
-    writeGuildFile(guildId, {
+const guildSetup = async (guildId, channelId) => {
+    if (await isSetup(guildId)) return;
+    await saveGuildConfig(guildId, {
         channelId: channelId,
         recentUser: null,
         recentWord: null,
@@ -55,103 +62,108 @@ const guildSetup = (guildId, channelId) => {
         playerScore: {},
         used: {}
     });
-}
+};
 
-const guildUninstall = (guildId) => {
-    if (!isSetup(guildId)) return;
-    fs.unlinkSync(getGuildFilePath(guildId));
-    delete channelIdList[guildId];
-}
+const guildUninstall = async (guildId) => {
+    if (!(await isSetup(guildId))) return;
+    await prisma.guildConfig.delete({
+        where: { guildId_module: { guildId, module: MODULE_NAME } }
+    });
+    await redisClient.del(`config:${MODULE_NAME}:${guildId}`);
+};
 
-const guildReset = (guildId, removeScore) => {
-    if (!isSetup(guildId)) return;
-    const guildData = loadGuildFile(guildId);
+const guildReset = async (guildId, removeScore) => {
+    const guildData = await getGuildConfig(guildId);
+    if (!guildData) return;
+    
     guildData.recentUser = null;
     guildData.recentWord = null;
     guildData.recentSentTime = 0;
     guildData.used = {};
     if (removeScore) guildData.playerScore = {};
-    writeGuildFile(guildId, guildData);
-}
+    
+    await saveGuildConfig(guildId, guildData);
+};
 
-const getRoomId = (guildId) =>
-    isSetup(guildId) ? channelIdList[guildId] : null;
+const getRoomId = async (guildId) => {
+    const config = await getGuildConfig(guildId);
+    return config ? config.channelId : null;
+};
 
-const isInRoom = (guildId, channelId) =>
-    isSetup(guildId) ? getRoomId(guildId) === channelId : false;
+const isInRoom = async (guildId, channelId) => {
+    const roomId = await getRoomId(guildId);
+    return roomId === channelId;
+};
 
-const preLoad = (guildId) => {
-    if (!isSetup(guildId)) return;
-    const guildData = loadGuildFile(guildId);
-    channelIdList[guildId] = guildData.channelId;
-}
-
-const resetRoomId = (guildId, newChannelId) => {
-    if (!isSetup(guildId)) return;
-    const guildData = loadGuildFile(guildId);
+const resetRoomId = async (guildId, newChannelId) => {
+    const guildData = await getGuildConfig(guildId);
+    if (!guildData) return;
     guildData.channelId = newChannelId;
-    channelIdList[guildId] = newChannelId;
-    writeGuildFile(guildId, guildData);
-}
+    await saveGuildConfig(guildId, guildData);
+};
 
-// ingame tasks
-/// player data getters
-const hasPlayerData = (guildId, userId) =>
-    isSetup(guildId) ? loadGuildFile(guildId).playerScore.hasOwnProperty(userId) : false;
+const hasPlayerData = async (guildId, userId) => {
+    const config = await getGuildConfig(guildId);
+    return config && config.playerScore ? config.playerScore.hasOwnProperty(userId) : false;
+};
 
-const allPlayerList = (guildId) =>
-    isSetup(guildId) ? Object.keys(loadGuildFile(guildId).playerScore) : [];
+const allPlayerList = async (guildId) => {
+    const config = await getGuildConfig(guildId);
+    return config && config.playerScore ? Object.keys(config.playerScore) : [];
+};
 
-const readPlayerScore = (guildId, userId) =>
-    isSetup(guildId) ? hasPlayerData(guildId, userId) ? loadGuildFile(guildId).playerScore[userId] : null : null;
+const readPlayerScore = async (guildId, userId) => {
+    const config = await getGuildConfig(guildId);
+    return config && config.playerScore && config.playerScore[userId] ? config.playerScore[userId] : null;
+};
 
-/// player data setters
 const modifyPlayerScore = (guildId, userId, offset, guildData) => {
-    if (!isSetup(guildId)) return;
     if (!guildData.playerScore.hasOwnProperty(userId)) {
         guildData.playerScore[userId] = [0, offset];
     } else {
         guildData.playerScore[userId].push(guildData.playerScore[userId].lastValue() + offset);
     }
-}
+};
 
-const handleInput = (msg) => {
+const handleInput = async (msg) => {
     if (!msg || !msg.guild || !msg.guild.id) return;
-    if (isInRoom(msg.guild.id, msg.channel.id)) {
-        let guildData = loadGuildFile(msg.guild.id);
+    if (await isInRoom(msg.guild.id, msg.channel.id)) {
+        let guildData = await getGuildConfig(msg.guild.id);
+        if (!guildData) return;
+
         if (msg.author.id === guildData.recentUser) {
-            msg.reply(`Bạn đã nối từ trước đó. Trừ ${Math.abs(penalty.IDENTICAL_PREVIOUS_USER)} điểm.`);
-            msg.react(emojiTable.not_ok);
+            await msg.reply(`Bạn đã nối từ trước đó. Trừ ${Math.abs(penalty.IDENTICAL_PREVIOUS_USER)} điểm.`);
+            await msg.react(emojiTable.not_ok);
             modifyPlayerScore(msg.guild.id, msg.author.id, penalty.IDENTICAL_PREVIOUS_USER, guildData);
-            writeGuildFile(msg.guild.id, guildData);
+            await saveGuildConfig(msg.guild.id, guildData);
             return;
         }
         if (msg.createdTimestamp - guildData.recentSentTime < 3000) {
-            msg.reply(`Bạn sử dụng bot hơi nhanh rồi, hãy chậm lại. Trừ ${Math.abs(penalty.TOO_FAST_INPUT)} điểm.`);
-            msg.react(emojiTable.time);
+            await msg.reply(`Bạn sử dụng bot hơi nhanh rồi, hãy chậm lại. Trừ ${Math.abs(penalty.TOO_FAST_INPUT)} điểm.`);
+            await msg.react(emojiTable.time);
             modifyPlayerScore(msg.guild.id, msg.author.id, penalty.TOO_FAST_INPUT, guildData);
-            writeGuildFile(msg.guild.id, guildData);
+            await saveGuildConfig(msg.guild.id, guildData);
             return;
         }
         if (guildData.recentSentTime !== 0 && msg.content.toLowerCase().firstDigit() !== guildData.recentWord) {
-            msg.reply(`Từ mới phải bắt đầu bằng \`${guildData.recentWord}\`. Trừ ${Math.abs(penalty.TAIL_NOT_MATCH)} điểm.`);
-            msg.react(emojiTable.not_ok);
+            await msg.reply(`Từ mới phải bắt đầu bằng \`${guildData.recentWord}\`. Trừ ${Math.abs(penalty.TAIL_NOT_MATCH)} điểm.`);
+            await msg.react(emojiTable.not_ok);
             modifyPlayerScore(msg.guild.id, msg.author.id, penalty.TAIL_NOT_MATCH, guildData);
-            writeGuildFile(msg.guild.id, guildData);
+            await saveGuildConfig(msg.guild.id, guildData);
             return;
         }
         if (!dict.hasOwnProperty(msg.content.toLowerCase())) {
-            msg.reply(`Từ \`${msg.content.toLowerCase()}\` không tồn tại trong từ điển. Trừ ${Math.abs(penalty.UNDEFINED_WORD)} điểm.`);
-            msg.react(emojiTable.not_ok);
+            await msg.reply(`Từ \`${msg.content.toLowerCase()}\` không tồn tại trong từ điển. Trừ ${Math.abs(penalty.UNDEFINED_WORD)} điểm.`);
+            await msg.react(emojiTable.not_ok);
             modifyPlayerScore(msg.guild.id, msg.author.id, penalty.UNDEFINED_WORD, guildData);
-            writeGuildFile(msg.guild.id, guildData);
+            await saveGuildConfig(msg.guild.id, guildData);
             return;
         }
         if (guildData.used.hasOwnProperty(msg.content.toLowerCase())) {
-            msg.reply(`Từ \`${msg.content.toLowerCase()}\` đã được nối. Trừ ${Math.abs(penalty.REUSED_WORD)} điểm.`);
-            msg.react(emojiTable.not_ok);
+            await msg.reply(`Từ \`${msg.content.toLowerCase()}\` đã được nối. Trừ ${Math.abs(penalty.REUSED_WORD)} điểm.`);
+            await msg.react(emojiTable.not_ok);
             modifyPlayerScore(msg.guild.id, msg.author.id, penalty.REUSED_WORD, guildData);
-            writeGuildFile(msg.guild.id, guildData);
+            await saveGuildConfig(msg.guild.id, guildData);
             return;
         }
 
@@ -160,26 +172,22 @@ const handleInput = (msg) => {
         guildData.recentWord = msg.content.toLowerCase().lastDigit();
         guildData.recentSentTime = msg.createdTimestamp;
         guildData.recentUser = msg.author.id;
-        msg.react(emojiTable.ok);
-        writeGuildFile(msg.guild.id, guildData);
+        
+        await msg.react(emojiTable.ok);
+        await saveGuildConfig(msg.guild.id, guildData);
     }
-}
+};
 
 module.exports = {
-    // Base functions
     isSetup,
-    loadRawGuildFile,
-    loadGuildFile,
+    getGuildConfig,
     guildSetup,
     guildUninstall,
     guildReset,
     getRoomId,
     isInRoom,
-    preLoad,
     resetRoomId,
-
-    // Ingame tasks
     readPlayerScore,
     allPlayerList,
     handleInput
-}
+};

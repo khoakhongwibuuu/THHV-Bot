@@ -168,3 +168,10 @@ commands/interactions-debug/
 *.bak
 *.orig
 Thumbs.db
+/generated/prisma
+
+# AI Agent / Prisma Skills
+.agents/
+.claude/
+.windsurf/
+skills-lock.json

@@ -1,13 +1,16 @@
 const Discord = require('discord.js');
-const { formLib, memory, discordAPI, discordAPIv2 } = global.customLib;
-const { client } = global.variable;
+const formLib = require('#modules/approval-form/lib/formLib.js');
+const memory = require('#assets/api/memory.api.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
+const { client } = require('#assets/library/state.js');
 
 module.exports.exec = async (interaction, UUID) => {
-    const wizardSession = memory.getData(UUID);
+    const wizardSession = await memory.getData(UUID);
     interaction.message.delete();
-    memory.deleteData(UUID);
+    await memory.deleteData(UUID);
 
-    formLib.guildSetup(interaction.guild.id, {
+    await formLib.guildSetup(interaction.guild.id, {
         ...wizardSession.data,
         waitApproval: {}
     });

@@ -1,6 +1,6 @@
 // Packages
 const Discord = require('discord.js');
-const { autoPinLib, reactLib } = global.customLib;
+const reactLib = require('#modules/auto-reactor/lib/reactLib.js');
 
 module.exports = {
     name: Discord.Events.MessageReactionAdd,

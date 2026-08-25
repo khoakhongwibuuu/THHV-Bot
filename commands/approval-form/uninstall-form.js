@@ -1,6 +1,8 @@
 // Packages
 const Discord = require('discord.js');
-const { formLib, discordAPI, discordAPIv2 } = global.customLib;
+const formLib = require('#modules/approval-form/lib/formLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -18,14 +20,14 @@ module.exports = {
             });
             return;
         }
-        if (!formLib.isSetup(interaction.guild.id)) {
+        if (!(await formLib.isSetup(interaction.guild.id))) {
             await interaction.reply({
                 content: `⚠️ Member\'s information management panel has not been installed in this server.`,
                 ephemeral: true
             });
             return;
         }
-        if (!formLib.isUninstallable(interaction.guild.id)) {
+        if (!(await formLib.isUninstallable(interaction.guild.id))) {
             await interaction.reply({
                 content: `⚠️ This module is currently in use, you cannot uninstall it.`,
                 ephemeral: true
@@ -33,7 +35,7 @@ module.exports = {
             return;
         }
 
-        formLib.guildUninstall(interaction.guild.id);
+        await formLib.guildUninstall(interaction.guild.id);
         await interaction.reply({
             ephemeral: true,
             content: "Success."

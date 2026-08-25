@@ -1,5 +1,7 @@
 const Discord = require('discord.js');
-const { formLib, discordAPI, discordAPIv2 } = global.customLib;
+const formLib = require('#modules/approval-form/lib/formLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports.exec = async (interaction, clientMemberId) => {
     const isMod = await discordAPIv2.isModerator(interaction.guild.id, interaction.user.id);
@@ -11,7 +13,7 @@ module.exports.exec = async (interaction, clientMemberId) => {
         });
         return;
     }
-    if (!formLib.isSetup(interaction.guild.id)) {
+    if (!await formLib.isSetup(interaction.guild.id)) {
         await interaction.reply({
             ephemeral: true,
             content: `Đã có lỗi nghiêm trọng xảy ra.`
@@ -21,7 +23,7 @@ module.exports.exec = async (interaction, clientMemberId) => {
 
     await interaction.message.fetch();
 
-    formLib.removeMemberFromApprovalQueue(interaction.guild.id, clientMemberId);
+    await formLib.removeMemberFromApprovalQueue(interaction.guild.id, clientMemberId);
 
     const sentEmbed = Discord.EmbedBuilder.from(interaction.message.embeds[0])
         .setColor(0xb42831)

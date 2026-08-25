@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { client } = global.variable;
+const { client } = require('#assets/library/state.js');
 
 /**
  * Fetches a guild by its ID.

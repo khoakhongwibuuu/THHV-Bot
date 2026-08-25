@@ -1,8 +1,11 @@
 const Discord = require('discord.js');
-const { memory, formLib, discordAPI, discordAPIv2 } = global.customLib;
+const memory = require('#assets/api/memory.api.js');
+const formLib = require('#modules/approval-form/lib/formLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports.exec = async (interaction, UUID) => {
-    const data = memory.getData(UUID);
+    const data = await memory.getData(UUID);
     if (!data) {
         await interaction.reply({
             ephemeral: true,
@@ -10,7 +13,7 @@ module.exports.exec = async (interaction, UUID) => {
         });
         return;
     }
-    if (!formLib.isSetup(data.guildId)) {
+    if (!await formLib.isSetup(data.guildId)) {
         await interaction.reply({
             ephemeral: true,
             content: `Đã có lỗi nghiêm trọng xảy ra.`
@@ -18,10 +21,10 @@ module.exports.exec = async (interaction, UUID) => {
         return;
     }
 
-    memory.deleteData(UUID);
+    await memory.deleteData(UUID);
 
-    formLib.removeMemberFromCache(data.guildId, interaction.user.id);
-    formLib.addMemberToApprovalQueue(data.guildId, interaction.user.id);
+    await formLib.removeMemberFromCache(data.guildId, interaction.user.id);
+    await formLib.addMemberToApprovalQueue(data.guildId, interaction.user.id);
 
     await interaction.reply({
         ephemeral: true,
@@ -35,9 +38,9 @@ module.exports.exec = async (interaction, UUID) => {
     const { VOI, others } = data.rewards;
     const { notes } = data;
 
-    const broadcastChannel = await discordAPIv2.GuildChannel(data.guildId, formLib.getGuildConfig(data.guildId).receive);
+    const broadcastChannel = await discordAPIv2.GuildChannel(data.guildId, (await formLib.getGuildConfig(data.guildId)).receive);
 
-    // await discordAPI.GuildChannel(data.guildId, formLib.getGuildConfig(data.guildId).receive).send({
+    // await discordAPI.GuildChannel(data.guildId, (await formLib.getGuildConfig(data.guildId)).receive).send({
     await broadcastChannel.send({
         embeds: [
             new Discord.EmbedBuilder()

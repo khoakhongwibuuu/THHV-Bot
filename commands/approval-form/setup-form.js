@@ -1,6 +1,9 @@
 // Packages
 const Discord = require('discord.js');
-const { formLib, memory, discordAPI, discordAPIv2  } = global.customLib;
+const formLib = require('#modules/approval-form/lib/formLib.js');
+const memory = require('#assets/api/memory.api.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -18,7 +21,7 @@ module.exports = {
             });
             return;
         }
-        if (formLib.isSetup(interaction.guild.id)) {
+        if (await formLib.isSetup(interaction.guild.id)) {
             await interaction.reply({
                 content: `⚠️ Nothing changed. Member\'s information management panel has been installed in this server.`,
                 ephemeral: true
@@ -64,7 +67,7 @@ module.exports = {
             }
         }
 
-        const UUID = memory.setData(wizardSession, 900 * 1000);
+        const UUID = await memory.setData(wizardSession, 900 * 1000);
 
         const sendChannelSelectionRow = new Discord.ActionRowBuilder().addComponents(
             new Discord.ChannelSelectMenuBuilder()
@@ -126,7 +129,7 @@ module.exports = {
             btnRowEnabled
         ];
 
-        memory.modifyData(UUID, wizardSession);
+        await memory.modifyData(UUID, wizardSession);
 
         await interaction.reply({
             embeds: [

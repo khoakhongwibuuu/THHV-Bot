@@ -1,10 +1,15 @@
 {
     "dependencies": {
+        "@prisma/adapter-pg": "^7.9.1",
+        "@prisma/client": "^7.9.1",
         "discord.js": "latest",
         "dotenv": "latest",
         "fs": "latest",
         "node-fetch": "latest",
-        "ping": "latest"
+        "pg": "^8.23.0",
+        "ping": "latest",
+        "prisma": "^7.9.1",
+        "redis": "^6.2.1"
     },
     "devDependencies": {
         "eslint": "^8.55.0"
@@ -12,9 +17,14 @@
     "name": "thhv-bot-rewrite",
     "version": "1.0.0",
     "main": "index.js",
+    "imports": {
+        "#assets/*": "./assets/*",
+        "#modules/*": "./modules/*",
+        "#root/*": "./*"
+    },
     "directories": {},
     "scripts": {
-        "start": "node ./index.js",
+        "start": "npx prisma db push --accept-data-loss && node ./index.js",
         "deploy": "node ./deploy.js",
         "undeploy": "node ./undeploy.js",
         "package-install": "npm i"

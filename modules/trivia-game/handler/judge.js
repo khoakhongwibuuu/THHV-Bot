@@ -1,5 +1,5 @@
 // Packages
-const { gameLib } = global.customLib;
+const gameLib = require('#modules/trivia-game/lib/gameLib.js');
 
 const emojiTable = Object.freeze({
     up: '✅',
@@ -8,7 +8,7 @@ const emojiTable = Object.freeze({
 });
 
 module.exports.execute = async (interaction, responseData, key, difficulty, type) => {
-    if (!gameLib.isRunning(interaction.guild.id)) return;
+    if (!await gameLib.isRunning(interaction.guild.id)) return;
     const { up, down } = gameLib.getPenalty(type, difficulty);
 
     let correct = [], incorrect = [];
@@ -37,10 +37,10 @@ module.exports.execute = async (interaction, responseData, key, difficulty, type
 
     await interaction.followUp({ content: Content, ephemeral: false });
 
-    gameLib.bulkSaveInstaceResult(interaction.guild.id, {
+    await gameLib.bulkSaveInstaceResult(interaction.guild.id, {
         win: correct,
         lose: incorrect
     }, type, difficulty);
 
-    gameLib.guildUnlock(interaction.guild.id);
+    await gameLib.guildUnlock(interaction.guild.id);
 }

@@ -1,6 +1,8 @@
 // Packages
 const Discord = require('discord.js');
-const { reactLib, discordAPI, discordAPIv2 } = global.customLib;
+const reactLib = require('#modules/auto-reactor/lib/reactLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 const isValidToken = (token) => {
     const customEmojiPattern = /^<:[^\s]+:\d+>$/;
@@ -46,7 +48,7 @@ module.exports = {
             return;
         }
 
-        reactLib.guildSetup(interaction.guild.id, interaction.channel.id, upvoteToken, downvoteToken);
+        await reactLib.guildSetup(interaction.guild.id, interaction.channel.id, upvoteToken, downvoteToken);
         interaction.reply({
             content: `Voting channel has been set at <#${interaction.channel.id}>.`
                 + `\nI will use ${upvoteToken} for upvoting and ${downvoteToken} for downvoting.`,
