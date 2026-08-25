@@ -2,19 +2,19 @@ services:
   bot:
     build: .
     depends_on:
-      - postgres
-      - redis
+      - thhv_postgres
+      - thhv_redis
     restart: unless-stopped
     environment:
       - TOKEN=${TOKEN}
       - CLIENT_ID=${CLIENT_ID}
       - OWNER_ID=${OWNER_ID}
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
-      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@thhv_postgres:5432/${POSTGRES_DB}?schema=public
+      - REDIS_URL=redis://thhv_redis:6379
     networks:
       - multi-domain
 
-  chv-postgres:
+  thhv_postgres:
     image: postgres:15-alpine
     restart: unless-stopped
     ports:
@@ -28,7 +28,7 @@ services:
     networks:
       - multi-domain
 
-  chv-redis:
+  thhv_redis:
     image: redis:7-alpine
     restart: unless-stopped
     ports:
