@@ -14,7 +14,7 @@ services:
     networks:
       - multi-domain
 
-  postgres:
+  chv-postgres:
     image: postgres:15-alpine
     restart: unless-stopped
     environment:
@@ -26,7 +26,7 @@ services:
     networks:
       - multi-domain
 
-  redis:
+  chv-redis:
     image: redis:7-alpine
     restart: unless-stopped
     volumes:
