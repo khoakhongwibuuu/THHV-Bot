@@ -1,5 +1,6 @@
 // Packages
-const { gameLib, stdlib } = global.customLib;
+const gameLib = require('#modules/trivia-game/lib/gameLib.js');
+const stdlib = require('#assets/library/standard.js');
 
 module.exports.execute = async (interaction, questionBlock) => {
     const validKey = ['A', 'B', 'C', 'D'];

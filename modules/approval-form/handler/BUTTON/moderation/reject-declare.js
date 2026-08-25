@@ -1,5 +1,7 @@
 const Discord = require('discord.js');
-const { formLib, discordAPI, discordAPIv2 } = global.customLib;
+const formLib = require('#modules/approval-form/lib/formLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports.exec = async (interaction, clientMemberId) => {
     const isMod = await discordAPIv2.isModerator(interaction.guild.id, interaction.user.id);

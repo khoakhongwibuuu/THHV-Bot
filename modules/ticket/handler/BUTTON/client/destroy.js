@@ -1,4 +1,4 @@
-const { ticketLib } = global.customLib;
+const ticketLib = require('#modules/ticket/lib/ticketLib.js');
 
 module.exports.exec = async (interaction) => {
     await ticketLib.removeOccupation(interaction.guild.id, interaction.channel.id);

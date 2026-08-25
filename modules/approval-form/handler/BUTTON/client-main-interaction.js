@@ -1,4 +1,4 @@
-const { formLib } = global.customLib;
+const formLib = require('#modules/approval-form/lib/formLib.js');
 
 module.exports.exec = async (interaction) => {
     if (!await formLib.isSetup(interaction.guild.id)) {

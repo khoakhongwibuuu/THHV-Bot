@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
-const { client } = global.variable;
-const { memory } = global.customLib;
+const { client } = require('#assets/library/state.js');
+const memory = require('#assets/api/memory.api.js');
 
 module.exports.exec = async (interaction) => {
     const title = interaction.fields.getTextInputValue('ticket-interface-title'),

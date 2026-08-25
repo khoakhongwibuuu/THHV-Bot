@@ -1,4 +1,4 @@
-const { memory } = global.customLib;
+const memory = require('#assets/api/memory.api.js');
 
 module.exports.exec = async (interaction, UUID) => {
     const data = await memory.getData(UUID);

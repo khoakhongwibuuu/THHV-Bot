@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
-const { contestLib, discordAPIv2 } = global.customLib;
-const { client } = global.variable;
+const contestLib = require('#modules/contest/lib/contestLib.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
+const { client } = require('#assets/library/state.js');
 
 const CLOCK_INTERVAL_MINUTES = 5;
 const DEBUG_MODE = false;

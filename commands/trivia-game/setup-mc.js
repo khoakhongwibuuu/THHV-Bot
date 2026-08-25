@@ -1,6 +1,8 @@
 // Packages
 const Discord = require('discord.js');
-const { gameLib, discordAPI, discordAPIv2 } = global.customLib;
+const gameLib = require('#modules/trivia-game/lib/gameLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()

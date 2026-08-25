@@ -1,8 +1,8 @@
 // Packages
 const Discord = require('discord.js');
-const path = require('node:path');
-const { dirname } = global.variable;
-const { gameLib, stdlib } = global.customLib;
+const { dirname } = require('#assets/library/state.js');
+const gameLib = require('#modules/trivia-game/lib/gameLib.js');
+const stdlib = require('#assets/library/standard.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
@@ -26,6 +26,6 @@ module.exports = {
         await gameLib.guildLock(interaction.guild.id);
         const hardModeRate = stdlib.randomPercent(90);
         const questionBlock = (hardModeRate) ? gameLib.easyReader() : gameLib.hardReader();
-        await require(path.join(dirname, "modules/trivia-game/handler", questionBlock.type)).execute(interaction, questionBlock);
+        await require(`#modules/trivia-game/handler/${questionBlock.type}.js`).execute(interaction, questionBlock);
     },
 };

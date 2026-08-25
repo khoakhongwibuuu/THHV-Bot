@@ -1,6 +1,7 @@
 // Packages
 const Discord = require('discord.js');
-const { wordLib, reactLib } = global.customLib;
+const wordLib = require('#modules/word-match/lib/wordLib.js');
+const reactLib = require('#modules/auto-reactor/lib/reactLib.js');
 
 module.exports = {
 	name: Discord.Events.MessageCreate,

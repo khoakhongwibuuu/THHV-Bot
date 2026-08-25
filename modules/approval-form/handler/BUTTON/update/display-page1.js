@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
-const { memory } = global.customLib;
-const { client } = global.variable;
+const memory = require('#assets/api/memory.api.js');
+const { client } = require('#assets/library/state.js');
 
 module.exports.exec = async (interaction, UUID, message, firstTimeDisplay, pageRedirected, modalInteraction) => {
     if (!pageRedirected && pageRedirected !== false) pageRedirected = true;

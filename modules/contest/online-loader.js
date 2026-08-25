@@ -1,5 +1,5 @@
 // Packages
 const path = require('node:path');
-const { dirname } = global.variable;
+const { dirname } = require('#assets/library/state.js');
 
-setTimeout(async () => await require(path.join(dirname, 'modules/contest/api/codeforces.api.js')).exec(), 1000);
+setTimeout(async () => await require('#modules/contest/api/codeforces.api.js').exec(), 1000);

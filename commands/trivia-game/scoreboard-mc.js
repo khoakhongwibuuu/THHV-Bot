@@ -1,6 +1,6 @@
 // Packages
 const Discord = require('discord.js');
-const { gameLib } = global.customLib;
+const gameLib = require('#modules/trivia-game/lib/gameLib.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()

@@ -1,4 +1,5 @@
-const { memory, formLib } = global.customLib;
+const memory = require('#assets/api/memory.api.js');
+const formLib = require('#modules/approval-form/lib/formLib.js');
 
 module.exports.exec = async (interaction, UUID) => {
     const data = await memory.getData(UUID);

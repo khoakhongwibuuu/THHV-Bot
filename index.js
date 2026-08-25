@@ -11,19 +11,7 @@ if (!process.env.TOKEN) {
 	console.info(`[${new Date().toISOString()}] [SUCCESS] root/index: Loaded login token from .env`);
 }
 
-global.variable = {};
-global.variable.BotStartTime = BotStartTime;
-global.variable.dirname = __dirname;
-
-const client = require('./assets/library/client.js');
-global.variable.client = client;
-
-global.customLib = {};
-global.customLib.memory = require('./assets/api/memory.api.js');
-global.customLib.stdlib = require('./assets/library/standard.js');
-global.customLib.discordAPI = require('./assets/api/discord.api.js');
-global.customLib.discordAPIv2 = require('./assets/api/discord.api.v2.js');
-global.customLib.db = require('./assets/library/db.js');
+const client = require('./assets/library/state.js').client;
 
 (async () => {
 	// Guard
@@ -37,9 +25,7 @@ global.customLib.db = require('./assets/library/db.js');
 		process.exit(1);
 	}
 
-	// Load offline modules
-	await require('./assets/instruction/pre-login.js').loadModules();
-
+	// Offline modules are now imported directly where needed
 	client.commands = new Discord.Collection();
 	const foldersPath = path.join(__dirname, 'commands');
 	const commandFolders = fs.readdirSync(foldersPath);
@@ -86,6 +72,22 @@ global.customLib.db = require('./assets/library/db.js');
 		console.log(`[${new Date().toISOString()}] [ERROR] root/index: The bot was automatically shut down by unhandled rejection.`);
 		console.error(err);
 		setTimeout(() => process.exit(1), 1000);
+	});
+
+	process.on('SIGINT', async () => {
+		console.log(`[${new Date().toISOString()}] [INFO] root/index: SIGINT received. Shutting down gracefully...`);
+		const { disconnect } = require('./assets/library/db.js');
+		await disconnect();
+		client.destroy();
+		process.exit(0);
+	});
+
+	process.on('SIGTERM', async () => {
+		console.log(`[${new Date().toISOString()}] [INFO] root/index: SIGTERM received. Shutting down gracefully...`);
+		const { disconnect } = require('./assets/library/db.js');
+		await disconnect();
+		client.destroy();
+		process.exit(0);
 	});
 
 	try {

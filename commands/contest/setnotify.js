@@ -1,6 +1,7 @@
 // Packages
 const Discord = require('discord.js');
-const { contestLib, discordAPIv2 } = global.customLib;
+const contestLib = require('#modules/contest/lib/contestLib.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()

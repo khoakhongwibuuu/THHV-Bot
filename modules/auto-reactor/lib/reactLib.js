@@ -1,4 +1,4 @@
-const { db } = global.customLib;
+const db = require('#assets/library/db.js');
 const { prisma, redisClient } = db;
 
 const MODULE_NAME = 'auto-reactor';

@@ -1,6 +1,8 @@
 // Packages
 const Discord = require('discord.js');
-const { reactLib, discordAPI, discordAPIv2 } = global.customLib;
+const reactLib = require('#modules/auto-reactor/lib/reactLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 const isValidToken = (token) => {
     const customEmojiPattern = /^<:[^\s]+:\d+>$/;

@@ -1,5 +1,5 @@
 // Packages
-const { gameLib } = global.customLib;
+const gameLib = require('#modules/trivia-game/lib/gameLib.js');
 
 const emojiTable = Object.freeze({
     up: '✅',

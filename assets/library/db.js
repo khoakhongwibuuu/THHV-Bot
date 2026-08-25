@@ -43,7 +43,27 @@ redisClient.on('error', (err) => console.log('Redis Client Error', err));
     }
 })();
 
+const disconnect = async () => {
+    try {
+        await prisma.$disconnect();
+        await pool.end();
+        console.log('[INFO] Postgres disconnected.');
+    } catch (err) {
+        console.error('[ERROR] Postgres disconnect failed:', err);
+    }
+    
+    try {
+        if (redisClient.isOpen) {
+            await redisClient.quit();
+            console.log('[INFO] Redis disconnected.');
+        }
+    } catch (err) {
+        console.error('[ERROR] Redis disconnect failed:', err);
+    }
+};
+
 module.exports = {
     prisma,
-    redisClient
+    redisClient,
+    disconnect
 };

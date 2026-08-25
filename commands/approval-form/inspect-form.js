@@ -1,6 +1,8 @@
 // Packages
 const Discord = require('discord.js');
-const { formLib, discordAPI, discordAPIv2 } = global.customLib;
+const formLib = require('#modules/approval-form/lib/formLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()

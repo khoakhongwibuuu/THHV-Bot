@@ -1,6 +1,6 @@
 // Packages
 const Discord = require('discord.js');
-const { codeforcesLib } = global.customLib;
+const codeforcesLib = require('#modules/codeforces-utils/lib/codeforcesLib.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()

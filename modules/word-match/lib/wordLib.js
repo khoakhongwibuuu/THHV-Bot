@@ -1,8 +1,8 @@
-const { db } = global.customLib;
+const db = require('#assets/library/db.js');
 const { prisma, redisClient } = db;
 const fs = require('node:fs');
 const path = require('node:path');
-const { dirname } = global.variable;
+const { dirname } = require('#assets/library/state.js');
 
 const dict = JSON.parse(fs.readFileSync(path.join(dirname, 'modules/word-match/database/default.dict.min.json'), 'utf-8'));
 

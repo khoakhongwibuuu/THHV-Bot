@@ -1,5 +1,8 @@
 const Discord = require('discord.js');
-const { memory, formLib, discordAPI, discordAPIv2 } = global.customLib;
+const memory = require('#assets/api/memory.api.js');
+const formLib = require('#modules/approval-form/lib/formLib.js');
+const discordAPI = require('#assets/api/discord.api.js');
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports.exec = async (interaction, UUID) => {
     const data = await memory.getData(UUID);

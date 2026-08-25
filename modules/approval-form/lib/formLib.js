@@ -1,4 +1,5 @@
-const { discordAPIv2, db } = global.customLib;
+const discordAPIv2 = require('#assets/api/discord.api.v2.js');
+const db = require('#assets/library/db.js');
 const { prisma, redisClient } = db;
 
 const MODULE_NAME = 'approval-form';

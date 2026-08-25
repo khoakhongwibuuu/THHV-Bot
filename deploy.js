@@ -3,18 +3,7 @@ const path = require('node:path');
 const dotenv = require('dotenv');
 const Discord = require('discord.js');
 
-global.variable = {};
-global.variable.dirname = __dirname;
-
-global.customLib = {};
-global.customLib.formLib = require('./modules/approval-form/lib/formLib.js');
-global.customLib.reactLib = require('./modules/auto-reactor/lib/reactLib.js');
-global.customLib.codeforcesLib = require('./modules/codeforces-utils/lib/codeforcesLib.js');
-global.customLib.contestLib = require('./modules/contest/lib/contestLib.js');
-global.customLib.ticketLib = require('./modules/ticket/lib/ticketLib.js');
-global.customLib.gameLib = require('./modules/trivia-game/lib/gameLib.js');
-global.customLib.wordLib = require('./modules/word-match/lib/wordLib.js');
-
+// No global variables needed anymore
 if (!process.env.TOKEN) {
     dotenv.config({ path: ".env" });
     console.info(`[${new Date().toISOString()}] [INFO] root/deploy: Loaded config from .env`);
@@ -46,7 +35,14 @@ const rest = new Discord.REST().setToken(process.env.TOKEN);
         console.log(`[${new Date().toISOString()}] [INFO] root/deploy: Started refreshing ${commands.length} application (/) commands.`);
         const data = await rest.put(Discord.Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
         console.log(`[${new Date().toISOString()}] [SUCCESS] root/deploy: Successfully reloaded ${data.length} application (/) commands.`);
+        
+        // Disconnect databases gracefully
+        const { disconnect } = require('./assets/library/db.js');
+        await disconnect();
     } catch (error) {
         console.error(error);
+        const { disconnect } = require('./assets/library/db.js');
+        await disconnect();
+        process.exit(1);
     }
 })();

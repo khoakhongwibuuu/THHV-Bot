@@ -1,10 +1,9 @@
 const fs = require('node:fs');
 const fsPromises = require('node:fs').promises;
 const path = require('node:path');
-const { dirname } = global.variable;
 
 module.exports.loadModules = async () => {
-    const modulesPath = path.join(dirname, "modules");
+    const modulesPath = path.join(__dirname, '../../modules');
     const modules = await fsPromises.readdir(modulesPath, { withFileTypes: true });
 
     for (const onlineModule of modules) {

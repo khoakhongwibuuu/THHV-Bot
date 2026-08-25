@@ -1,6 +1,6 @@
 // Packages
 const Discord = require('discord.js');
-const { wordLib } = global.customLib;
+const wordLib = require('#modules/word-match/lib/wordLib.js');
 
 module.exports = {
     data: new Discord.SlashCommandBuilder()
