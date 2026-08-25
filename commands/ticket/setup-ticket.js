@@ -62,6 +62,7 @@ module.exports = {
                         .setMaxLength(32)
                         .setMinLength(12)
                         .setPlaceholder('e.g. Do you need assistance ?')
+                        .setValue('Do you need assistance ?')
                         .setRequired(true)
                 ),
                 new Discord.ActionRowBuilder().addComponents(
@@ -72,6 +73,7 @@ module.exports = {
                         .setMaxLength(128)
                         .setMinLength(12)
                         .setPlaceholder('e.g. Click the button below and Moderators will assist you.')
+                        .setValue('Click the button below and Moderators will assist you.')
                         .setRequired(true)
                 ),
                 new Discord.ActionRowBuilder().addComponents(
@@ -82,6 +84,7 @@ module.exports = {
                         .setMaxLength(32)
                         .setMinLength(4)
                         .setPlaceholder('e.g. 🎫 Create a ticket')
+                        .setValue('🎫 Create a ticket')
                         .setRequired(true)
                 ),
                 new Discord.ActionRowBuilder().addComponents(
