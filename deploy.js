@@ -6,7 +6,7 @@ const Discord = require('discord.js');
 // No global variables needed anymore
 if (!process.env.TOKEN) {
     dotenv.config({ path: ".env" });
-    console.info(`[${new Date().toISOString()}] [INFO] root/deploy: Loaded config from .env`);
+    console.info(`[INFO] root/deploy: Loaded config from .env`);
 }
 
 const commands = [];
@@ -23,7 +23,7 @@ for (const folder of commandFolders) {
         if ('data' in command && 'execute' in command) {
             commands.push(command.data.toJSON());
         } else {
-            console.log(`[${new Date().toISOString()}] [WARN] root/deploy: The command at ${filePath} is missing a required "data" or "execute" property.`);
+            console.log(`[WARN] root/deploy: The command at ${filePath} is missing a required "data" or "execute" property.`);
         }
     }
 }
@@ -32,10 +32,10 @@ const rest = new Discord.REST().setToken(process.env.TOKEN);
 
 (async () => {
     try {
-        console.log(`[${new Date().toISOString()}] [INFO] root/deploy: Started refreshing ${commands.length} application (/) commands.`);
+        console.log(`[INFO] root/deploy: Started refreshing ${commands.length} application (/) commands.`);
         const data = await rest.put(Discord.Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
-        console.log(`[${new Date().toISOString()}] [SUCCESS] root/deploy: Successfully reloaded ${data.length} application (/) commands.`);
-        
+        console.log(`[SUCCESS] root/deploy: Successfully reloaded ${data.length} application (/) commands.`);
+
         // Disconnect databases gracefully
         const { disconnect } = require('./assets/library/db.js');
         await disconnect();

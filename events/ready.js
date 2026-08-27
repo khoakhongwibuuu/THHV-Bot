@@ -8,7 +8,7 @@ module.exports = {
     once: true,
     async execute(client) {
         // Login success event
-        console.log(`[${new Date().toISOString()}] [INFO] Client: Ready! Logged in as ${client.user.tag}`);
+        console.log(`[INFO] Client: Ready! Logged in as ${client.user.tag}`);
 
         // Start cronjobs
         await require('#assets/instruction/start-cronjob.js').start();

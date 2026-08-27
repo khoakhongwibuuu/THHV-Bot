@@ -16,10 +16,10 @@ const fetchData = async (url) => {
 
 		if (data?.status === 'OK') return data.result;
 
-		console.warn(`[${new Date().toISOString()}] [WARN] module/contest: Invalid response from codeforces API.`);
+		console.warn(`[WARN] module/contest: Invalid response from codeforces API.`);
 		return null;
 	} catch (error) {
-		console.warn(`[${new Date().toISOString()}] [WARN] module/contest: Unable to fetch data: ${error.message}`);
+		console.warn(`[WARN] module/contest: Unable to fetch data: ${error.message}`);
 		return null;
 	}
 };

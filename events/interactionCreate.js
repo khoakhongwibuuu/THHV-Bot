@@ -23,9 +23,9 @@ module.exports = {
 			}
 			try {
 				if (interaction.guildId) {
-					console.log(`[${new Date().toISOString()}] [COMMAND] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: /${command.data.name}`);
+					console.log(`[COMMAND] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: /${command.data.name}`);
 				} else {
-					console.log(`[${new Date().toISOString()}] [COMMAND] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: /${command.data.name}`);
+					console.log(`[COMMAND] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: /${command.data.name}`);
 				}
 				if (!command.deprecated) {
 					await command.execute(interaction);
@@ -66,16 +66,16 @@ module.exports = {
 
 		if (interaction.isModalSubmit()) {
 			if (interaction.guildId) {
-				console.log(`[${new Date().toISOString()}] [MODAL] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: ${interaction.customId}`);
+				console.log(`[MODAL] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: ${interaction.customId}`);
 			} else {
-				console.log(`[${new Date().toISOString()}] [MODAL] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: ${interaction.customId}`);
+				console.log(`[MODAL] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: ${interaction.customId}`);
 			}
 		}
 		if (interaction.isButton()) {
 			if (interaction.guildId) {
-				console.log(`[${new Date().toISOString()}] [BUTTON] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: ${interaction.customId}`);
+				console.log(`[BUTTON] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: ${interaction.customId}`);
 			} else {
-				console.log(`[${new Date().toISOString()}] [BUTTON] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: ${interaction.customId}`);
+				console.log(`[BUTTON] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: ${interaction.customId}`);
 			}
 		}
 		if (
@@ -86,9 +86,9 @@ module.exports = {
 			interaction.isUserSelectMenu()
 		) {
 			if (interaction.guildId) {
-				console.log(`[${new Date().toISOString()}] [SELECT-MENU] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: ${interaction.customId}`);
+				console.log(`[SELECT-MENU] ${interaction.user.id} (${interaction.user.username}) at ${interaction.guildId} > ${interaction.channelId}: ${interaction.customId}`);
 			} else {
-				console.log(`[${new Date().toISOString()}] [SELECT-MENU] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: ${interaction.customId}`);
+				console.log(`[SELECT-MENU] ${interaction.user.id} (${interaction.user.username}) at DirectMessage: ${interaction.customId}`);
 			}
 		}
 	},

@@ -8,7 +8,7 @@ const Discord = require('discord.js');
 
 if (!process.env.TOKEN) {
 	dotenv.config({ path: ".env" });
-	console.info(`[${new Date().toISOString()}] [INFO] root/index: Loaded login token from .env`);
+	console.info(`[INFO] root/index: Loaded login token from .env`);
 }
 
 const client = require('./assets/library/state.js').client;
@@ -16,12 +16,12 @@ const client = require('./assets/library/state.js').client;
 (async () => {
 	// Guard
 	if (process.env.OWNER_ID === "") {
-		console.log(`[${new Date().toISOString()}] [ERROR] root/index: You have NOT provide the Bot owner ID in auth/login.key. This BOT will be automatically turned off.`);
+		console.log(`[ERROR] root/index: You have NOT provide the Bot owner ID in auth/login.key. This BOT will be automatically turned off.`);
 		process.exit(1);
 	}
 
 	if (process.env.TOKEN === "") {
-		console.log(`[${new Date().toISOString()}] [ERROR] root/index: Empty token detected. Please provide a valid token.`);
+		console.log(`[ERROR] root/index: Empty token detected. Please provide a valid token.`);
 		process.exit(1);
 	}
 
@@ -29,24 +29,24 @@ const client = require('./assets/library/state.js').client;
 	require('./assets/instruction/discord-handler.js').loadHandlers();
 
 	client.on('error', (err) => {
-		console.log(`[${new Date().toISOString()}] [WARN] root/index: Error occured. Please review.`);
+		console.log(`[WARN] root/index: Error occured. Please review.`);
 		console.error(err);
 	});
 
 	process.on('uncaughtException', (err) => {
-		console.log(`[${new Date().toISOString()}] [ERROR] root/index: The bot was automatically shut down by uncaught exception.`);
+		console.log(`[ERROR] root/index: The bot was automatically shut down by uncaught exception.`);
 		console.error(err);
 		setTimeout(() => process.exit(1), 1000);
 	});
 
 	process.on('unhandledRejection', (err) => {
-		console.log(`[${new Date().toISOString()}] [ERROR] root/index: The bot was automatically shut down by unhandled rejection.`);
+		console.log(`[ERROR] root/index: The bot was automatically shut down by unhandled rejection.`);
 		console.error(err);
 		setTimeout(() => process.exit(1), 1000);
 	});
 
 	process.on('SIGINT', async () => {
-		console.log(`[${new Date().toISOString()}] [INFO] root/index: SIGINT received. Shutting down gracefully...`);
+		console.log(`[INFO] root/index: SIGINT received. Shutting down gracefully...`);
 		const { disconnect } = require('./assets/library/db.js');
 		await disconnect();
 		client.destroy();
@@ -54,7 +54,7 @@ const client = require('./assets/library/state.js').client;
 	});
 
 	process.on('SIGTERM', async () => {
-		console.log(`[${new Date().toISOString()}] [INFO] root/index: SIGTERM received. Shutting down gracefully...`);
+		console.log(`[INFO] root/index: SIGTERM received. Shutting down gracefully...`);
 		const { disconnect } = require('./assets/library/db.js');
 		await disconnect();
 		client.destroy();
@@ -64,7 +64,7 @@ const client = require('./assets/library/state.js').client;
 	try {
 		client.login(process.env.TOKEN);
 	} catch (error) {
-		console.log(`[${new Date().toISOString()}] [ERROR] root/index: Invalid token.`);
+		console.log(`[ERROR] root/index: Invalid token.`);
 		console.error(error);
 	}
 })();

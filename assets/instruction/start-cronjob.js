@@ -13,9 +13,9 @@ module.exports.start = async () => {
                 try {
                     await fsPromises.access(loaderPath);
                     require(loaderPath);
-                    console.log(`[${new Date().toISOString()}] [INFO] Client: started cron-job of ${onlineModule.name} module.`);
+                    console.log(`[INFO] Client: started cron-job of ${onlineModule.name} module.`);
                 } catch (err) {
-                    console.error(`[${new Date().toISOString()}] [ERROR] Error occurred while starting cron-job of module ${onlineModule.name}:`, err);
+                    console.error(`[ERROR] Error occurred while starting cron-job of module ${onlineModule.name}:`, err);
                     process.exit(1);
                 }
             }

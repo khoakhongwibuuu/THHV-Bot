@@ -19,9 +19,9 @@ module.exports.loadHandlers = () => {
                     const command = require(filePath);
                     if ('data' in command && 'execute' in command) {
                         client.commands.set(command.data.name, command);
-                        console.log(`[${new Date().toISOString()}] [INFO] Client: Loaded ${filePath} successfully.`);
+                        console.log(`[INFO] Client: Loaded ${filePath} successfully.`);
                     } else {
-                        console.log(`[${new Date().toISOString()}] [Error] Client: The command at ${filePath} is missing a required "data" or "execute" property.`);
+                        console.log(`[Error] Client: The command at ${filePath} is missing a required "data" or "execute" property.`);
                     }
                 }
             }
