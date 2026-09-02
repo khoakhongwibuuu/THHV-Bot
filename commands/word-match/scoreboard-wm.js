@@ -24,8 +24,8 @@ module.exports = {
             return;
         }
         let rawmap = new Map();
-        const playerdata = await wordLib.getGuildConfig(interaction.guild.id).playerScore;
-        Object.keys(playerdata).forEach(key => rawmap.set(key, playerdata[key].lastValue()));
+        const playerdata = await wordLib.getGuildConfig(interaction.guild.id);
+        Object.keys(playerdata.playerScore).forEach(key => rawmap.set(key, playerdata.playerScore[key].lastValue()));
         const sortedEntries = Array.from(rawmap.entries()).sort((a, b) => b[1] - a[1]);
         if (sortedEntries.length === 0) {
             interaction.reply({ content: "🔍 Chưa có người chơi nào ghi điểm.", ephemeral: true });
