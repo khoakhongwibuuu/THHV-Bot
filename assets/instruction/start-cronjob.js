@@ -6,16 +6,16 @@ module.exports.start = async () => {
     const modulesPath = path.join(__dirname, '../../modules');
     const modules = await fsPromises.readdir(modulesPath, { withFileTypes: true });
 
-    for (const onlineModule of modules) {
-        if (onlineModule.isDirectory()) {
-            const loaderPath = path.join(modulesPath, onlineModule.name, "cron-job.js");
+    for (const moduleDir of modules) {
+        if (moduleDir.isDirectory()) {
+            const loaderPath = path.join(modulesPath, moduleDir.name, "cron-job.js");
             if (fs.existsSync(loaderPath)) {
                 try {
                     await fsPromises.access(loaderPath);
                     require(loaderPath);
-                    console.log(`[INFO] Client: started cron-job of ${onlineModule.name} module.`);
+                    console.log(`[INFO] Client: started cron-job of ${moduleDir.name} module.`);
                 } catch (err) {
-                    console.error(`[ERROR] Error occurred while starting cron-job of module ${onlineModule.name}:`, err);
+                    console.error(`[ERROR] Error occurred while starting cron-job of module ${moduleDir.name}:`, err);
                     process.exit(1);
                 }
             }
