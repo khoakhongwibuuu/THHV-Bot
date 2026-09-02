@@ -69,6 +69,26 @@ const formatString = (format, ...args) => {
 }
 
 /**
+ * Converts an integer into its English ordinal form by appending the appropriate suffix: "st", "nd", "rd", or "th".
+ *
+ * @param {number} n - The integer to convert.
+ * @returns {string} The number with its ordinal suffix.
+ *
+ */
+const ordinal = (n) => {
+	const mod100 = n % 100;
+
+	if (mod100 >= 11 && mod100 <= 13) return `${n}th`;
+
+	switch (n % 10) {
+		case 1: return `${n}st`;
+		case 2: return `${n}nd`;
+		case 3: return `${n}rd`;
+		default: return `${n}th`;
+	}
+}
+
+/**
  * Deep freezes an object
  * @param {*} obj - The object to be deep freezed
  * @returns {object} The deep freezed object
@@ -90,7 +110,9 @@ module.exports = {
 	shuffle,
 	randomEvent,
 	randomPercent,
-	formatString
+	formatString,
+	ordinal,
+	deepFreeze
 }
 
 String.prototype.URLdecode = function () {
