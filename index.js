@@ -62,6 +62,7 @@ const client = require('./assets/library/state.js').client;
 	});
 
 	try {
+		console.log(`[INFO] Client: Logging in...`);
 		client.login(process.env.TOKEN);
 	} catch (error) {
 		console.log(`[ERROR] root/index: Invalid token.`);
