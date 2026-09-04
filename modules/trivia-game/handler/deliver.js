@@ -58,7 +58,17 @@ module.exports.execute = async (interaction, cat, difficulty, quest, key, cont, 
     const collector = interaction.channel.createMessageComponentCollector({ filter, time: time * 1000 });
 
     let responseData = {};
-    let responseCount = 0;
+    let responseCount = type === 'multiple'
+        ? {
+            'A': 0,
+            'B': 0,
+            'C': 0,
+            'D': 0
+        } : {
+            'True': 0,
+            'False': 0
+        };
+    let totalCount = 0;
 
     collector.on('collect', async (subInteraction) => {
         if (responseData.hasOwnProperty(subInteraction.user.id)) {
@@ -68,15 +78,16 @@ module.exports.execute = async (interaction, cat, difficulty, quest, key, cont, 
                 await subInteraction.reply({ content: 'Không thể ghi nhận câu trả lời của bạn. Lượt chơi này đã bị một người điều phối hủy bỏ.', ephemeral: true })
                     .then(thisMessage => setTimeout(() => thisMessage.delete(), 3000));
             } else {
-                responseCount++;
+                responseCount[subInteraction.customId]++;
+                totalCount++;
                 responseData[subInteraction.user.id] = subInteraction.customId;
                 await subInteraction.reply({ content: 'Đã ghi nhận câu trả lời của bạn.', ephemeral: true })
                     .then(thisMessage => setTimeout(() => thisMessage.delete(), 3000));
 
-                interaction.editReply({
+                await interaction.editReply({
                     embeds: [embed
                         .setFooter({
-                            text: `${responseCount} người chơi đã tham gia.`
+                            text: `${totalCount} người chơi đã tham gia.`
                         })
                     ]
                 });
@@ -89,16 +100,25 @@ module.exports.execute = async (interaction, cat, difficulty, quest, key, cont, 
         const timeHidden = 20;
         await interaction.editReply({
             embeds: [embed
-                .setFooter({ text: `Lượt chơi này đã kết thúc. ${responseCount} người chơi đã tham gia.` })
+                .setFooter({ text: `Lượt chơi này đã kết thúc. ${totalCount} người chơi đã tham gia.` })
             ],
             components: []
         });
+
         await require('./judge.js').execute(interaction, responseData, key, difficulty, type);
+
+        let statisticString = type === 'multiple'
+            ? `A:${responseCount['A']} | B:${responseCount['B']} | C:${responseCount['C']} | D:${responseCount['D']}`
+            : `True:${responseCount['True']} | False:${responseCount['False']}`
+
+        statisticString = statisticString.replace(key, `**${key}**`);
+
         await interaction.editReply({
             embeds: [embed
-                .setDescription(`${cont}\n\nCâu hỏi sẽ bị xóa trong <t:${parseInt(new Date().getTime() / 1000) + timeHidden + 1}:R>.`)
+                .setDescription(`${cont}\n\n${statisticString}`)
             ]
         });
+        
         setTimeout(async () => {
             await interaction.editReply({
                 embeds: []
