@@ -35,11 +35,14 @@ services:
     ports:
       - "6379:6379"
     command: redis-server --save "" --appendonly no
+    volumes:
+      - redis_data:/data
     networks:
       - multi-domain
 
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   multi-domain:
