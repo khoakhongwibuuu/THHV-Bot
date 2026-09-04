@@ -23,7 +23,7 @@ module.exports.exec = async (interaction, UUID, message, firstTimeDisplay, pageR
                 .setDescription(
                     "**Trang đầu tiên, bạn sẽ khai báo 2 thông tin sau:**"
                     + "\n* Họ và tên"
-                    + "\n* Khoá của bạn tại trường"
+                    + "\n* Khoá của bạn tại trường (chỉ ghi số)"
 
                     + "\n\n**Lưu ý:**"
                     + "\n* 2 thông tin này sẽ gắn liền với bạn và không thể thay đổi sau khi khai báo."
