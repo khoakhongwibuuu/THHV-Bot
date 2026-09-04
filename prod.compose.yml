@@ -30,14 +30,12 @@ services:
   thhv_redis:
     image: redis:7-alpine
     restart: unless-stopped
-    volumes:
-      - redis_data:/data
+    command: redis-server --save "" --appendonly no
     networks:
       - multi-domain
 
 volumes:
   postgres_data:
-  redis_data:
 
 networks:
   multi-domain:
