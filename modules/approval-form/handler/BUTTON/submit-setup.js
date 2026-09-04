@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const formLib = require('#modules/approval-form/lib/formLib.js');
 const memory = require('#assets/api/memory.api.js');
-const discordAPI = require('#assets/api/discord.api.js');
 const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 const { client } = require('#assets/library/state.js');
 

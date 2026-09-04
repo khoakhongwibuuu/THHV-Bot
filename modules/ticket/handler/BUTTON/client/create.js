@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
 const ticketLib = require('#modules/ticket/lib/ticketLib.js');
-const discordAPI = require('#assets/api/discord.api.js');
 const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 const DEFAULT_TICKET_PERM_ALLOW = [

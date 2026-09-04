@@ -1,7 +1,6 @@
 // Packages
 const Discord = require('discord.js');
 const formLib = require('#modules/approval-form/lib/formLib.js');
-const discordAPI = require('#assets/api/discord.api.js');
 const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 

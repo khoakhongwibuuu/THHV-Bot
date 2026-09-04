@@ -1,7 +1,6 @@
 // Packages
 const Discord = require('discord.js');
 const reactLib = require('#modules/auto-reactor/lib/reactLib.js');
-const discordAPI = require('#assets/api/discord.api.js');
 const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports = {
@@ -28,7 +27,7 @@ module.exports = {
             return;
         }
 
-        await reactLib.guildReset(interaction.guild.id);
+        await reactLib.guildUninstall(interaction.guild.id);
         interaction.reply({
             content: "Voting feature has been disabled successfully.",
             ephemeral: true

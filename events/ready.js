@@ -10,6 +10,9 @@ module.exports = {
         // Login success event
         console.log(`[INFO] Client: Ready! Logged in as ${client.user.tag}`);
 
+        // Warmup Redis Cache
+        await require('#assets/instruction/warmup-cache.js').warmupCache();
+
         // Start cronjobs
         await require('#assets/instruction/start-cronjob.js').start();
 
