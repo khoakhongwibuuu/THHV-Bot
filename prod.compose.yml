@@ -38,6 +38,7 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   multi-domain:
