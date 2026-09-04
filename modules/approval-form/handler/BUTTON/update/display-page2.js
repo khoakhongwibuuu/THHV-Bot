@@ -57,7 +57,7 @@ module.exports.exec = async (interaction, UUID, message, pageRedirected, modalIn
                             : "Không thay đổi",
                     },
                     {
-                        name: "**Các giải thưởng tin học khác (ví dụ: TST, ICPC, APIO, IOI, ...) và năm đạt giải nếu có**",
+                        name: "**Các giải thưởng tin học khác (ví dụ: TST, ICPC, APIO, IOI, ...) và năm đoạt giải nếu có**",
                         value: data.rewards.others
                             ? data.rewards.others.codeChunk()
                             : "Không thay đổi",
