@@ -12,17 +12,30 @@ if (!process.env.TOKEN) {
 }
 
 const client = require('./assets/library/state.js').client;
+const { disconnect } = require('./assets/library/db.js');
+
+async function shutdown(reason = 'unknown reason', exitCode = 0) {
+	console.log(`[INFO] root/index: Shutting down due to ${reason}...`);
+	try {
+		await disconnect();
+		client.destroy();
+	} catch (err) {
+		console.error(`[ERROR] Cleanup failed:`, err);
+	} finally {
+		process.exit(exitCode);
+	}
+}
 
 (async () => {
 	// Guard
 	if (process.env.OWNER_ID === "") {
 		console.log(`[ERROR] root/index: You have NOT provide the Bot owner ID in auth/login.key. This BOT will be automatically turned off.`);
-		process.exit(1);
+		await shutdown('missing OWNER_ID', 1);
 	}
 
 	if (process.env.TOKEN === "") {
 		console.log(`[ERROR] root/index: Empty token detected. Please provide a valid token.`);
-		process.exit(1);
+		await shutdown('missing TOKEN', 1);
 	}
 
 	// Load Commands and Events handlers
@@ -36,36 +49,31 @@ const client = require('./assets/library/state.js').client;
 	process.on('uncaughtException', (err) => {
 		console.log(`[ERROR] root/index: The bot was automatically shut down by uncaught exception.`);
 		console.error(err);
-		setTimeout(() => process.exit(1), 1000);
+		shutdown('uncaughtException', 1);
 	});
 
 	process.on('unhandledRejection', (err) => {
 		console.log(`[ERROR] root/index: The bot was automatically shut down by unhandled rejection.`);
 		console.error(err);
-		setTimeout(() => process.exit(1), 1000);
+		shutdown('unhandledRejection', 1);
 	});
 
-	process.on('SIGINT', async () => {
+	process.on('SIGINT', () => {
 		console.log(`[INFO] root/index: SIGINT received. Shutting down gracefully...`);
-		const { disconnect } = require('./assets/library/db.js');
-		await disconnect();
-		client.destroy();
-		process.exit(0);
+		shutdown('SIGINT', 0);
 	});
 
-	process.on('SIGTERM', async () => {
+	process.on('SIGTERM', () => {
 		console.log(`[INFO] root/index: SIGTERM received. Shutting down gracefully...`);
-		const { disconnect } = require('./assets/library/db.js');
-		await disconnect();
-		client.destroy();
-		process.exit(0);
+		shutdown('SIGTERM', 0);
 	});
 
 	try {
 		console.log(`[INFO] Client: Logging in...`);
-		client.login(process.env.TOKEN);
+		await client.login(process.env.TOKEN);
 	} catch (error) {
 		console.log(`[ERROR] root/index: Invalid token.`);
 		console.error(error);
+		await shutdown('login error', 1);
 	}
 })();
