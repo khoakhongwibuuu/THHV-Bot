@@ -75,13 +75,13 @@ const guildUninstall = async (guildId) => {
 const guildReset = async (guildId, removeScore) => {
     const guildData = await getGuildConfig(guildId);
     if (!guildData) return;
-    
+
     guildData.recentUser = null;
     guildData.recentWord = null;
     guildData.recentSentTime = 0;
     guildData.used = {};
     if (removeScore) guildData.playerScore = {};
-    
+
     await saveGuildConfig(guildId, guildData);
 };
 
@@ -172,7 +172,7 @@ const handleInput = async (msg) => {
         guildData.recentWord = msg.content.toLowerCase().lastDigit();
         guildData.recentSentTime = msg.createdTimestamp;
         guildData.recentUser = msg.author.id;
-        
+
         await msg.react(emojiTable.ok);
         await saveGuildConfig(msg.guild.id, guildData);
     }
@@ -187,7 +187,10 @@ module.exports = {
     getRoomId,
     isInRoom,
     resetRoomId,
-    readPlayerScore,
+
+    hasPlayerData,
     allPlayerList,
+    readPlayerScore,
+    
     handleInput
 };

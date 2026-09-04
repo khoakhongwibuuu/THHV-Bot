@@ -51,13 +51,13 @@ const guildSetup = async (guildId, channelId, upvoteToken, downvoteToken) => {
     });
 };
 
-const guildReset = async (guildId) => {
-    if (await isSetup(guildId)) {
-        await prisma.guildConfig.delete({
-            where: { guildId_module: { guildId, module: MODULE_NAME } }
-        });
-        await redisClient.del(`config:${MODULE_NAME}:${guildId}`);
-    }
+const guildUninstall = async (guildId) => {
+    if (!(await isSetup(guildId))) return false;
+    await prisma.guildConfig.delete({
+        where: { guildId_module: { guildId, module: MODULE_NAME } }
+    });
+    await redisClient.del(`config:${MODULE_NAME}:${guildId}`);
+    return true;
 };
 
 const isInRoom = async (guildId, channelId) => {
@@ -150,7 +150,7 @@ module.exports = {
     isSetup,
     getGuildConfig,
     guildSetup,
-    guildReset,
+    guildUninstall,
     isInRoom,
     isPrefix,
     isListened,

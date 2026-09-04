@@ -1,7 +1,6 @@
 // Packages
 const Discord = require('discord.js');
 const wordLib = require('#modules/word-match/lib/wordLib.js');
-const discordAPI = require('#assets/api/discord.api.js');
 const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports = {

@@ -28,8 +28,9 @@ module.exports.exec = async (interaction, UUID) => {
                     .setLabel("Họ và tên")
                     .setStyle(Discord.TextInputStyle.Short)
                     .setMinLength(1)
-                    .setMaxLength(20)
+                    .setMaxLength(200)
                     .setRequired(true)
+                    .setPlaceholder('Ví dụ: Nguyễn Văn A')
             ),
             new Discord.ActionRowBuilder().addComponents(
                 new Discord.TextInputBuilder()
@@ -39,6 +40,7 @@ module.exports.exec = async (interaction, UUID) => {
                     .setMinLength(1)
                     .setMaxLength(2)
                     .setRequired(true)
+                    .setPlaceholder('Ví dụ: 30')
             )
         )
     await interaction.showModal(modal);

@@ -193,13 +193,17 @@ module.exports = {
 
     getTimeAllowed,
     getPenalty,
+
     isRunning,
     guildLock,
     guildUnlock,
+
     easyReader,
     hardReader,
+
     hasPlayerData,
     allPlayerList,
     readPlayerScore,
+    
     bulkSaveInstaceResult
 };

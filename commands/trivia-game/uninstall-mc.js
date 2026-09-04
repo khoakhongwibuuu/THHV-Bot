@@ -1,7 +1,6 @@
 // Packages
 const Discord = require('discord.js');
 const gameLib = require('#modules/trivia-game/lib/gameLib.js');
-const discordAPI = require('#assets/api/discord.api.js');
 const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 const defaultBtnRow = new Discord.ActionRowBuilder()

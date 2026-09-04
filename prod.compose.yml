@@ -30,6 +30,7 @@ services:
   thhv_redis:
     image: redis:7-alpine
     restart: unless-stopped
+    command: redis-server --save "" --appendonly no
     volumes:
       - redis_data:/data
     networks:

@@ -16,7 +16,7 @@ module.exports.start = async () => {
                     console.log(`[INFO] Client: started cron-job of ${moduleDir.name} module.`);
                 } catch (err) {
                     console.error(`[ERROR] Error occurred while starting cron-job of module ${moduleDir.name}:`, err);
-                    process.exit(1);
+                    throw err;
                 }
             }
         }

@@ -2,7 +2,6 @@ const Discord = require('discord.js');
 const { client } = require('#assets/library/state.js');
 const ticketLib = require('#modules/ticket/lib/ticketLib.js');
 const memory = require('#assets/api/memory.api.js');
-const discordAPI = require('#assets/api/discord.api.js');
 const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 
 module.exports.exec = async (interaction, UUID) => {
