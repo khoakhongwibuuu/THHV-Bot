@@ -1,10 +1,5 @@
 "use-strict";
-const BotStartTime = new Date().toISOString();
-
-const fs = require('node:fs');
-const path = require('node:path');
 const dotenv = require('dotenv');
-const Discord = require('discord.js');
 
 if (!process.env.TOKEN) {
 	dotenv.config({ path: ".env" });
@@ -59,12 +54,10 @@ async function shutdown(reason = 'unknown reason', exitCode = 0) {
 	});
 
 	process.on('SIGINT', () => {
-		console.log(`[INFO] root/index: SIGINT received. Shutting down gracefully...`);
 		shutdown('SIGINT', 0);
 	});
 
 	process.on('SIGTERM', () => {
-		console.log(`[INFO] root/index: SIGTERM received. Shutting down gracefully...`);
 		shutdown('SIGTERM', 0);
 	});
 
