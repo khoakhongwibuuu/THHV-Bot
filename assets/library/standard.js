@@ -162,6 +162,26 @@ String.prototype.codeChunk = function () {
 	return `\`\`\`\n${this}\n\`\`\``;
 }
 
+String.prototype.code = function () {
+	return `\`${this}\``;
+}
+
+String.prototype.boldText = function () {
+	return `**${this}**`;
+}
+
+String.prototype.italicText = function () {
+	return `_${this}_`;
+}
+
+String.prototype.underlineText = function () {
+	return `__${this}__`;
+}
+
+String.prototype.strikethroughText = function () {
+	return `~~${this}~~`;
+}
+
 Array.prototype.listing = function (prefix, suffix, delimiter) {
 	let res = "";
 	this.forEach((e, i, a) => {
