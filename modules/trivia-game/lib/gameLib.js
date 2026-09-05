@@ -19,14 +19,14 @@ const MODULE_NAME = 'trivia-game';
 
 // Configuration
 const penalty = {
-    boolean: { easy: { up: 1, down: -2 }, medium: { up: 2, down: -2 }, hard: { up: 3, down: -2 } },
-    multiple: { easy: { up: 2, down: -2 }, medium: { up: 3, down: -2 }, hard: { up: 4, down: -2 } }
+    boolean: { easy: { up: 1, down: -4 }, medium: { up: 2, down: -3 }, hard: { up: 3, down: -2 } },
+    multiple: { easy: { up: 2, down: -3 }, medium: { up: 3, down: -2 }, hard: { up: 4, down: -1 } }
 };
 
 const timeAllowed = {
-    easy: 10,
-    medium: 15,
-    hard: 20
+    easy: 13,
+    medium: 16,
+    hard: 19
 };
 
 // --- CONFIGURATION CACHE (Prisma + Redis) ---
