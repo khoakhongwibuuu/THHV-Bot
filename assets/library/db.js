@@ -29,17 +29,19 @@ redisClient.on('error', (err) => console.log('Redis Client Error', err));
 // Connect to databases when required
 (async () => {
     try {
+        console.log('[INFO] Database: Connecting to Postgres...');
         await prisma.$connect();
-        console.log('[INFO] Postgres connected successfully.');
+        console.log('[INFO] Database: Postgres connected successfully.');
     } catch (err) {
-        console.error('[ERROR] Postgres connection failed:', err);
+        console.error('[ERROR] Database: Postgres connection failed:', err);
     }
 
     try {
+        console.log('[INFO] Cache: Connecting to Redis...');
         await redisClient.connect();
-        console.log('[INFO] Redis connected successfully.');
+        console.log('[INFO] Cache: Redis connected successfully.');
     } catch (err) {
-        console.error('[ERROR] Redis connection failed:', err);
+        console.error('[ERROR] Cache: Redis connection failed:', err);
     }
 })();
 
@@ -51,7 +53,7 @@ const disconnect = async () => {
     } catch (err) {
         console.error('[ERROR] Postgres disconnect failed:', err);
     }
-    
+
     try {
         if (redisClient.isOpen) {
             await redisClient.quit();

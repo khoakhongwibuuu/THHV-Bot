@@ -6,7 +6,7 @@ module.exports.execute = async (interaction, questionBlock) => {
     const validKey = ['A', 'B', 'C', 'D'];
     const time = gameLib.getTimeAllowed(questionBlock.difficulty);
 
-    let correctKeyIdx = stdlib.trueRnd(0, 3);
+    const correctKeyIdx = stdlib.trueRnd(0, 3);
     const correctKey = validKey[correctKeyIdx];
 
     let incorrectAnswer = questionBlock.incorrect_answers;

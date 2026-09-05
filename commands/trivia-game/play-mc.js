@@ -1,6 +1,5 @@
 // Packages
 const Discord = require('discord.js');
-const { dirname } = require('#assets/library/state.js');
 const gameLib = require('#modules/trivia-game/lib/gameLib.js');
 const stdlib = require('#assets/library/standard.js');
 
@@ -24,8 +23,8 @@ module.exports = {
             return;
         }
         await gameLib.guildLock(interaction.guild.id);
-        const hardModeRate = stdlib.randomPercent(90);
-        const questionBlock = (hardModeRate) ? gameLib.easyReader() : gameLib.hardReader();
+        const hardModeRate = stdlib.randomPercent(25);
+        const questionBlock = (hardModeRate) ? gameLib.hardReader() : gameLib.easyReader();
         await require(`#modules/trivia-game/handler/${questionBlock.type}.js`).execute(interaction, questionBlock);
     },
 };

@@ -2,9 +2,9 @@
 const gameLib = require('#modules/trivia-game/lib/gameLib.js');
 
 const emojiTable = Object.freeze({
-    up: '✅',
-    down: '❌',
-    skipped: '⁉️'
+    up: ':white_check_mark:',
+    down: ':x:',
+    skipped: ':interrobang:'
 });
 
 module.exports.execute = async (interaction, responseData, key, difficulty, type) => {

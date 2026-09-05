@@ -1,7 +1,5 @@
 // Packages
 const Discord = require('discord.js');
-const path = require('node:path');
-const { dirname } = require('#assets/library/state.js');
 
 module.exports = {
     name: Discord.Events.ClientReady,
