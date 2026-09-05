@@ -3,15 +3,15 @@ const Discord = require('discord.js');
 const gameLib = require('#modules/trivia-game/lib/gameLib.js');
 
 const dictionary = {
-    easy: "Dễ",
-    medium: "Trung bình",
-    hard: "Khó"
+    easy: "Dễ :green_circle:",
+    medium: "Trung bình :yellow_circle:",
+    hard: "Khó :red_circle:"
 }
 
-module.exports.execute = async (interaction, cat, difficulty, quest, key, cont, type, time) => {
+module.exports.execute = async (interaction, cat, difficulty, questionTitle, key, questionContent, type, time) => {
     const embed = new Discord.EmbedBuilder()
-        .setTitle(quest)
-        .setDescription(cont);
+        .setTitle(questionTitle)
+        .setDescription(questionContent);
 
     let row = null;
     if (type === "multiple") {
@@ -48,8 +48,12 @@ module.exports.execute = async (interaction, cat, difficulty, quest, key, cont, 
             );
     }
 
+    const { up, down } = gameLib.getPenalty(type, difficulty);
+
     await interaction.reply({
-        content: `:alarm_clock: Bạn có \`${time}\` giây để trả lời câu hỏi sau.\nChủ đề: ${cat}\nĐộ khó: ${dictionary[difficulty]}`,
+        content: `:alarm_clock:  Bạn có \`${time}\` giây để trả lời câu hỏi sau. (↑\`${up}\`:↓\`${-down}\`)`
+            + `\nChủ đề: ${cat}`
+            + `\nĐộ khó: ${dictionary[difficulty]}`,
         embeds: [embed],
         components: [row]
     });
@@ -108,17 +112,17 @@ module.exports.execute = async (interaction, cat, difficulty, quest, key, cont, 
         await require('./judge.js').execute(interaction, responseData, key, difficulty, type);
 
         let statisticString = type === 'multiple'
-            ? `A:${responseCount['A']} | B:${responseCount['B']} | C:${responseCount['C']} | D:${responseCount['D']}`
-            : `True:${responseCount['True']} | False:${responseCount['False']}`
+            ? `**A:${responseCount['A']} | B:${responseCount['B']} | C:${responseCount['C']} | D:${responseCount['D']}**`
+            : `**True:${responseCount['True']} | False:${responseCount['False']}**`
 
-        statisticString = statisticString.replace(key, `**${key}**`);
+        statisticString = statisticString.replace(key, key.underlineText());
 
         await interaction.editReply({
             embeds: [embed
-                .setDescription(`${cont}\n\n${statisticString}`)
+                .setDescription(`${questionContent}\n\n${statisticString}`)
             ]
         });
-        
+
         setTimeout(async () => {
             await interaction.editReply({
                 embeds: []

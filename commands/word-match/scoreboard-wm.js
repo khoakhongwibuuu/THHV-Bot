@@ -52,7 +52,7 @@ module.exports = {
                 : index === 2 ? ':second_place:'
                 : index === 3 ? ':third_place:'
                 : ''} ${
-                    index > 3 ? `**${stdLib.ordinal(index)}**`
+                    index > 3 ? stdLib.ordinal(index).boldText()
                     : ''} <@${k}>: \`${v} điểm\`.\n`
         });
 
