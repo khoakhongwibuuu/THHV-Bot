@@ -1,4 +1,4 @@
-"use-strict";
+"use strict";
 const dotenv = require('dotenv');
 
 if (!process.env.TOKEN) {
