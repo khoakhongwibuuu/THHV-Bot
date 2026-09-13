@@ -3,25 +3,27 @@ const { PrismaPg } = require('@prisma/adapter-pg');
 const { Pool } = require('pg');
 const { createClient } = require('redis');
 
-// Set up Prisma Postgres Adapter
-// Check if DATABASE_URL is a raw unexpanded template string (happens locally with basic dotenv)
-let dbUrl = process.env.DATABASE_URL;
-if (!dbUrl || dbUrl.includes('${')) {
-    const user = process.env.POSTGRES_USER || 'thhv_bot_user';
-    const pass = process.env.POSTGRES_PASSWORD || 'change_this_password';
-    const db = process.env.POSTGRES_DB || 'thhv_bot_db';
-    dbUrl = `postgresql://${user}:${pass}@localhost:5432/${db}?schema=public`;
+const dbUrl = process.env.DATABASE_URL;
+
+if (!dbUrl) {
+    throw new Error('DATABASE_URL is not defined');
 }
 
 const pool = new Pool({
     connectionString: dbUrl
 });
-const adapter = new PrismaPg(pool);
 
+const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
+const redisUrl = process.env.REDIS_URL;
+
+if (!redisUrl) {
+    throw new Error('REDIS_URL is not defined');
+}
+
 const redisClient = createClient({
-    url: process.env.REDIS_URL || 'redis://localhost:6379'
+    url: redisUrl
 });
 
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
