@@ -23,12 +23,12 @@ async function shutdown(reason = 'unknown reason', exitCode = 0) {
 
 (async () => {
 	// Guard
-	if (process.env.OWNER_ID === "") {
+	if (!process.env.OWNER_ID) {
 		console.log(`[ERROR] root/index: You have NOT provide the Bot owner ID in auth/login.key. This BOT will be automatically turned off.`);
 		await shutdown('missing OWNER_ID', 1);
 	}
 
-	if (process.env.TOKEN === "") {
+	if (!process.env.TOKEN) {
 		console.log(`[ERROR] root/index: Empty token detected. Please provide a valid token.`);
 		await shutdown('missing TOKEN', 1);
 	}
