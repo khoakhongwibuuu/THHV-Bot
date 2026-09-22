@@ -24,7 +24,7 @@
     },
     "directories": {},
     "scripts": {
-        "start": "npx prisma db push --accept-data-loss && node ./index.js",
+        "start": "pnpm exec prisma db push --accept-data-loss && node ./index.js",
         "deploy-command": "node ./deploy.js",
         "undeploy-command": "node ./undeploy.js",
         "dev-deploy" : "docker compose up -d thhv_postgres thhv_redis",
