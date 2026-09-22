@@ -4,9 +4,14 @@ const { Pool } = require('pg');
 const { createClient } = require('redis');
 
 const dbUrl = process.env.DATABASE_URL;
+const redisUrl = process.env.REDIS_URL;
 
 if (!dbUrl) {
     throw new Error('DATABASE_URL is not defined');
+}
+
+if (!redisUrl) {
+    throw new Error('REDIS_URL is not defined');
 }
 
 const pool = new Pool({
@@ -16,38 +21,25 @@ const pool = new Pool({
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-const redisUrl = process.env.REDIS_URL;
-
-if (!redisUrl) {
-    throw new Error('REDIS_URL is not defined');
-}
-
 const redisClient = createClient({
     url: redisUrl
 });
 
-redisClient.on('error', (err) => console.log('Redis Client Error', err));
+redisClient.on('error', (err) => {
+    console.error('[ERROR] Redis Client Error:', err);
+});
 
-// Connect to databases when required
-(async () => {
-    try {
-        console.log('[INFO] Database: Connecting to Postgres...');
-        await prisma.$connect();
-        console.log('[INFO] Database: Postgres connected successfully.');
-    } catch (err) {
-        console.error('[ERROR] Database: Postgres connection failed:', err);
-    }
+async function connect() {
+    console.log('[INFO] Database: Connecting to Postgres...');
+    await prisma.$connect();
+    console.log('[INFO] Database: Postgres connected successfully.');
 
-    try {
-        console.log('[INFO] Cache: Connecting to Redis...');
-        await redisClient.connect();
-        console.log('[INFO] Cache: Redis connected successfully.');
-    } catch (err) {
-        console.error('[ERROR] Cache: Redis connection failed:', err);
-    }
-})();
+    console.log('[INFO] Cache: Connecting to Redis...');
+    await redisClient.connect();
+    console.log('[INFO] Cache: Redis connected successfully.');
+}
 
-const disconnect = async () => {
+async function disconnect() {
     try {
         await prisma.$disconnect();
         await pool.end();
@@ -64,10 +56,11 @@ const disconnect = async () => {
     } catch (err) {
         console.error('[ERROR] Redis disconnect failed:', err);
     }
-};
+}
 
 module.exports = {
     prisma,
     redisClient,
+    connect,
     disconnect
 };
