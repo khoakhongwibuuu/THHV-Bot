@@ -7,37 +7,55 @@ if (!process.env.TOKEN) {
 }
 
 const client = require('./assets/library/state.js').client;
-const { disconnect } = require('./assets/library/db.js');
+const { connect, disconnect } = require('./assets/library/db.js');
 
 async function shutdown(reason = 'unknown reason', exitCode = 0) {
 	console.log(`[INFO] root/index: Shutting down due to ${reason}...`);
+
 	try {
-		await disconnect();
 		client.destroy();
 	} catch (err) {
-		console.error(`[ERROR] Cleanup failed:`, err);
-	} finally {
-		process.exit(exitCode);
+		console.error(`[ERROR] Discord client cleanup failed:`, err);
 	}
+
+	try {
+		await disconnect();
+	} catch (err) {
+		console.error(`[ERROR] Database cleanup failed:`, err);
+	}
+
+	process.exit(exitCode);
 }
 
 (async () => {
 	// Guard
 	if (!process.env.OWNER_ID) {
-		console.log(`[ERROR] root/index: You have NOT provide the Bot owner ID in auth/login.key. This BOT will be automatically turned off.`);
+		console.log(`[ERROR] root/index: Missing OWNER_ID.`);
 		await shutdown('missing OWNER_ID', 1);
+		return;
 	}
 
 	if (!process.env.TOKEN) {
-		console.log(`[ERROR] root/index: Empty token detected. Please provide a valid token.`);
+		console.log(`[ERROR] root/index: Missing TOKEN.`);
 		await shutdown('missing TOKEN', 1);
+		return;
+	}
+
+	try {
+		await connect();
+	} catch (error) {
+		console.error(`[ERROR] root/index: Failed to connect to required dependencies.`);
+		console.error(error);
+
+		await shutdown('database connection failure', 1);
+		return;
 	}
 
 	// Load Commands and Events handlers
 	require('./assets/instruction/discord-handler.js').loadHandlers();
 
 	client.on('error', (err) => {
-		console.log(`[WARN] root/index: Error occured. Please review.`);
+		console.log(`[WARN] root/index: Error occurred. Please review.`);
 		console.error(err);
 	});
 
