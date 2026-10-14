@@ -40,7 +40,7 @@ module.exports.exec = async (interaction, UUID) => {
                     .setMinLength(1)
                     .setMaxLength(2)
                     .setRequired(true)
-                    .setPlaceholder('Ví dụ: 30')
+                    .setPlaceholder('Ví dụ: 30, (Không ghi chữ K đằng trước số)')
             )
         )
     await interaction.showModal(modal);
