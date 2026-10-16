@@ -27,9 +27,10 @@
         "start": "pnpm exec prisma db push --accept-data-loss && node ./index.js",
         "deploy-command": "node ./deploy.js",
         "undeploy-command": "node ./undeploy.js",
-        "dev-deploy" : "docker compose up -d thhv_postgres thhv_redis",
+        "dev-deploy" : "docker compose up -d postgres redis",
         "docker-deploy" : "docker compose up -d",
-        "package-install": "pnpm i"
+        "package-install": "pnpm i",
+        "postinstall": "prisma generate"
     },
     "keywords": [],
     "author": "khoa.khong.wibuuu",

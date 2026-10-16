@@ -6,7 +6,8 @@ WORKDIR /usr/src/bot
 
 ENV TZ="Asia/Ho_Chi_Minh"
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml prisma.config.ts ./
+COPY prisma ./prisma
 
 RUN corepack enable pnpm && pnpm config set ignore-scripts false && pnpm install --frozen-lockfile
 
