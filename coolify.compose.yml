@@ -10,6 +10,7 @@
 #     empty directory and lost the bot configuration.
 services:
   bot:
+    cpus: 2
     build: .
     depends_on:
       - thhv_postgres
@@ -25,6 +26,7 @@ services:
 
   thhv_postgres:
     image: postgres:15-alpine
+    cpus: 2
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -35,6 +37,7 @@ services:
 
   thhv_redis:
     image: redis:7-alpine
+    cpus: 2
     restart: unless-stopped
     command: redis-server --save "" --appendonly no
     volumes:
