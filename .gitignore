@@ -143,6 +143,7 @@ modules/*/config/
 modules/*/cache/
 configs/
 .postgres/
+.redis/
 
 # Node dependencies
 node_modules/
