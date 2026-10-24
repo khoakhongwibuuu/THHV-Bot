@@ -142,6 +142,7 @@ vite.config.ts.timestamp-*
 modules/*/config/
 modules/*/cache/
 configs/
+.postgres/
 
 # Node dependencies
 node_modules/
