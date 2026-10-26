@@ -3,7 +3,7 @@ const contestLib = require('#modules/contest/lib/contestLib.js');
 const discordAPIv2 = require('#assets/api/discord.api.v2.js');
 const { client } = require('#assets/library/state.js');
 
-const NOTIFY_BEFORE_HOURS = 24000;
+const NOTIFY_BEFORE_HOURS = 36;
 const CODEFORCES_API = 'http://codeforces.com/api/contest.list';
 
 const fetchData = async (url) => {
