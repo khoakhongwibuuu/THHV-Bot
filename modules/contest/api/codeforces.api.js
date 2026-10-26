@@ -50,8 +50,8 @@ const notify = async (domain, id, name, contestURL, registerURL, startTime, hour
         if (!config || !config.channel) return;
 
 		const content = config.role
-			? `<@&${config.role}>, a contest is open for registration!`
-			: "A contest is open for registration!";
+			? `<@&${config.role}>, a new contest has been announced!`
+			: "A new contest has been announced!";
 
         try {
 		    const broadcastChannel = await discordAPIv2.GuildChannel(guildId, config.channel);
